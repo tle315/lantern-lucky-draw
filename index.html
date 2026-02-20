@@ -4,169 +4,342 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>PandaGoldenEar Lucky Draw</title>
-
 <style>
 :root{
---bg:#faf6ec;
---card:#ffffff;
---red:#c62828;
---gold:#c9a227;
---text:#1a1a1a;
---muted:#666;
+  --bg:#fbf6ea;
+  --card:#ffffff;
+  --red:#c62828;
+  --gold:#c9a227;
+  --text:#141414;
+  --muted:#6b6b6b;
+  --soft:#f4efe2;
 }
+*{box-sizing:border-box}
 body{
-margin:0;
-font-family:system-ui,-apple-system,Segoe UI,Roboto;
-background:var(--bg);
-display:flex;
-align-items:center;
-justify-content:center;
-min-height:100vh;
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  padding:22px 12px;
+  color:var(--text);
 }
 .card{
-width:min(560px,92vw);
-background:var(--card);
-border-radius:20px;
-padding:28px 22px;
-box-shadow:0 12px 32px rgba(0,0,0,.08);
-text-align:center;
+  width:min(620px,94vw);
+  background:var(--card);
+  border-radius:24px;
+  padding:28px 22px;
+  box-shadow:0 14px 40px rgba(0,0,0,.08);
+  text-align:center;
 }
 h1{
-margin:0 0 6px;
-font-size:24px;
+  margin:0 0 6px;
+  font-size:28px;
+  letter-spacing:-.2px;
 }
-p{
-margin:0 0 18px;
-color:var(--muted);
+.sub{
+  margin:0 0 18px;
+  color:var(--muted);
+  font-size:16px;
 }
 .btn{
-width:100%;
-padding:16px;
-border-radius:14px;
-border:0;
-font-weight:700;
-cursor:pointer;
-margin-top:10px;
+  width:100%;
+  padding:16px;
+  border-radius:16px;
+  border:0;
+  font-weight:800;
+  cursor:pointer;
+  margin-top:12px;
+  font-size:16px;
 }
 .primary{
-background:linear-gradient(90deg,var(--red),#e53935);
-color:#fff;
+  background:linear-gradient(90deg,var(--red),#e53935);
+  color:#fff;
 }
 .secondary{
-background:linear-gradient(90deg,var(--gold),#e0b94a);
-color:#1a1a1a;
+  background:linear-gradient(90deg,var(--gold),#e0b94a);
+  color:#1a1a1a;
 }
-.result{
-margin-top:20px;
-padding:16px;
-border-radius:14px;
-background:#f4efe2;
-font-size:18px;
-font-weight:700;
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+.hint{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:13px;
 }
 .links{
-display:flex;
-flex-direction:column;
-gap:8px;
-margin-top:12px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:16px 0 6px;
 }
-a{
-text-decoration:none;
-color:#333;
-font-size:14px;
+.linkbtn{
+  display:block;
+  padding:12px 14px;
+  border-radius:14px;
+  background:var(--soft);
+  color:#222;
+  text-decoration:none;
+  font-weight:700;
 }
-.small{
-font-size:12px;
-margin-top:14px;
-color:#777;
+.linkbtn small{
+  display:block;
+  font-weight:600;
+  color:var(--muted);
+  margin-top:2px;
+}
+.result{
+  margin-top:18px;
+  padding:16px;
+  border-radius:16px;
+  background:var(--soft);
+  font-size:18px;
+  font-weight:900;
+}
+.notice{
+  margin-top:12px;
+  font-size:12px;
+  color:#707070;
+  line-height:1.35;
+}
+.badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#fff3cd;
+  color:#6b5500;
+  font-weight:800;
+  font-size:12px;
+  margin-bottom:10px;
+}
+.lock{
+  background:#f6f6f6;
+  border:1px dashed #d7d7d7;
+  padding:14px;
+  border-radius:16px;
+  margin-top:14px;
+  color:#555;
+  font-weight:700;
 }
 </style>
 </head>
 
 <body>
 <div class="card">
-<h1>🏮 PandaGoldenEar Lucky Draw</h1>
-<p>Tap to reveal your surprise.</p>
+  <div class="badge">🏮 Lantern Festival Special</div>
+  <h1>🧧 PandaGoldenEar Lucky Draw</h1>
+  <p class="sub">Tap to reveal your surprise.</p>
 
-<button class="btn primary" id="spin1">🎉 First Spin</button>
-<button class="btn secondary" id="spin2" style="display:none;">🔥 Second Spin</button>
+  <button class="btn primary" id="spin1">🎉 First Spin</button>
 
-<div class="links">
-<a href="https://www.instagram.com/pandagoldenear/" target="_blank">Follow on Instagram</a>
-<a href="https://www.facebook.com/pandagoldenear" target="_blank">Follow on Facebook</a>
-<a href="https://chat.whatsapp.com/IrWrt8Z8d1b4JhsH0knAbQ" target="_blank">Join WhatsApp Group</a>
-</div>
+  <button class="btn secondary" id="spin2" disabled>🔥 Second Spin</button>
+  <div class="hint" id="spin2Hint">Follow us on any channel below to unlock your second spin.</div>
 
-<div id="result" class="result" style="display:none;"></div>
+  <div class="links">
+    <a class="linkbtn social" data-social="instagram" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">
+      Follow on Instagram
+      <small>Unlock your second spin ✅</small>
+    </a>
+    <a class="linkbtn social" data-social="facebook" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">
+      Follow on Facebook
+      <small>Unlock your second spin ✅</small>
+    </a>
+    <a class="linkbtn social" data-social="whatsapp" href="https://chat.whatsapp.com/IrWrt8Z8d1b4JhsH0knAbQ" target="_blank" rel="noopener">
+      Join WhatsApp Group
+      <small>Unlock your second spin ✅</small>
+    </a>
+  </div>
 
-<div class="small">
-If you win <b>This is on us</b>, show our staff immediately.
-</div>
+  <div id="result" class="result" style="display:none;"></div>
+
+  <div class="notice" id="claimNote" style="display:none;">
+    ✅ <b>Show this screen to our staff to claim your prize.</b><br/>
+    (Blessings don’t need claiming.)
+  </div>
+
+  <div class="notice">
+    Device rule: one full play per day on this device/browser.
+  </div>
+
+  <div id="lockedBox" class="lock" style="display:none;"></div>
 </div>
 
 <script>
+/** ===========================
+ *  CONFIG
+ *  ===========================
+ */
 
-// ===== 权重设置（后台概率控制） =====
-const FIRST_SPIN = [
-{ name: "+2 Dumplings", weight: 20 },
-{ name: "+1 Drink", weight: 10 },
-{ name: "Blessing", weight: 300 }
+// 统计接口（可选）
+// 方案A：留空（不影响运行）
+// 方案B：填你的 Google Apps Script Web App URL（下面我会给你步骤）
+const TRACK_ENDPOINT = ""; // e.g. "https://script.google.com/macros/s/XXXX/exec"
+
+// 每天仅一次（设备/浏览器级别）
+const EVENT_CODE = "lantern2026"; // 你可改成活动名
+const today = new Date();
+const YYYYMMDD = today.toISOString().slice(0,10);
+const PLAY_KEY = `pge_draw_${EVENT_CODE}_${YYYYMMDD}`;
+
+// “库存开关”：你手动把 remaining 设为 0，即自动从抽奖池移除（并等价于“送完隐藏”）
+const REMAINING = {
+  "This is on us": 2, // 你想送完就改 0
+  "50% off for your next order": 999,
+  "+2 Dumplings": 30,
+  "+1 Drink": 999
+};
+
+// 奖项权重（你给的）
+const SECOND_SPIN_POOL = [
+  { name: "This is on us", weight: 1 },
+  { name: "50% off for your next order", weight: 5 },
+  { name: "+2 Dumplings", weight: 20 },
+  { name: "+1 Drink", weight: 10 },
+  { name: "Blessing", weight: 300 }
 ];
 
-const SECOND_SPIN = [
-{ name: "This is on us", weight: 1 },
-{ name: "50% off for your next order", weight: 5 },
-{ name: "+2 Dumplings", weight: 20 },
-{ name: "+1 Drink", weight: 10 },
-{ name: "Blessing", weight: 300 }
+// First spin 我建议保持“轻奖+祝福”为主（你现在也更顺畅）
+const FIRST_SPIN_POOL = [
+  { name: "+2 Dumplings", weight: 20 },
+  { name: "+1 Drink", weight: 10 },
+  { name: "Blessing", weight: 300 }
 ];
 
-// ===== 三句简短祝福 =====
+// 祝福（3条）
 const BLESSINGS = [
-"Smile more, luck follows you.",
-"This year brings you double joy.",
-"Good vibes, good dumplings, good fortune."
+  "Smile more, luck follows you.",
+  "This year brings you double joy.",
+  "Good vibes, good dumplings, good fortune."
 ];
+
+/** ===========================
+ *  UTIL
+ *  ===========================
+ */
+function track(eventName, payload = {}){
+  try{
+    if(!TRACK_ENDPOINT) return;
+    const body = JSON.stringify({
+      event: eventName,
+      ts: Date.now(),
+      date: YYYYMMDD,
+      page: location.href,
+      ...payload
+    });
+    navigator.sendBeacon
+      ? navigator.sendBeacon(TRACK_ENDPOINT, body)
+      : fetch(TRACK_ENDPOINT, {method:"POST", body, mode:"no-cors"});
+  }catch(e){}
+}
 
 function weightedPick(items){
-const total = items.reduce((s,x)=>s+x.weight,0);
-let r = Math.random()*total;
-for(const item of items){
-r -= item.weight;
-if(r<=0) return item;
-}
-return items[items.length-1];
+  const filtered = items
+    .filter(x => x.name === "Blessing" || (REMAINING[x.name] ?? 999) > 0)
+    .map(x => ({...x}));
+
+  const total = filtered.reduce((s,x)=>s+x.weight,0);
+  let r = Math.random()*total;
+  for(const item of filtered){
+    r -= item.weight;
+    if(r<=0) return item;
+  }
+  return filtered[filtered.length-1];
 }
 
 function randomBlessing(){
-return BLESSINGS[Math.floor(Math.random()*BLESSINGS.length)];
+  return BLESSINGS[Math.floor(Math.random()*BLESSINGS.length)];
 }
 
+function isClaimPrize(name){
+  return name !== "Blessing";
+}
+
+/** ===========================
+ *  STATE
+ *  ===========================
+ */
 const resultBox = document.getElementById("result");
+const claimNote = document.getElementById("claimNote");
 const spin1Btn = document.getElementById("spin1");
 const spin2Btn = document.getElementById("spin2");
+const spin2Hint = document.getElementById("spin2Hint");
+const lockedBox = document.getElementById("lockedBox");
 
-spin1Btn.onclick = ()=>{
-const pick = weightedPick(FIRST_SPIN);
-resultBox.style.display="block";
-if(pick.name==="Blessing"){
-resultBox.textContent=randomBlessing();
-}else{
-resultBox.textContent=pick.name;
+let unlockedSecond = false;
+let firstDone = false;
+let secondDone = false;
+
+// 页面访问统计
+track("page_view");
+
+// 设备每日一次
+const alreadyPlayed = localStorage.getItem(PLAY_KEY) === "done";
+if(alreadyPlayed){
+  spin1Btn.disabled = true;
+  spin2Btn.disabled = true;
+  spin2Btn.style.display = "none";
+  spin2Hint.style.display = "none";
+  lockedBox.style.display = "block";
+  lockedBox.textContent = "You’ve already played today on this device. Come back tomorrow 🧧";
 }
-spin1Btn.disabled=true;
-spin2Btn.style.display="block";
+
+// 点击任意社媒链接 => 解锁 Second Spin
+document.querySelectorAll(".social").forEach(a=>{
+  a.addEventListener("click", ()=>{
+    if(alreadyPlayed) return;
+    if(!unlockedSecond){
+      unlockedSecond = true;
+      spin2Btn.disabled = false;
+      spin2Hint.textContent = "✅ Unlocked! Tap Second Spin anytime.";
+      track("unlock_second_spin", {via: a.dataset.social});
+    }
+    track("click_social", {channel: a.dataset.social});
+  });
+});
+
+// First Spin
+spin1Btn.onclick = ()=>{
+  if(alreadyPlayed) return;
+  const pick = weightedPick(FIRST_SPIN_POOL);
+
+  firstDone = true;
+  resultBox.style.display = "block";
+
+  const finalText = (pick.name === "Blessing") ? randomBlessing() : pick.name;
+  resultBox.textContent = finalText;
+
+  claimNote.style.display = isClaimPrize(pick.name) ? "block" : "none";
+
+  spin1Btn.disabled = true;
+  track("spin_first", {result: pick.name});
+
+  // Second spin 只有解锁后才能点（用户自己操作，不靠员工说）
+  // 这里不自动解锁，遵循你的策略：必须关注任意渠道
 };
 
+// Second Spin
 spin2Btn.onclick = ()=>{
-const pick = weightedPick(SECOND_SPIN);
-resultBox.style.display="block";
-if(pick.name==="Blessing"){
-resultBox.textContent=randomBlessing();
-}else{
-resultBox.textContent=pick.name;
-}
-spin2Btn.disabled=true;
+  if(alreadyPlayed) return;
+  if(!unlockedSecond) return;
+
+  const pick = weightedPick(SECOND_SPIN_POOL);
+  secondDone = true;
+
+  resultBox.style.display = "block";
+  const finalText = (pick.name === "Blessing") ? randomBlessing() : pick.name;
+  resultBox.textContent = finalText;
+
+  claimNote.style.display = isClaimPrize(pick.name) ? "block" : "none";
+
+  spin2Btn.disabled = true;
+  track("spin_second", {result: pick.name});
+
+  // 完成一次游戏（First + Second 或只 Second 也算），写入设备锁
+  localStorage.setItem(PLAY_KEY, "done");
 };
 
 </script>
