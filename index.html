@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PandaGoldenEar Lucky Draw</title>
+
+<style>
+:root{
+--bg:#faf6ec;
+--card:#ffffff;
+--red:#c62828;
+--gold:#c9a227;
+--text:#1a1a1a;
+--muted:#666;
+}
+body{
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI,Roboto;
+background:var(--bg);
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:100vh;
+}
+.card{
+width:min(560px,92vw);
+background:var(--card);
+border-radius:20px;
+padding:28px 22px;
+box-shadow:0 12px 32px rgba(0,0,0,.08);
+text-align:center;
+}
+h1{
+margin:0 0 6px;
+font-size:24px;
+}
+p{
+margin:0 0 18px;
+color:var(--muted);
+}
+.btn{
+width:100%;
+padding:16px;
+border-radius:14px;
+border:0;
+font-weight:700;
+cursor:pointer;
+margin-top:10px;
+}
+.primary{
+background:linear-gradient(90deg,var(--red),#e53935);
+color:#fff;
+}
+.secondary{
+background:linear-gradient(90deg,var(--gold),#e0b94a);
+color:#1a1a1a;
+}
+.result{
+margin-top:20px;
+padding:16px;
+border-radius:14px;
+background:#f4efe2;
+font-size:18px;
+font-weight:700;
+}
+.links{
+display:flex;
+flex-direction:column;
+gap:8px;
+margin-top:12px;
+}
+a{
+text-decoration:none;
+color:#333;
+font-size:14px;
+}
+.small{
+font-size:12px;
+margin-top:14px;
+color:#777;
+}
+</style>
+</head>
+
+<body>
+<div class="card">
+<h1>🏮 PandaGoldenEar Lucky Draw</h1>
+<p>Tap to reveal your surprise.</p>
+
+<button class="btn primary" id="spin1">🎉 First Spin</button>
+<button class="btn secondary" id="spin2" style="display:none;">🔥 Second Spin</button>
+
+<div class="links">
+<a href="https://www.instagram.com/pandagoldenear/" target="_blank">Follow on Instagram</a>
+<a href="https://www.facebook.com/pandagoldenear" target="_blank">Follow on Facebook</a>
+<a href="https://chat.whatsapp.com/IrWrt8Z8d1b4JhsH0knAbQ" target="_blank">Join WhatsApp Group</a>
+</div>
+
+<div id="result" class="result" style="display:none;"></div>
+
+<div class="small">
+If you win <b>This is on us</b>, show our staff immediately.
+</div>
+</div>
+
+<script>
+
+// ===== 权重设置（后台概率控制） =====
+const FIRST_SPIN = [
+{ name: "+2 Dumplings", weight: 20 },
+{ name: "+1 Drink", weight: 10 },
+{ name: "Blessing", weight: 300 }
+];
+
+const SECOND_SPIN = [
+{ name: "This is on us", weight: 1 },
+{ name: "50% off for your next order", weight: 5 },
+{ name: "+2 Dumplings", weight: 20 },
+{ name: "+1 Drink", weight: 10 },
+{ name: "Blessing", weight: 300 }
+];
+
+// ===== 三句简短祝福 =====
+const BLESSINGS = [
+"Smile more, luck follows you.",
+"This year brings you double joy.",
+"Good vibes, good dumplings, good fortune."
+];
+
+function weightedPick(items){
+const total = items.reduce((s,x)=>s+x.weight,0);
+let r = Math.random()*total;
+for(const item of items){
+r -= item.weight;
+if(r<=0) return item;
+}
+return items[items.length-1];
+}
+
+function randomBlessing(){
+return BLESSINGS[Math.floor(Math.random()*BLESSINGS.length)];
+}
+
+const resultBox = document.getElementById("result");
+const spin1Btn = document.getElementById("spin1");
+const spin2Btn = document.getElementById("spin2");
+
+spin1Btn.onclick = ()=>{
+const pick = weightedPick(FIRST_SPIN);
+resultBox.style.display="block";
+if(pick.name==="Blessing"){
+resultBox.textContent=randomBlessing();
+}else{
+resultBox.textContent=pick.name;
+}
+spin1Btn.disabled=true;
+spin2Btn.style.display="block";
+};
+
+spin2Btn.onclick = ()=>{
+const pick = weightedPick(SECOND_SPIN);
+resultBox.style.display="block";
+if(pick.name==="Blessing"){
+resultBox.textContent=randomBlessing();
+}else{
+resultBox.textContent=pick.name;
+}
+spin2Btn.disabled=true;
+};
+
+</script>
+</body>
+</html>
