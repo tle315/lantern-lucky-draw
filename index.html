@@ -1,887 +1,699 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PandaGoldenEar Lucky Draw</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#F6F1E8" />
+  <title>PandaGoldenEar Lucky Draw</title>
+  <style>
+    :root{
+      --bg:#F6F1E8;
+      --card:#ffffffcc;
+      --ink:#141414;
+      --muted:#6b6b6b;
+      --line:#e6d9c8;
+      --gold:#caa35a;
+      --red:#9a3b2f;
+      --green:#2f7a4a;
+      --shadow: 0 10px 30px rgba(20,20,20,.06);
+      --radius: 28px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 50% -10%, #f5e7cf 0%, var(--bg) 55%);
+      color:var(--ink);
+      line-height:1.35;
+    }
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 16px 34px;
+    }
+    .shell{
+      background: linear-gradient(180deg, #fff9f0 0%, #fff8f3 55%, #fff 120%);
+      border: 1px solid var(--line);
+      border-radius: 36px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      overflow:hidden;
+    }
+    .topTag{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 16px;
+      border-radius: 999px;
+      background: #f3e7d3;
+      border: 1px solid #e7d2b4;
+      color:#6a4f25;
+      font-weight:700;
+      letter-spacing:.2px;
+      margin: 0 auto 12px;
+    }
+    .center{ text-align:center; }
+    .titleRow{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      margin-top: 2px;
+    }
+    .fu{
+      width:56px;height:56px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 30% 30%, #c84a3b 0%, #8e2f26 70%);
+      display:grid;place-items:center;
+      box-shadow: 0 8px 18px rgba(154,59,47,.18);
+      color:#ffd67a;
+      font-weight:900;
+      font-size:28px;
+      transform: translateY(-2px);
+      flex: 0 0 auto;
+    }
+    h1{
+      font-size: clamp(34px, 5vw, 62px);
+      margin: 10px 0 6px;
+      letter-spacing: -1px;
+      user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
+    }
+    .sub{
+      font-size: clamp(15px, 2.2vw, 20px);
+      color: var(--muted);
+      margin: 0 0 16px;
+      font-weight: 600;
+    }
+    .hint{
+      margin: 8px auto 12px;
+      max-width: 720px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px dashed #d9c3a4;
+      background: #fff7ea;
+      color:#6a4f25;
+      font-weight:700;
+    }
+    .btn{
+      border:0;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding: 16px 28px;
+      border-radius: 22px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      color:#fff;
+      background: linear-gradient(180deg, #b16a62 0%, #9a5b54 100%);
+      box-shadow: 0 14px 30px rgba(154,91,84,.18);
+      transition: transform .08s ease, filter .12s ease;
+      min-width: 240px;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      filter: grayscale(.3);
+      box-shadow:none;
+    }
+    .card{
+      margin: 14px auto 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--card);
+      box-shadow: 0 12px 26px rgba(20,20,20,.05);
+      padding: 18px 16px;
+      max-width: 860px;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
 
-<style>
-:root{
-  --bg:#f4efe6;
-  --card:#fbf8f2;
-  --ink:#151515;
-  --muted:#6f6a62;
-  --brand:#7a2c2c;
-  --brand2:#9b3a36;
-  --border:#e6dccb;
-  --gold:#f3d38a;
-  --shadow:0 18px 45px rgba(20,20,20,.08);
-  --shadow2:0 22px 60px rgba(20,20,20,.12);
-  --radius:28px;
-}
+    /* Winner emphasis animations */
+    .card.winner{
+      box-shadow: 0 16px 40px rgba(154,59,47,.10);
+      border-color:#e7caa0;
+      background: linear-gradient(180deg, #fffdf6 0%, #fff 100%);
+    }
+    @keyframes pop {
+      0% { transform: translateY(6px) scale(.985); }
+      55% { transform: translateY(-2px) scale(1.01); }
+      100% { transform: translateY(0) scale(1); }
+    }
+    .card.pop { animation: pop .36s ease-out; }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  color:var(--ink);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  background:
-    radial-gradient(900px 520px at 50% -20%, #ffffff 10%, rgba(255,255,255,0) 60%),
-    radial-gradient(1100px 700px at 10% 0%, #fff3dc 0%, rgba(255,243,220,0) 62%),
-    radial-gradient(1100px 700px at 90% 20%, #ffe9ea 0%, rgba(255,233,234,0) 62%),
-    linear-gradient(180deg, #fff, var(--bg));
-  padding:20px 14px 26px;
-  overflow-x:hidden;
-}
+    @keyframes pulseGlow{
+      0% { box-shadow: 0 0 0 0 rgba(47,122,74,.18); }
+      70%{ box-shadow: 0 0 0 12px rgba(47,122,74,0); }
+      100%{ box-shadow: 0 0 0 0 rgba(47,122,74,0); }
+    }
+    .claimPulse{ animation: pulseGlow 1.2s ease-out infinite; }
 
-.wrap{max-width:980px;margin:0 auto}
-.card{
-  background:linear-gradient(180deg,#fff, var(--card));
-  border:1px solid var(--border);
-  box-shadow:var(--shadow2);
-  border-radius:var(--radius);
-  padding:22px 18px 22px;
-  position:relative;
-  overflow:hidden;
-}
-.card:before{
-  content:"";
-  position:absolute;inset:-180px -220px auto;
-  height:360px;
-  background: radial-gradient(circle at 30% 30%, rgba(243,211,138,.55), rgba(243,211,138,0) 60%),
-              radial-gradient(circle at 70% 35%, rgba(155,58,54,.18), rgba(155,58,54,0) 55%);
-  filter: blur(2px);
-  pointer-events:none;
-}
-.cardInner{position:relative; z-index:2}
+    .resultTag{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom: 8px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid #d9c3a4;
+      background: #fff;
+      font-weight: 800;
+      color:#6a4f25;
+    }
+    .pill.green{
+      border-color:#cfe7d6;
+      background:#ecfff0;
+      color: var(--green);
+    }
+    .big{
+      font-size: clamp(30px, 4.2vw, 52px);
+      margin: 10px 0 0;
+      font-weight: 1000;
+      letter-spacing: -.8px;
+      color:#7a2f27;
+    }
+    .small{
+      margin: 10px 0 2px;
+      color: var(--muted);
+      font-weight: 650;
+      font-size: 15px;
+    }
+    .footerNote{
+      margin-top: 14px;
+      color:#7a7a7a;
+      text-align:center;
+      font-weight:700;
+      font-size: 18px;
+      padding-bottom: 6px;
+    }
+    .toast{
+      margin: 10px auto 0;
+      max-width: 860px;
+      text-align:center;
+      color:#8a6a3a;
+      font-weight:800;
+      font-size: 14px;
+      min-height: 20px;
+    }
+    .spinRow{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 12px;
+      margin: 14px 0 2px;
+    }
+    .playedBadge{
+      display:none;
+      margin: 10px auto 0;
+      max-width: 860px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid #cfe7d6;
+      background: #ecfff0;
+      color: var(--green);
+      font-weight: 900;
+      text-align:center;
+    }
 
-.badgeRow{display:flex;justify-content:center;margin-top:4px}
-.badge{
-  display:inline-flex;align-items:center;gap:10px;
-  padding:10px 16px;border-radius:999px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,#fff6dd,#f6e6c6);
-  font-weight:900;color:#5a4b2d;
-  box-shadow:0 10px 25px rgba(90,75,45,.10);
-}
-.badgeDot{
-  width:10px;height:10px;border-radius:99px;
-  background: radial-gradient(circle at 30% 30%, #fff, #f0b84d);
-  box-shadow:0 0 0 4px rgba(243,211,138,.35);
-}
+    /* Staff modal */
+    .modalMask{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.28);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      z-index: 9999;
+    }
+    .modal{
+      width: min(520px, 100%);
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid #eee;
+      box-shadow: 0 18px 60px rgba(0,0,0,.18);
+      padding: 16px;
+      text-align:left;
+    }
+    .modal h3{
+      margin: 0 0 8px;
+      font-size: 18px;
+      letter-spacing: -.2px;
+    }
+    .modal p{
+      margin: 0 0 12px;
+      color:#555;
+      font-weight: 650;
+      font-size: 14px;
+      line-height:1.35;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .input{
+      flex: 1 1 220px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: .4px;
+      outline:none;
+    }
+    .miniBtn{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid #ddd;
+      background:#fff;
+      cursor:pointer;
+      font-weight: 900;
+      font-size: 14px;
+    }
+    .miniBtn.danger{
+      border-color:#f0c7c3;
+      background:#fff2f2;
+      color:#8e2f26;
+    }
+    .miniBtn.primary{
+      border-color:#cfe7d6;
+      background:#ecfff0;
+      color:#2f7a4a;
+    }
+    .modalNote{
+      margin-top:10px;
+      color:#7a7a7a;
+      font-size: 12px;
+      font-weight: 650;
+    }
 
-.fu{
-  width:64px;height:64px;border-radius:18px;
-  display:grid;place-items:center;
-  background:linear-gradient(180deg,#d34d3a,#8f1d16);
-  color:#ffd46b;font-weight:1000;font-size:30px;
-  margin:18px auto 10px;
-  box-shadow:0 18px 40px rgba(143,29,22,.18);
-}
-
-.title{
-  font-size:38px;
-  line-height:1.08;
-  letter-spacing:-0.03em;
-  margin:6px 0 12px;
-  text-align:center;
-  text-wrap:balance;
-}
-@media (min-width:768px){
-  .title{font-size:66px;line-height:1.02}
-}
-
-.sub{
-  text-align:center;
-  color:var(--muted);
-  margin:0 auto 18px;
-  font-size:18px;
-  font-weight:700;
-}
-.sub strong{color:#3f3a34}
-
-.panel{
-  border:1px solid var(--border);
-  background:#fff;
-  border-radius:var(--radius);
-  padding:16px;
-  box-shadow:var(--shadow);
-}
-
-.followTitle{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:10px;margin-bottom:12px;
-}
-.kicker{
-  font-weight:950;letter-spacing:.06em;font-size:12px;
-  color:#7a6a55;text-transform:uppercase;
-}
-.statusPill{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:8px 12px;border-radius:999px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,#fff,#fbf6ec);
-  font-weight:900;color:#6b6257;
-}
-.statusPill .dot{
-  width:9px;height:9px;border-radius:99px;background:#c7c1b9;
-}
-.statusPill.unlocked{
-  background:linear-gradient(180deg,#effff2,#e7ffea);
-  border-color:#cdebd1;
-  color:#2f6b39;
-}
-.statusPill.unlocked .dot{background:#34c759; box-shadow:0 0 0 5px rgba(52,199,89,.15);}
-
-.followGrid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:10px;
-}
-@media (min-width:560px){
-  .followGrid{grid-template-columns:1fr auto 1fr auto 1fr}
-}
-.or{
-  display:none;
-  font-weight:1000;
-  color:#7a6a55;
-  align-self:center;
-  justify-self:center;
-}
-@media (min-width:560px){
-  .or{display:block}
-}
-
-.socialBtn{
-  width:100%;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,#fff,#fff);
-  border-radius:999px;
-  padding:14px 16px;
-  font-weight:950;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  transition: transform .12s ease, box-shadow .12s ease, background .2s ease;
-}
-.socialBtn:hover{
-  transform: translateY(-1px);
-  box-shadow:0 10px 22px rgba(20,20,20,.06);
-}
-.socialBtn:active{transform: translateY(0px) scale(.99)}
-.socialBtn .icon{width:22px;height:22px}
-
-.socialBtn.ig{color:#1f1f1f}
-.socialBtn.fb{color:#0b57d0}
-.socialBtn.tt{color:#111}
-
-.hint{
-  margin:12px 4px 0;
-  color:var(--muted);
-  font-weight:700;
-  font-size:14px;
-  text-align:center;
-}
-.hint span{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:8px 12px;border-radius:999px;
-  border:1px dashed rgba(122,44,44,.28);
-  background:rgba(255,255,255,.65);
-}
-
-.spinWrap{display:flex;justify-content:center;margin:16px 0 4px}
-.spinBtn{
-  width:min(420px, 88%);
-  border-radius:22px;
-  padding:18px 22px;
-  background:linear-gradient(180deg,var(--brand2),var(--brand));
-  color:#fff;
-  font-weight:1000;
-  font-size:22px;
-  border:none;
-  box-shadow:0 18px 38px rgba(122,44,44,.20);
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  transition: transform .14s ease, box-shadow .14s ease, filter .2s ease;
-  position:relative;
-  overflow:hidden;
-}
-.spinBtn:hover{transform:translateY(-1px); box-shadow:0 22px 48px rgba(122,44,44,.24)}
-.spinBtn:active{transform:translateY(0px) scale(.99)}
-.spinBtn[disabled]{
-  opacity:.45;
-  cursor:not-allowed;
-  filter:saturate(.6);
-  box-shadow:0 10px 22px rgba(20,20,20,.08);
-}
-.spinBtn .shine{
-  position:absolute; inset:-30% -40% auto;
-  height:120%;
-  transform:rotate(12deg) translateX(-40%);
-  background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.20), rgba(255,255,255,0));
-  pointer-events:none;
-  opacity:.0;
-}
-.spinBtn.pulse .shine{animation:shine 1.6s ease-in-out infinite}
-@keyframes shine{
-  0%{transform:rotate(12deg) translateX(-55%);opacity:.0}
-  30%{opacity:.25}
-  60%{opacity:.0}
-  100%{transform:rotate(12deg) translateX(65%);opacity:.0}
-}
-
-.lockChip{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.75);
-  color:#6b6257;
-  font-weight:900;
-  margin:10px auto 0;
-  width:fit-content;
-}
-.lockChip.ok{
-  background:linear-gradient(180deg,#effff2,#e7ffea);
-  border-color:#cdebd1;
-  color:#2f6b39;
-}
-.lockChip .miniDot{
-  width:10px;height:10px;border-radius:99px;background:#c7c1b9
-}
-.lockChip.ok .miniDot{background:#34c759; box-shadow:0 0 0 5px rgba(52,199,89,.15)}
-
-.result{
-  margin-top:14px;
-  border-radius:24px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,#fff, #fffaf1);
-  padding:18px 16px;
-  display:none;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.result:before{
-  content:"";
-  position:absolute; inset:-40px -80px auto;
-  height:160px;
-  background: radial-gradient(circle at 30% 30%, rgba(243,211,138,.35), rgba(243,211,138,0) 65%);
-  pointer-events:none;
-}
-.resultInner{position:relative; z-index:2}
-.resultTag{
-  font-weight:950;
-  letter-spacing:.12em;
-  font-size:12px;
-  color:#6b6257;
-  margin-bottom:8px;
-  text-transform:uppercase;
-}
-.resultText{
-  font-size:36px;
-  font-weight:1100;
-  color:#7b2f2c;
-  line-height:1.06;
-  text-wrap:balance;
-}
-@media (min-width:768px){
-  .resultText{font-size:42px}
-}
-.claim{
-  margin-top:8px;
-  color:var(--muted);
-  font-weight:750;
-  font-size:14px;
-}
-
-/* Ticket look */
-.ticketShell{
-  margin-top:12px;
-  background:linear-gradient(180deg,#fff,#fffaf1);
-  border:1px dashed rgba(122,44,44,.35);
-  border-radius:18px;
-  padding:12px 12px;
-  position:relative;
-  text-align:left;
-}
-.ticketShell:before,
-.ticketShell:after{
-  content:"";
-  position:absolute; top:50%;
-  width:18px;height:18px;border-radius:99px;
-  background:var(--card);
-  border:1px solid var(--border);
-  transform:translateY(-50%);
-}
-.ticketShell:before{left:-10px}
-.ticketShell:after{right:-10px}
-.ticketTop{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:10px;margin-bottom:8px;
-}
-.ticketTop .t{
-  font-weight:1000; letter-spacing:.10em; font-size:12px; color:#6b6257;
-  text-transform:uppercase;
-}
-.ticketCode{
-  font-weight:950;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New";
-  font-size:12px;
-  color:#6b6257;
-  padding:6px 10px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:#fff;
-}
-.ticketInfo{
-  display:flex; gap:8px; flex-wrap:wrap;
-}
-.pill{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:8px 10px;border-radius:999px;
-  border:1px solid var(--border);
-  background:#fff;
-  color:#6b6257;
-  font-weight:900;
-  font-size:12px;
-}
-
-.footerNote{
-  text-align:center;
-  margin-top:16px;
-  color:var(--muted);
-  font-weight:800;
-  font-size:15px;
-}
-
-.shake{animation: shake .35s ease;}
-@keyframes shake{
-  0%{transform:translateX(0)}
-  20%{transform:translateX(-6px)}
-  40%{transform:translateX(6px)}
-  60%{transform:translateX(-4px)}
-  80%{transform:translateX(4px)}
-  100%{transform:translateX(0)}
-}
-.pulse{animation:pulse 1.2s ease-in-out infinite;}
-@keyframes pulse{
-  0%,100%{transform:scale(1); filter:brightness(1)}
-  50%{transform:scale(1.02); filter:brightness(1.05)}
-}
-.fadeInUp{animation:fadeInUp .35s ease both;}
-@keyframes fadeInUp{
-  from{opacity:0; transform:translateY(10px)}
-  to{opacity:1; transform:translateY(0)}
-}
-
-/* Spin animation overlay (flip-card) */
-.stage{
-  display:none;
-  margin-top:14px;
-  border-radius:24px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,#fff, #fffaf1);
-  box-shadow:var(--shadow);
-  padding:18px 16px;
-  position:relative;
-  overflow:hidden;
-}
-.stage:before{
-  content:"";
-  position:absolute; inset:-40px -80px auto;
-  height:160px;
-  background: radial-gradient(circle at 30% 30%, rgba(243,211,138,.28), rgba(243,211,138,0) 65%);
-  pointer-events:none;
-}
-.stageInner{position:relative; z-index:2}
-.stageTitle{
-  font-weight:950;
-  letter-spacing:.10em;
-  font-size:12px;
-  color:#6b6257;
-  text-transform:uppercase;
-  text-align:center;
-}
-.flipWrap{
-  margin:12px auto 0;
-  width:min(520px, 96%);
-  perspective:1200px;
-}
-.flipCard{
-  width:100%;
-  height:164px;
-  border-radius:22px;
-  transform-style:preserve-3d;
-  position:relative;
-}
-.face{
-  position:absolute; inset:0;
-  border-radius:22px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,#fff,#fffaf1);
-  display:flex; flex-direction:column;
-  justify-content:center; align-items:center;
-  backface-visibility:hidden;
-  overflow:hidden;
-}
-.face:before{
-  content:"";
-  position:absolute; inset:-40px -60px auto;
-  height:160px;
-  background: radial-gradient(circle at 30% 30%, rgba(155,58,54,.10), rgba(155,58,54,0) 60%);
-  pointer-events:none;
-}
-.face .big{
-  position:relative;
-  font-size:44px;
-  font-weight:1100;
-  color:#7b2f2c;
-}
-.face .small{
-  position:relative;
-  margin-top:6px;
-  color:var(--muted);
-  font-weight:850;
-}
-.back{
-  transform:rotateX(180deg);
-}
-.flipRun{
-  animation:flipRun .9s cubic-bezier(.2,.8,.2,1) both;
-}
-@keyframes flipRun{
-  0%{transform:rotateX(0deg)}
-  100%{transform:rotateX(180deg)}
-}
-
-/* confetti canvas */
-#confetti{
-  position:fixed; inset:0;
-  pointer-events:none;
-  z-index:9999;
-  display:none;
-}
-
-/* hidden reset for staff testing */
-.resetWrap{
-  display:flex; justify-content:center;
-  margin-top:10px;
-}
-.resetBtn{
-  display:none;
-  border:1px solid rgba(122,44,44,.25);
-  background:rgba(255,255,255,.75);
-  color:#7a2c2c;
-  border-radius:999px;
-  padding:10px 12px;
-  font-weight:950;
-  cursor:pointer;
-}
-.resetBtn:active{transform:scale(.99)}
-</style>
+    @media (max-width: 520px){
+      .shell{ padding: 14px; border-radius: 28px; }
+      .fu{ width:52px;height:52px; border-radius: 16px; font-size: 26px; }
+      .btn{ width:100%; min-width: unset; border-radius: 24px; padding: 18px 18px; }
+      .card{ padding: 16px 14px; border-radius: 22px; }
+      .footerNote{ font-size: 16px; }
+      .titleRow{ gap: 12px; }
+    }
+  </style>
 </head>
 
 <body>
-<canvas id="confetti"></canvas>
+  <div class="wrap">
+    <div class="shell">
+      <div class="center">
+        <div class="topTag">🏮 Lantern Festival Special</div>
 
-<div class="wrap">
-  <div class="card">
-    <div class="cardInner">
-      <div class="badgeRow">
-        <div class="badge"><span class="badgeDot"></span>Lantern Festival Special</div>
-      </div>
-
-      <div class="fu">福</div>
-
-      <h1 class="title">
-        PandaGoldenEar<br>
-        Lucky Draw
-      </h1>
-
-      <div class="sub">Follow <strong>any ONE</strong> account to unlock your spin.</div>
-
-      <div class="panel">
-        <div class="followTitle">
-          <div class="kicker">Step 1 · Follow to unlock</div>
-          <div class="statusPill" id="statusPill"><span class="dot"></span><span id="statusText">Locked</span></div>
-        </div>
-
-        <div class="followGrid">
-          <button class="socialBtn ig" id="igBtn" aria-label="Instagram">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="6"></rect>
-              <circle cx="12" cy="12" r="4"></circle>
-              <circle cx="17.5" cy="6.5" r="1.5"></circle>
-            </svg>
-            Instagram
-          </button>
-
-          <div class="or">or</div>
-
-          <button class="socialBtn fb" id="fbBtn" aria-label="Facebook">
-            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13.5 22v-8h2.7l.4-3H13.5V9.1c0-.9.3-1.6 1.6-1.6h1.6V4.8c-.3 0-1.4-.1-2.7-.1-2.6 0-4.3 1.6-4.3 4.5V11H7v3h2.1v8h4.4z"/>
-            </svg>
-            Facebook
-          </button>
-
-          <div class="or">or</div>
-
-          <button class="socialBtn tt" id="ttBtn" aria-label="TikTok">
-            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M14 3c.6 2.9 2.6 4.9 5 5.2V11c-2 0-3.8-.7-5-2v7.3c0 2.9-2.3 5.2-5.2 5.2A5.2 5.2 0 0 1 3.6 16c0-2.9 2.3-5.2 5.2-5.2.4 0 .8 0 1.2.1V14c-.3-.2-.7-.3-1.2-.3-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2V3h3z"/>
-            </svg>
-            TikTok
-          </button>
-        </div>
-
-        <div class="hint">
-          <span>👉 Tap any button above. Then your spin unlocks.</span>
-        </div>
-      </div>
-
-      <div class="spinWrap">
-        <button class="spinBtn" id="spinBtn" disabled>
-          <span class="shine"></span>
-          🎉 Spin
-        </button>
-      </div>
-
-      <div class="lockChip" id="lockChip">
-        <span class="miniDot"></span>
-        <span id="lockChipText">Locked — follow one account first</span>
-      </div>
-
-      <!-- Spin animation stage -->
-      <div class="stage" id="stage">
-        <div class="stageInner">
-          <div class="stageTitle">Drawing your surprise…</div>
-          <div class="flipWrap">
-            <div class="flipCard" id="flipCard">
-              <div class="face front">
-                <div class="big">🎁</div>
-                <div class="small">Shaking the lucky box…</div>
-              </div>
-              <div class="face back">
-                <div class="big">🧧</div>
-                <div class="small">Almost there…</div>
-              </div>
-            </div>
+        <div class="titleRow">
+          <div class="fu">福</div>
+          <div>
+            <!-- Long-press this title for staff reset -->
+            <h1 id="titleHold">PandaGoldenEar Lucky Draw</h1>
+            <p class="sub">Tap <b>Spin</b> to reveal your surprise.</p>
           </div>
         </div>
-      </div>
 
-      <div class="result" id="resultBox">
-        <div class="resultInner fadeInUp">
-          <div class="resultTag" id="resultTag"></div>
-          <div class="resultText" id="resultText"></div>
-          <div class="claim" id="claimText"></div>
+        <!-- 软提醒（不强制） -->
+        <div class="hint" id="softFollowHint">📸 Don’t forget to follow us on Instagram for more dumpling drops &amp; events.</div>
 
-          <div class="ticketShell" id="ticketShell" style="display:none">
-            <div class="ticketTop">
-              <div class="t">Prize Voucher</div>
-              <div class="ticketCode" id="ticketCode">PGE-XXXX</div>
-            </div>
-            <div class="ticketInfo">
-              <div class="pill">✅ Show staff to claim</div>
-              <div class="pill">🎟️ One-time prize</div>
-              <div class="pill">⏱️ Valid today only</div>
-            </div>
+        <div class="playedBadge" id="playedBadge">✅ Already played on this device</div>
+
+        <div class="card" id="resultCard" style="display:none;">
+          <div class="resultTag">
+            <span class="pill" id="resultTypePill">RESULT</span>
+            <span class="pill green" id="claimPill" style="display:none;">🎁 Show this screen to claim</span>
+          </div>
+
+          <div class="center">
+            <div class="small" id="resultLabel">YOU GOT</div>
+            <div class="big" id="resultText">...</div>
+            <div class="small" id="resultHelp" style="display:none;">If you win a prize, show this screen to our staff to claim.</div>
           </div>
         </div>
-      </div>
 
-      <div class="footerNote">Thanks for joining — see you at the dumpling stall!</div>
+        <div class="spinRow">
+          <button class="btn" id="spinBtn">🎉 Spin</button>
+          <div class="toast" id="toast"></div>
+        </div>
 
-      <div class="resetWrap">
-        <button class="resetBtn" id="resetBtn">Reset this device (staff)</button>
+        <div class="footerNote">Thanks for joining — see you at the dumpling stall!</div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-/* ====== CONFIG ====== */
-const POOL="https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
-const BLESS="https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
+  <!-- Staff modal -->
+  <div class="modalMask" id="modalMask" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h3>Staff Panel</h3>
+      <p>To reset this device, type <b>RESET</b> and tap <b>Reset device</b>.</p>
+      <div class="row">
+        <input class="input" id="resetInput" placeholder="Type RESET" autocapitalize="characters" />
+        <button class="miniBtn danger" id="resetBtn">Reset device</button>
+        <button class="miniBtn" id="closeModalBtn">Close</button>
+      </div>
+      <div class="modalNote">Tip: long-press the title for 3 seconds to open this panel.</div>
+    </div>
+  </div>
 
-const IG="https://www.instagram.com/pandagoldenear/";
-const FB="https://www.facebook.com/pandagoldenear";
-const TT="https://www.tiktok.com/@pandagoldenear?_r=1&_t=ZS-9469qJRTdAa";
+  <script>
+    // ====== CONFIG: your published CSVs ======
+    const POOL_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
+    const BLESSINGS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-const UNLOCK="pge_unlocked";
-const PLAYED="pge_played";
+    // Soft CTA only (no gating)
+    const INSTAGRAM_URL = "https://www.instagram.com/pandagoldenear/";
 
-/* ====== helpers ====== */
-function parseCSV(t){
-  const lines = t.trim().split(/\r?\n/);
-  const rows = lines.map(r => r.split(",").map(x=>x.trim()));
-  const h = rows[0];
-  return rows.slice(1).map(r=>{
-    const o={};
-    h.forEach((k,i)=>o[k.trim()] = r[i] ?? "");
-    return o;
-  });
-}
-function bool(v){return String(v).toLowerCase()==="true";}
-function num(v){return Number(v)||0;}
-async function load(url){
-  const r=await fetch(url,{cache:"no-store"});
-  return parseCSV(await r.text());
-}
-function pick(items){
-  const total=items.reduce((s,x)=>s+num(x.weight),0);
-  let r=Math.random()*total;
-  for(const it of items){ r-=num(it.weight); if(r<=0) return it; }
-  return items[0];
-}
-function unlocked(){return localStorage.getItem(UNLOCK)==="1";}
-function played(){return localStorage.getItem(PLAYED)==="1";}
-function randCode(){
-  const s = Math.random().toString(36).slice(2,8).toUpperCase();
-  return "PGE-" + s;
-}
+    // Local device limit
+    const PLAY_KEY = "pge_lucky_draw_played_v1";
 
-/* ====== UI refs ====== */
-const statusPill = document.getElementById("statusPill");
-const statusText = document.getElementById("statusText");
-const lockChip = document.getElementById("lockChip");
-const lockChipText = document.getElementById("lockChipText");
-const spinBtn = document.getElementById("spinBtn");
+    const el = (id) => document.getElementById(id);
 
-const stage = document.getElementById("stage");
-const flipCard = document.getElementById("flipCard");
+    const spinBtn = el("spinBtn");
+    const toast = el("toast");
+    const resultCard = el("resultCard");
+    const resultText = el("resultText");
+    const resultHelp = el("resultHelp");
+    const claimPill = el("claimPill");
+    const resultTypePill = el("resultTypePill");
+    const playedBadge = el("playedBadge");
 
-const resultBox = document.getElementById("resultBox");
-const resultTag = document.getElementById("resultTag");
-const resultText = document.getElementById("resultText");
-const claimText = document.getElementById("claimText");
+    // staff modal
+    const titleHold = el("titleHold");
+    const modalMask = el("modalMask");
+    const resetInput = el("resetInput");
+    const resetBtn = el("resetBtn");
+    const closeModalBtn = el("closeModalBtn");
 
-const ticketShell = document.getElementById("ticketShell");
-const ticketCode = document.getElementById("ticketCode");
+    let poolRows = null;
+    let blessingRows = null;
 
-const igBtn = document.getElementById("igBtn");
-const fbBtn = document.getElementById("fbBtn");
-const ttBtn = document.getElementById("ttBtn");
+    function setToast(msg){ toast.textContent = msg || ""; }
 
-const resetBtn = document.getElementById("resetBtn");
+    function safeBool(v){
+      if (v == null) return false;
+      const s = String(v).trim().toLowerCase();
+      return s === "true" || s === "1" || s === "yes";
+    }
 
-/* ====== confetti ====== */
-const confettiCanvas = document.getElementById("confetti");
-const cctx = confettiCanvas.getContext("2d");
+    function toNum(v, fallback = 0){
+      const n = Number(String(v).trim());
+      return Number.isFinite(n) ? n : fallback;
+    }
 
-function runConfetti(ms=1300){
-  confettiCanvas.style.display="block";
-  const W = confettiCanvas.width = window.innerWidth;
-  const H = confettiCanvas.height = window.innerHeight;
+    // Minimal CSV parser (handles quoted commas/newlines)
+    function parseCSV(text){
+      const rows = [];
+      let row = [];
+      let cur = "";
+      let inQuotes = false;
 
-  const colors = ["#f3d38a","#9b3a36","#7a2c2c","#34c759","#0b57d0","#111","#ff6b6b"];
-  const pieces = Array.from({length: 130}, ()=>({
-    x: Math.random()*W,
-    y: -20 - Math.random()*H*0.3,
-    r: 3 + Math.random()*5,
-    vx: -2 + Math.random()*4,
-    vy: 2 + Math.random()*5,
-    rot: Math.random()*Math.PI*2,
-    vr: -0.2 + Math.random()*0.4,
-    col: colors[Math.floor(Math.random()*colors.length)],
-    shape: Math.random() > 0.5 ? "rect" : "circle"
-  }));
+      for (let i=0; i<text.length; i++){
+        const ch = text[i];
+        const next = text[i+1];
 
-  const start = performance.now();
-  function frame(now){
-    const t = now - start;
-    cctx.clearRect(0,0,W,H);
-    for(const p of pieces){
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rot += p.vr;
-      p.vy += 0.03;
-      if(p.x < -50) p.x = W+50;
-      if(p.x > W+50) p.x = -50;
-
-      cctx.save();
-      cctx.translate(p.x,p.y);
-      cctx.rotate(p.rot);
-      cctx.fillStyle = p.col;
-      if(p.shape==="rect"){
-        cctx.fillRect(-p.r, -p.r, p.r*2, p.r*1.4);
-      }else{
-        cctx.beginPath();
-        cctx.arc(0,0,p.r,0,Math.PI*2);
-        cctx.fill();
+        if (inQuotes){
+          if (ch === '"' && next === '"'){ cur += '"'; i++; }
+          else if (ch === '"'){ inQuotes = false; }
+          else { cur += ch; }
+        } else {
+          if (ch === '"'){ inQuotes = true; }
+          else if (ch === ","){ row.push(cur); cur=""; }
+          else if (ch === "\n"){
+            row.push(cur); cur="";
+            if (row.some(x => String(x).trim() !== "")) rows.push(row);
+            row = [];
+          } else if (ch === "\r"){
+            // ignore
+          } else {
+            cur += ch;
+          }
+        }
       }
-      cctx.restore();
+      row.push(cur);
+      if (row.some(x => String(x).trim() !== "")) rows.push(row);
+
+      if (rows.length === 0) return [];
+
+      const headers = rows[0].map(h => String(h).trim());
+      const data = rows.slice(1).map(r => {
+        const obj = {};
+        headers.forEach((h, idx) => obj[h] = (r[idx] ?? "").trim());
+        return obj;
+      });
+      return data;
     }
-    if(t < ms){
-      requestAnimationFrame(frame);
-    }else{
-      confettiCanvas.style.display="none";
-      cctx.clearRect(0,0,W,H);
+
+    async function fetchCSV(url){
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to load CSV");
+      const txt = await res.text();
+      return parseCSV(txt);
     }
-  }
-  requestAnimationFrame(frame);
-}
 
-/* ====== state / UI ====== */
-function refresh(){
-  const canSpin = unlocked() && !played();
-  spinBtn.disabled = !canSpin;
+    async function ensureDataLoaded(){
+      if (!poolRows) poolRows = await fetchCSV(POOL_CSV_URL);
+      if (!blessingRows) blessingRows = await fetchCSV(BLESSINGS_CSV_URL);
+    }
 
-  if(!unlocked()){
-    statusPill.classList.remove("unlocked");
-    statusText.textContent = "Locked";
-    lockChip.classList.remove("ok");
-    lockChipText.textContent = "Locked — follow one account first";
-    spinBtn.classList.remove("pulse");
-  }else{
-    statusPill.classList.add("unlocked");
-    statusText.textContent = "Unlocked";
-    lockChip.classList.add("ok");
-    lockChipText.textContent = played() ? "Played — thanks!" : "Unlocked — you can spin now";
-    if(!played()) spinBtn.classList.add("pulse"); else spinBtn.classList.remove("pulse");
-  }
+    function buildWeightedBag(rows){
+      // prize, weight, remaining_auto, type, active_auto
+      const bag = [];
+      for (const r of rows){
+        const active = safeBool(r.active_auto ?? r.active);
+        const remaining = toNum(r.remaining_auto ?? r.remaining, 0);
+        const w = toNum(r.weight, 0);
+        const label = (r.prize ?? "").trim();
+        const type = (r.type ?? "prize").trim().toLowerCase();
 
-  if(played()){
-    spinBtn.disabled = true;
-    spinBtn.classList.remove("pulse");
-  }
+        if (!active) continue;
+        if (!label) continue;
+        if (remaining <= 0) continue;
+        if (w <= 0) continue;
 
-  // staff reset: enable only if hash #staff in URL
-  if(location.hash.toLowerCase()==="#staff"){
-    resetBtn.style.display = "inline-flex";
-  }
-}
+        bag.push({ label, type, weight: w });
+      }
+      return bag;
+    }
 
-function unlockAndOpen(url){
-  // 1) 先解锁（iOS Safari 更稳）
-  if(!unlocked()){
-    localStorage.setItem(UNLOCK, "1");
-  }
-  refresh();
+    function pickWeighted(items){
+      const total = items.reduce((s,x)=>s+x.weight, 0);
+      if (total <= 0) return null;
+      let r = Math.random() * total;
+      for (const it of items){
+        r -= it.weight;
+        if (r <= 0) return it;
+      }
+      return items[items.length - 1];
+    }
 
-  // 2) 再打开链接（延迟一点点，防止被系统打断）
-  setTimeout(() => {
-    // iOS 更稳：优先用 location.href 同页跳转；想新标签就改成 window.open
-    window.open(url, "_blank");
-    // 或者：location.href = url;
-  }, 120);
-}
+    function pickBlessing(blessRows){
+      // blessing, weight, active
+      const candidates = [];
+      for (const r of blessRows){
+        const active = safeBool(r.active);
+        const text = (r.blessing ?? "").trim();
+        const w = toNum(r.weight, 1);
+        if (!active) continue;
+        if (!text) continue;
+        candidates.push({ text, weight: w > 0 ? w : 1 });
+      }
+      if (candidates.length === 0) return "Good luck is coming your way :)";
+      const picked = pickWeighted(candidates);
+      return picked?.text ?? "Good luck is coming your way :)";
+    }
 
-igBtn.onclick=()=>unlockAndOpen(IG);
-fbBtn.onclick=()=>unlockAndOpen(FB);
-ttBtn.onclick=()=>unlockAndOpen(TT);
+    function resetResultCardEffects(){
+      resultCard.classList.remove("winner","pop");
+      claimPill.classList.remove("claimPulse");
+    }
 
-/* ====== show result ====== */
-function showResult({type, text}){
-  resultBox.style.display = "block";
-  resultBox.scrollIntoView({behavior:"smooth", block:"center"});
+    function showResult({ type, text }){
+      resultCard.style.display = "";
+      resultText.textContent = text;
 
-  if(type==="blessing"){
-    resultTag.textContent = "BLESSING ✨";
-    resultText.textContent = text;
-    claimText.textContent = "";
-    ticketShell.style.display = "none";
-  }else{
-    resultTag.textContent = "YOU WON 🎉";
-    resultText.textContent = text;
-    claimText.innerHTML = 'Show this screen to our staff to claim your <b>prize</b>.';
-    ticketShell.style.display = "block";
-    ticketCode.textContent = randCode();
-    runConfetti(1500);
-  }
-}
+      // reset effects first
+      resetResultCardEffects();
+      // force reflow to replay animation
+      void resultCard.offsetWidth;
 
-/* ====== spin animation flow ====== */
-function showStage(){
-  stage.style.display = "block";
-  stage.scrollIntoView({behavior:"smooth", block:"center"});
-  // reset flip state
-  flipCard.classList.remove("flipRun");
-  // force reflow
-  void flipCard.offsetWidth;
-  flipCard.classList.add("flipRun");
-}
+      if (type === "blessing"){
+        resultTypePill.textContent = "BLESSING ✨";
+        claimPill.style.display = "none";
+        resultHelp.style.display = "none";
+        resultText.style.color = "#141414";
+      } else {
+        resultTypePill.textContent = "YOU WON 🎉";
+        claimPill.style.display = "";
+        resultHelp.style.display = "";
+        resultText.style.color = "#7a2f27";
 
-function hideStage(){
-  stage.style.display = "none";
-}
+        // winner emphasis
+        resultCard.classList.add("winner","pop");
+        claimPill.classList.add("claimPulse");
+      }
 
-/* ====== spin ====== */
-spinBtn.onclick=async()=>{
-  if(played()) return;
+      // scroll into view on mobile so staff + customer see it immediately
+      setTimeout(() => {
+        resultCard.scrollIntoView({ behavior:"smooth", block:"center" });
+      }, 80);
+    }
 
-  if(!unlocked()){
-    lockChip.classList.add("shake");
-    setTimeout(()=>lockChip.classList.remove("shake"), 360);
-    return;
-  }
+    function setPlayedUI(){
+      playedBadge.style.display = "";
+      spinBtn.disabled = true;
+      setToast("Thanks! One play per device.");
+    }
 
-  spinBtn.disabled = true;
-  spinBtn.textContent = "⏳ Spinning...";
+    function clearPlayedUI(){
+      playedBadge.style.display = "none";
+      spinBtn.disabled = false;
+      setToast("");
+      // hide result if you want reset to feel clean:
+      resultCard.style.display = "none";
+      resetResultCardEffects();
+    }
 
-  // Hide old result & show stage
-  resultBox.style.display = "none";
-  ticketShell.style.display = "none";
-  showStage();
+    function isPlayed(){
+      return localStorage.getItem(PLAY_KEY) === "1";
+    }
 
-  try{
-    // suspense timing: 0.85s aligns with flip animation
-    await new Promise(r=>setTimeout(r, 850));
+    function markPlayed(){
+      localStorage.setItem(PLAY_KEY, "1");
+    }
 
-    const pool = await load(POOL);
-    const bless = await load(BLESS);
+    function unmarkPlayed(){
+      localStorage.removeItem(PLAY_KEY);
+    }
 
-    const active = pool
-      .filter(p => bool(p.active_auto) && num(p.remaining_auto) > 0);
+    // Soft CTA click
+    el("softFollowHint").addEventListener("click", () => {
+      window.open(INSTAGRAM_URL, "_blank", "noopener,noreferrer");
+    });
 
-    let out;
-    if(!active.length){
-      const b = pick(bless.filter(x=>bool(x.active)));
-      out = {type:"blessing", text: (b?.blessing || "Good luck!")};
-    }else{
-      const p = pick(active);
-      if(String(p.type).toLowerCase()==="blessing"){
-        const b = pick(bless.filter(x=>bool(x.active)));
-        out = {type:"blessing", text: (b?.blessing || "Good luck!")};
-      }else{
-        out = {type:"prize", text: p.prize};
+    async function onSpin(){
+      try{
+        setToast("Loading prizes…");
+        spinBtn.disabled = true;
+
+        await ensureDataLoaded();
+
+        const bag = buildWeightedBag(poolRows);
+        if (bag.length === 0){
+          setToast("No prizes available right now. Please try later.");
+          spinBtn.disabled = false;
+          return;
+        }
+
+        setToast("Spinning…");
+        await new Promise(r => setTimeout(r, 550));
+
+        const picked = pickWeighted(bag);
+        if (!picked){
+          setToast("Spin failed. Please try again.");
+          spinBtn.disabled = false;
+          return;
+        }
+
+        if (picked.type === "blessing"){
+          const msg = pickBlessing(blessingRows);
+          showResult({ type: "blessing", text: msg });
+        } else {
+          showResult({ type: "prize", text: picked.label });
+        }
+
+        markPlayed();
+        setPlayedUI();
+      } catch(err){
+        console.error(err);
+        setToast("Error loading data. Check your Google Sheet publish settings.");
+        spinBtn.disabled = false;
       }
     }
 
-    hideStage();
-    showResult(out);
-    localStorage.setItem(PLAYED,"1");
+    // ===== Staff modal (hidden) =====
+    function openStaffModal(){
+      modalMask.style.display = "flex";
+      resetInput.value = "";
+      setTimeout(() => resetInput.focus(), 50);
+    }
+    function closeStaffModal(){
+      modalMask.style.display = "none";
+      resetInput.value = "";
+    }
 
-  }catch(e){
-    hideStage();
-    showResult({type:"blessing", text:"Oops — try again in a moment :)"}); 
-    localStorage.setItem(PLAYED,"1");
-  }finally{
-    spinBtn.textContent = "🎉 Spin";
-    refresh();
-  }
-};
+    closeModalBtn.addEventListener("click", closeStaffModal);
+    modalMask.addEventListener("click", (e) => {
+      if (e.target === modalMask) closeStaffModal();
+    });
 
-/* ====== staff reset ====== */
-resetBtn.onclick=()=>{
-  localStorage.removeItem(UNLOCK);
-  localStorage.removeItem(PLAYED);
-  resultBox.style.display="none";
-  stage.style.display="none";
-  refresh();
-};
+    resetBtn.addEventListener("click", () => {
+      const v = String(resetInput.value || "").trim().toUpperCase();
+      if (v !== "RESET"){
+        resetInput.focus();
+        resetInput.select?.();
+        return;
+      }
+      // do reset
+      unmarkPlayed();
+      closeStaffModal();
+      clearPlayedUI();
+      setToast("Device reset ✅ You can spin again.");
+    });
 
-/* init */
-refresh();
-window.addEventListener("hashchange", refresh);
-window.addEventListener("resize", ()=>{
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
-});
-</script>
+    // Long-press detection (3s) for both touch and mouse
+    let holdTimer = null;
+    const HOLD_MS = 3000;
+
+    function startHold(){
+      if (holdTimer) return;
+      holdTimer = setTimeout(() => {
+        holdTimer = null;
+        openStaffModal();
+      }, HOLD_MS);
+    }
+    function cancelHold(){
+      if (holdTimer){
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+    }
+
+    titleHold.addEventListener("touchstart", (e) => { startHold(); }, { passive:true });
+    titleHold.addEventListener("touchend", cancelHold);
+    titleHold.addEventListener("touchcancel", cancelHold);
+
+    titleHold.addEventListener("mousedown", startHold);
+    titleHold.addEventListener("mouseup", cancelHold);
+    titleHold.addEventListener("mouseleave", cancelHold);
+
+    // Init
+    (function init(){
+      if (isPlayed()){
+        setPlayedUI();
+      } else {
+        setToast("");
+        spinBtn.disabled = false;
+      }
+
+      spinBtn.addEventListener("click", () => {
+        if (isPlayed()) return;
+        onSpin();
+      });
+    })();
+  </script>
 </body>
 </html>
