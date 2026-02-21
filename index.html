@@ -1,59 +1,430 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PandaGoldenEar Lucky Draw</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PandaGoldenEar Lucky Draw</title>
+  <style>
+    :root{
+      --bg:#f6f1e8;
+      --card:#ffffffcc;
+      --text:#131313;
+      --muted:#6b6b6b;
+      --line:#e7dfd2;
+      --brand:#b53b35;   /* red */
+      --gold:#caa24b;    /* gold */
+      --shadow: 0 18px 50px rgba(0,0,0,.10);
+      --radius: 26px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: radial-gradient(900px 500px at 50% 20%, #fff, var(--bg));
+      color:var(--text);
+    }
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+    .card{
+      width:min(860px, 100%);
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:28px 22px 22px;
+      backdrop-filter: blur(10px);
+    }
+    .tag{
+      width: fit-content;
+      margin: 0 auto 14px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(202,162,75,.22), rgba(181,59,53,.12));
+      border: 1px solid rgba(202,162,75,.35);
+      font-weight: 650;
+      color: #4b3a0d;
+      letter-spacing:.2px;
+    }
+    h1{
+      margin: 6px 0 4px;
+      text-align:center;
+      font-size: clamp(30px, 3.6vw, 44px);
+      letter-spacing: -0.5px;
+    }
+    .sub{
+      text-align:center;
+      color:var(--muted);
+      margin: 6px 0 18px;
+      font-size: 16px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+      margin-top:16px;
+    }
+    .btn{
+      width: fit-content;
+      margin: 0 auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      padding: 16px 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(0,0,0,.08);
+      background: linear-gradient(180deg, rgba(181,59,53,.95), rgba(181,59,53,.85));
+      color: #fff;
+      cursor:pointer;
+      font-weight: 750;
+      font-size: 18px;
+      box-shadow: 0 14px 30px rgba(181,59,53,.25);
+      transition: transform .08s ease, filter .2s ease;
+      user-select:none;
+    }
+    .btn:hover{filter: brightness(1.03);}
+    .btn:active{transform: translateY(1px);}
+    .btn[disabled]{
+      cursor:not-allowed;
+      opacity:.55;
+      box-shadow:none;
+      background: linear-gradient(180deg, rgba(120,120,120,.6), rgba(120,120,120,.45));
+    }
+    .result{
+      margin-top:18px;
+      border-radius: 22px;
+      border:1px solid var(--line);
+      padding: 18px 16px;
+      background: rgba(255,255,255,.75);
+    }
+    .result .label{
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+    .result .text{
+      margin-top:10px;
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 850;
+      letter-spacing: -.4px;
+      line-height:1.15;
+      text-align:center;
+    }
+    .result.prize{
+      border-color: rgba(181,59,53,.35);
+      background:
+        radial-gradient(1200px 250px at 50% 0%, rgba(181,59,53,.14), transparent 65%),
+        rgba(255,255,255,.78);
+    }
+    .pill{
+      width: fit-content;
+      margin: 12px auto 0;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(181,59,53,.25);
+      background: rgba(181,59,53,.06);
+      color: #5f1d1a;
+      font-weight: 650;
+      font-size: 13px;
+    }
+    .links{
+      margin-top:16px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .linkBtn{
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      text-decoration:none;
+      color: var(--text);
+      font-weight: 700;
+      transition: transform .08s ease, background .2s ease;
+    }
+    .linkBtn:hover{background:#fff;}
+    .linkBtn:active{transform: translateY(1px);}
+
+    .fine{
+      margin-top:14px;
+      padding-top:14px;
+      border-top: 1px dashed rgba(0,0,0,.12);
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.45;
+      text-align:center;
+    }
+    .meta{
+      margin-top:10px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .badge{
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.65);
+      padding: 7px 10px;
+      border-radius: 999px;
+    }
+  </style>
 </head>
-<body style="font-family:system-ui;background:#f6f1e8;text-align:center;padding:40px">
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="tag">🏮 Lantern Festival Special</div>
+      <h1>🧧 PandaGoldenEar Lucky Draw</h1>
+      <div class="sub">Tap to reveal your surprise.</div>
 
-<h1>🧧 PandaGoldenEar Lucky Draw</h1>
-<p>Tap to reveal your surprise.</p>
+      <button id="spinBtn" class="btn">
+        🎉 <span>Spin</span>
+      </button>
 
-<button onclick="spin()" style="padding:15px 25px;font-size:18px;border-radius:8px;background:#b53a34;color:white;border:none;">
-🎉 Spin
-</button>
+      <div id="resultBox" class="result" style="display:none;">
+        <div class="label" id="resultLabel">Result</div>
+        <div class="text" id="resultText"></div>
+        <div class="pill" id="staffHint" style="display:none;">
+          ✅ If you win any prize, please show our staff immediately.
+        </div>
+      </div>
 
-<h2 id="result" style="margin-top:30px;"></h2>
+      <div class="links">
+        <a class="linkBtn" target="_blank" rel="noopener" href="https://www.instagram.com/pandagoldenear/">Follow on Instagram</a>
+        <a class="linkBtn" target="_blank" rel="noopener" href="https://www.facebook.com/pandagoldenear">Follow on Facebook</a>
+        <a class="linkBtn" target="_blank" rel="noopener" href="https://www.tiktok.com/@pandagoldenear?_r=1&_t=ZS-9469qJRTdAa">Follow on TikTok</a>
+      </div>
+
+      <div class="fine">
+        • One play per device/browser (local).<br/>
+        • Prizes auto-hide when remaining is 0 (based on your Google Sheet).<br/>
+        • Keep your Sheet “sent” updated to avoid over-giving.
+      </div>
+
+      <div class="meta">
+        <div class="badge">📊 Clicks: <span id="clicks">0</span></div>
+        <div class="badge">🔒 Device limit: <span id="limitStatus">ON</span></div>
+        <div class="badge">🗂 Data: Google Sheet (CSV)</div>
+      </div>
+    </div>
+  </div>
 
 <script>
-const SHEET_ID = "128d4NCaWKKlZF9RnPB-VmsmbTXSdejuRAM8PCE1B1Ds";
-const POOL = "pool";
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${POOL}`;
+  // ====== YOUR PUBLISHED CSV URLS (from your screenshot) ======
+  const POOL_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
 
-async function spin(){
-  const res = await fetch(CSV_URL);
-  const text = await res.text();
+  const BLESSINGS_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-  const rows = text.split("\n").map(r=>r.split(","));
-  const header = rows[0];
+  // ====== device limit + basic analytics ======
+  const KEY_PLAYED = "pge_lucky_played_v1";
+  const KEY_CLICKS = "pge_lucky_clicks_v1";
 
-  const prizeIndex = header.indexOf("prize");
-  const weightIndex = header.indexOf("weight");
-  const activeIndex = header.indexOf("active_auto");
-  const remainingIndex = header.indexOf("remaining_auto");
+  // UI
+  const spinBtn = document.getElementById("spinBtn");
+  const resultBox = document.getElementById("resultBox");
+  const resultText = document.getElementById("resultText");
+  const resultLabel = document.getElementById("resultLabel");
+  const staffHint = document.getElementById("staffHint");
+  const clicksEl = document.getElementById("clicks");
+  const limitStatus = document.getElementById("limitStatus");
 
-  const items = rows.slice(1).map(r=>({
-    prize:r[prizeIndex],
-    weight:parseInt(r[weightIndex])||0,
-    active:r[activeIndex]==="TRUE",
-    remaining:parseInt(r[remainingIndex])||0
-  })).filter(x=>x.active && x.remaining>0);
+  // Simple CSV parser (handles quoted commas)
+  function parseCSV(text){
+    const rows = [];
+    let row = [], cur = "", inQuotes = false;
+    for(let i=0;i<text.length;i++){
+      const c = text[i];
+      const n = text[i+1];
+      if(c === '"' && inQuotes && n === '"'){ cur += '"'; i++; continue; }
+      if(c === '"'){ inQuotes = !inQuotes; continue; }
+      if(c === ',' && !inQuotes){ row.push(cur); cur=""; continue; }
+      if((c === '\n' || c === '\r') && !inQuotes){
+        if(cur.length || row.length){ row.push(cur); rows.push(row); }
+        row = []; cur = "";
+        continue;
+      }
+      cur += c;
+    }
+    if(cur.length || row.length){ row.push(cur); rows.push(row); }
+    return rows.filter(r => r.some(cell => String(cell).trim() !== ""));
+  }
 
-  let total = items.reduce((a,b)=>a+b.weight,0);
-  let rand = Math.random()*total;
+  function rowsToObjects(rows){
+    if(!rows.length) return [];
+    const header = rows[0].map(h => String(h).trim());
+    return rows.slice(1).map(r => {
+      const obj = {};
+      header.forEach((h, idx) => obj[h] = (r[idx] ?? "").toString().trim());
+      return obj;
+    });
+  }
 
-  for(let item of items){
-    rand -= item.weight;
-    if(rand<=0){
-      document.getElementById("result").innerText = item.prize;
-      return;
+  function toBool(v){
+    const s = String(v).trim().toLowerCase();
+    return s === "true" || s === "1" || s === "yes";
+  }
+
+  function toNum(v, fallback=0){
+    const n = Number(String(v).trim());
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  async function fetchTable(url){
+    const res = await fetch(url, { cache: "no-store" });
+    if(!res.ok) throw new Error("Failed to fetch: " + url);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    return rowsToObjects(rows);
+  }
+
+  function pickWeighted(items, weightKey="weight"){
+    const active = items.filter(x => toNum(x[weightKey], 0) > 0);
+    const total = active.reduce((s, x) => s + toNum(x[weightKey],0), 0);
+    if(total <= 0) return null;
+    let r = Math.random() * total;
+    for(const it of active){
+      r -= toNum(it[weightKey],0);
+      if(r <= 0) return it;
+    }
+    return active[active.length-1] ?? null;
+  }
+
+  function setClicks(n){
+    clicksEl.textContent = String(n);
+    localStorage.setItem(KEY_CLICKS, String(n));
+  }
+
+  function incClicks(){
+    const n = Number(localStorage.getItem(KEY_CLICKS) || "0") + 1;
+    setClicks(n);
+  }
+
+  function hasPlayed(){
+    return localStorage.getItem(KEY_PLAYED) === "1";
+  }
+
+  function markPlayed(){
+    localStorage.setItem(KEY_PLAYED, "1");
+  }
+
+  function updatePlayLockUI(){
+    const locked = hasPlayed();
+    spinBtn.disabled = locked;
+    limitStatus.textContent = locked ? "USED" : "ON";
+    if(locked){
+      spinBtn.textContent = "✅ Already played on this device";
+    }else{
+      spinBtn.innerHTML = "🎉 <span>Spin</span>";
     }
   }
 
-  document.getElementById("result").innerText = "Good luck is coming your way :)";
-}
-</script>
+  function showResult(text, isPrize){
+    resultBox.style.display = "block";
+    resultText.textContent = text;
 
+    if(isPrize){
+      resultBox.classList.add("prize");
+      resultLabel.textContent = "You won 🎁";
+      staffHint.style.display = "block";
+    }else{
+      resultBox.classList.remove("prize");
+      resultLabel.textContent = "Blessing ✨";
+      staffHint.style.display = "none";
+    }
+  }
+
+  async function spinOnce(){
+    // 1) fetch pool + blessings
+    const [poolRaw, blessRaw] = await Promise.all([
+      fetchTable(POOL_CSV_URL),
+      fetchTable(BLESSINGS_CSV_URL)
+    ]);
+
+    // 2) normalize pool items
+    // expected columns in pool: prize, weight, remaining_auto, type, active, active_auto
+    const pool = poolRaw.map(x => ({
+      prize: x.prize || x.Prize || x.name || "",
+      weight: toNum(x.weight, 0),
+      type: (x.type || "").toLowerCase(),               // prize / blessing
+      active: toBool(x.active),
+      active_auto: ("active_auto" in x) ? toBool(x.active_auto) : true,
+      remaining_auto: ("remaining_auto" in x) ? toNum(x.remaining_auto, 0) : toNum(x.remaining, 0)
+    }))
+    .filter(x => x.prize);
+
+    // rule: only pick items where active_auto is TRUE
+    // and for prize-type, remaining_auto must be > 0
+    const eligible = pool.filter(x => {
+      if(!x.active_auto) return false;
+      if(x.type === "prize") return x.remaining_auto > 0;
+      // blessing can always be eligible
+      return true;
+    });
+
+    // 3) if we somehow have no eligible, fallback blessing
+    if(!eligible.length){
+      showResult("No jackpot today — but you’ve got year-long luck :)", false);
+      return;
+    }
+
+    // 4) pick from eligible by weight
+    const picked = pickWeighted(eligible, "weight");
+    if(!picked){
+      showResult("No jackpot today — but you’ve got year-long luck :)", false);
+      return;
+    }
+
+    // 5) if picked is blessing, pick a blessing line (weighted)
+    if(picked.type !== "prize"){
+      const blessings = blessRaw.map(x => ({
+        blessing: x.blessing || x.text || x.message || "",
+        weight: toNum(x.weight, 1),
+        active: toBool(x.active)
+      })).filter(x => x.active && x.blessing);
+
+      const pickedBless = pickWeighted(blessings, "weight");
+      showResult(pickedBless?.blessing || "Good luck is coming your way :)", false);
+      return;
+    }
+
+    // 6) prize
+    showResult(picked.prize, true);
+  }
+
+  // init
+  (function init(){
+    setClicks(Number(localStorage.getItem(KEY_CLICKS) || "0"));
+    updatePlayLockUI();
+
+    spinBtn.addEventListener("click", async () => {
+      if(hasPlayed()) return;
+
+      incClicks();
+      spinBtn.disabled = true;
+      spinBtn.textContent = "Spinning…";
+
+      try{
+        await spinOnce();
+        markPlayed();
+      }catch(e){
+        console.error(e);
+        showResult("Good luck is coming your way :)", false);
+      }finally{
+        updatePlayLockUI();
+      }
+    });
+  })();
+</script>
 </body>
 </html>
