@@ -1,498 +1,238 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PandaGoldenEar Lucky Draw</title>
-  <style>
-    :root{
-      --bg: #f6f0e6;
-      --card: #fbfbf9;
-      --ink: #111111;
-      --muted: #666666;
-      --line: rgba(17,17,17,.12);
-      --shadow: 0 18px 50px rgba(0,0,0,.08);
-      --radius: 28px;
-      --btn: #9b3a33;
-      --btn2: #efe6d6;
-      --gold: #b88b2f;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background: var(--bg);
-      color: var(--ink);
-      min-height:100svh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-    }
-    .wrap{width:min(920px, 100%)}
-    .card{
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(0,0,0,.06);
-      padding: 26px;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #f5e7c9, #f0dfbf);
-      border: 1px solid rgba(184,139,47,.35);
-      color: #5b471a;
-      font-weight: 700;
-      letter-spacing: .2px;
-      margin: 0 auto 12px;
-    }
-    .center{display:flex;flex-direction:column;align-items:center;text-align:center}
-    h1{
-      margin: 10px 0 6px;
-      font-size: clamp(36px, 5vw, 62px);
-      line-height: 1.06;
-      letter-spacing: -1px;
-    }
-    .sub{
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: clamp(16px, 2vw, 20px);
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PandaGoldenEar Lucky Draw</title>
 
-    .spinRow{
-      width: 100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      margin: 12px 0 18px;
-    }
-    .spinBtn{
-      appearance:none;
-      border:0;
-      border-radius: 18px;
-      padding: 18px 26px;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: .2px;
-      color: #fff;
-      background: linear-gradient(180deg, #b2473f, #8f2f2a);
-      cursor:pointer;
-      box-shadow: 0 10px 26px rgba(155,58,51,.28);
-      transition: transform .12s ease, opacity .12s ease;
-      min-width: 190px;
-    }
-    .spinBtn:active{transform: translateY(1px) scale(.99)}
-    .spinBtn[disabled]{
-      opacity:.55;
-      cursor:not-allowed;
-      box-shadow: none;
-      background: #c8c2bb;
-      color: rgba(255,255,255,.95);
-    }
+<style>
+:root{
+  --bg:#f4efe6;
+  --card:#fbf8f2;
+  --ink:#151515;
+  --muted:#6f6a62;
+  --brand:#7a2c2c;
+  --border:#e6dccb;
+  --shadow:0 18px 45px rgba(20,20,20,.08);
+  --radius:28px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background: radial-gradient(1200px 600px at 50% -10%, #fff, var(--bg));
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  color:var(--ink);
+  padding:22px 14px 28px;
+}
+.wrap{max-width:980px;margin:0 auto}
+.card{
+  background:linear-gradient(180deg,#fff, var(--card));
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  border-radius:var(--radius);
+  padding:28px 22px 26px;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:999px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,#fff6dd,#f6e6c6);
+  font-weight:800;color:#5a4b2d;margin:6px auto 18px;
+}
+.title{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.fu{
+  width:52px;height:52px;border-radius:12px;
+  display:grid;place-items:center;
+  background:linear-gradient(180deg,#d34d3a,#8f1d16);
+  color:#ffd46b;font-weight:900;font-size:26px;
+}
+h1{margin:0;font-size:clamp(34px,5vw,62px);letter-spacing:-1px}
+.sub{text-align:center;color:var(--muted);margin:8px 0 18px}
 
-    .result{
-      width:100%;
-      margin: 12px 0 18px;
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 18px 18px;
-      background: #fffdf8;
-      text-align:center;
-    }
-    .resultTop{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #ffffff;
-      font-size: 14px;
-      font-weight: 800;
-      color: #222;
-    }
-    .pill.ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.08)}
-    .pill.lock{border-color: rgba(234,179,8,.35); background: rgba(234,179,8,.10)}
-    .resultTitle{
-      font-size: 14px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: #666;
-      font-weight: 800;
-      margin: 8px 0 8px;
-    }
-    .resultText{
-      margin: 0;
-      font-size: clamp(26px, 4vw, 44px);
-      line-height: 1.15;
-      font-weight: 900;
-      letter-spacing: -.5px;
-    }
-    .win{
-      color: #8f2f2a;
-      text-shadow: 0 8px 28px rgba(155,58,51,.18);
-    }
-    .claim{
-      margin-top: 10px;
-      font-size: 14px;
-      color: #333;
-      font-weight: 700;
-    }
-    .claim b{color:#8f2f2a}
+.gate{
+  margin:16px auto 18px;
+  padding:18px;border-radius:22px;
+  border:1px solid var(--border);
+  background:#fff;
+}
+.row{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--border);
+  background:#fff;border-radius:999px;
+  padding:14px 18px;font-weight:900;
+  cursor:pointer;display:inline-flex;
+  align-items:center;gap:10px;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.icon{width:22px;height:22px;fill:currentColor}
+.or{font-weight:900;color:#7a6a55}
 
-    .followGrid{
-      width:100%;
-      display:flex;
-      justify-content:center;
-      gap: 12px;
-      flex-wrap:wrap;
-      margin: 6px 0 0;
-    }
-    .followBtn{
-      text-decoration:none;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding: 14px 18px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: #111;
-      font-weight: 900;
-      min-width: 220px;
-      transition: transform .12s ease, background .12s ease;
-    }
-    .followBtn:hover{transform: translateY(-1px); background: #fffdf7}
-    .followNote{
-      margin: 12px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .tiny{
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 10px;
-      display:none; /* ✅ 按你要求：不展示给客户 */
-    }
-  </style>
+.spinWrap{display:flex;justify-content:center;margin:18px 0}
+.spinBtn{
+  border-radius:18px;padding:16px 22px;
+  background:linear-gradient(180deg,#9b3a36,#7a2c2c);
+  color:#fff;font-weight:950;font-size:20px;
+  border:none;
+}
+.pill{
+  margin:10px auto 0;width:fit-content;
+  padding:14px 18px;border-radius:999px;
+  background:#eee;font-weight:900;
+  display:none;
+}
+.result{
+  margin:18px auto 0;max-width:820px;
+  border-radius:24px;border:1px solid var(--border);
+  background:#fff;padding:20px;
+  display:none;text-align:center;
+}
+.tag{font-weight:900;letter-spacing:2px;color:#6b6257;font-size:13px}
+.won{font-size:clamp(32px,4vw,56px);font-weight:1000;color:#7b2f2c}
+.claim{color:var(--muted);font-weight:600}
+.footerNote{text-align:center;margin:18px 0 0;color:var(--muted);font-weight:700}
+@media(max-width:520px){.or{display:none}}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card center">
-      <div class="badge">🏮 Lantern Festival Special</div>
-      <h1>🧧 PandaGoldenEar Lucky Draw</h1>
-      <p class="sub">Tap to reveal your surprise.</p>
+<div class="wrap">
+<div class="card">
 
-      <div class="spinRow">
-        <button id="spinBtn" class="spinBtn" disabled>Follow to unlock 🎁</button>
-      </div>
+<div style="display:flex;justify-content:center">
+  <div class="badge">Lantern Festival Special</div>
+</div>
 
-      <div class="result" id="resultBox" style="display:none;">
-        <div class="resultTop">
-          <div class="pill ok" id="statePill">✅ Ready</div>
-          <div class="pill lock" id="lockPill">🔒 Follow to unlock</div>
-        </div>
-        <div class="resultTitle" id="resultTitle">BLESSING ✨</div>
-        <p class="resultText" id="resultText">Loading…</p>
-        <div class="claim" id="claimLine" style="display:none;">
-          If you win a <b>prize</b>, show this screen to our staff to claim.
-        </div>
-      </div>
+<div class="title">
+  <div class="fu">福</div>
+  <h1>PandaGoldenEar Lucky Draw</h1>
+</div>
 
-      <div class="followGrid">
-        <a id="igBtn" class="followBtn" target="_blank" rel="noopener">Follow on Instagram</a>
-        <a id="fbBtn" class="followBtn" target="_blank" rel="noopener">Follow on Facebook</a>
-        <a id="ttBtn" class="followBtn" target="_blank" rel="noopener">Follow on TikTok</a>
-      </div>
-      <div class="followNote" id="followNote">👉 Tap any one Follow button to unlock your spin.</div>
+<div class="sub">Follow any ONE account to unlock your spin.</div>
 
-      <div class="tiny">
-        (Hidden notes / debug removed as requested)
-      </div>
-    </div>
-  </div>
+<div class="gate">
+<div class="row">
+<button class="btn" id="igBtn">
+<svg class="icon" viewBox="0 0 24 24">
+<path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5z"/>
+</svg>Instagram</button>
+
+<span class="or">or</span>
+
+<button class="btn" id="fbBtn">
+<svg class="icon" viewBox="0 0 24 24">
+<path d="M13.5 22v-8h2.7l.4-3H13.5V9.1c0-.9.3-1.6 1.6-1.6h1.6V4.8c-.3 0-1.4-.1-2.7-.1-2.6 0-4.3 1.6-4.3 4.5V11H7v3h2.1v8h4.4z"/>
+</svg>Facebook</button>
+
+<span class="or">or</span>
+
+<button class="btn" id="ttBtn">
+<svg class="icon" viewBox="0 0 24 24">
+<path d="M14 3c.6 2.9 2.6 4.9 5 5.2V11c-2 0-3.8-.7-5-2v7.3c0 2.9-2.3 5.2-5.2 5.2A5.2 5.2 0 0 1 3.6 16c0-2.9 2.3-5.2 5.2-5.2.4 0 .8 0 1.2.1V14c-.3-.2-.7-.3-1.2-.3-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2V3h3z"/>
+</svg>TikTok</button>
+</div>
+</div>
+
+<div class="spinWrap">
+<button class="btn spinBtn" id="spinBtn" disabled>🎉 Spin</button>
+</div>
+
+<div class="pill" id="playedPill">Already played on this device</div>
+
+<div class="result" id="resultBox">
+<div class="tag" id="resultTag"></div>
+<div class="won" id="resultText"></div>
+<div class="claim" id="claimText"></div>
+</div>
+
+<div class="footerNote">Thanks for joining — see you at the dumpling stall!</div>
+
+</div>
+</div>
 
 <script>
-/* =========================
-   ✅ CONFIG (use your links)
-========================= */
-const POOL_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
+const POOL_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
+const BLESS_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-const BLESSINGS_CSV_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
+const INSTAGRAM_URL="https://www.instagram.com/pandagoldenear/";
+const FACEBOOK_URL="https://www.facebook.com/pandagoldenear";
+const TIKTOK_URL="https://www.tiktok.com/@pandagoldenear?_r=1&_t=ZS-9469qJRTdAa";
 
-const LINKS = {
-  instagram: "https://www.instagram.com/pandagoldenear/",
-  facebook: "https://www.facebook.com/pandagoldenear",
-  tiktok: "https://www.tiktok.com/@pandagoldenear?_r=1&_t=ZS-9469qJRTdAa"
-};
+const KEY_UNLOCKED="pge_unlocked_v1";
+const KEY_PLAYED="pge_played_v1";
 
-/* =========================
-   ✅ ELEMENTS
-========================= */
-const spinBtn = document.getElementById("spinBtn");
-const igBtn = document.getElementById("igBtn");
-const fbBtn = document.getElementById("fbBtn");
-const ttBtn = document.getElementById("ttBtn");
+const igBtn=document.getElementById("igBtn");
+const fbBtn=document.getElementById("fbBtn");
+const ttBtn=document.getElementById("ttBtn");
+const spinBtn=document.getElementById("spinBtn");
+const playedPill=document.getElementById("playedPill");
+const resultBox=document.getElementById("resultBox");
+const resultText=document.getElementById("resultText");
+const claimText=document.getElementById("claimText");
+const resultTag=document.getElementById("resultTag");
 
-const resultBox = document.getElementById("resultBox");
-const resultTitle = document.getElementById("resultTitle");
-const resultText = document.getElementById("resultText");
-const claimLine = document.getElementById("claimLine");
-
-const statePill = document.getElementById("statePill");
-const lockPill = document.getElementById("lockPill");
-const followNote = document.getElementById("followNote");
-
-/* =========================
-   ✅ STATE (local device)
-========================= */
-const STORAGE = {
-  played: "pge_lucky_played_v1",
-  unlocked: "pge_lucky_follow_unlocked_v1"
-};
-
-let followUnlocked = localStorage.getItem(STORAGE.unlocked) === "1";
-let alreadyPlayed  = localStorage.getItem(STORAGE.played) === "1";
-
-let prizePool = [];
-let blessingsList = [];
-
-/* =========================
-   CSV PARSER (simple/robust)
-========================= */
 function parseCSV(text){
-  const rows = [];
-  const lines = text.replace(/\r/g,"").trim().split("\n");
-  if (!lines.length) return rows;
-
-  const headers = splitCSVLine(lines[0]).map(h => h.trim());
-  for (let i=1;i<lines.length;i++){
-    const cols = splitCSVLine(lines[i]);
-    if (cols.length === 1 && cols[0].trim() === "") continue;
-    const obj = {};
-    headers.forEach((h, idx) => obj[h] = (cols[idx] ?? "").trim());
-    rows.push(obj);
-  }
-  return rows;
-}
-
-function splitCSVLine(line){
-  const out = [];
-  let cur = "";
-  let inQ = false;
-  for (let i=0;i<line.length;i++){
-    const ch = line[i];
-    if (ch === '"' ){
-      if (inQ && line[i+1] === '"'){ cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (ch === "," && !inQ){
-      out.push(cur); cur = "";
-    } else {
-      cur += ch;
-    }
-  }
-  out.push(cur);
-  return out;
-}
-
-function toNum(v, fallback=0){
-  const n = Number(String(v).trim());
-  return Number.isFinite(n) ? n : fallback;
-}
-function isTrue(v){
-  return String(v).toUpperCase() === "TRUE";
-}
-
-/* =========================
-   LOAD DATA
-========================= */
-async function initData(){
-  const [poolCsv, blessCsv] = await Promise.all([
-    fetch(POOL_CSV_URL, {cache:"no-store"}).then(r => r.text()),
-    fetch(BLESSINGS_CSV_URL, {cache:"no-store"}).then(r => r.text())
-  ]);
-
-  prizePool = parseCSV(poolCsv);
-  blessingsList = parseCSV(blessCsv);
-
-  // handy for your console checks
-  window.prizePool = prizePool;
-  window.blessingList = blessingsList;
-}
-
-/* =========================
-   POOL LOGIC
-========================= */
-function getRemaining(row){
-  // prefer remaining_auto if exists, else remaining
-  const ra = row.remaining_auto;
-  if (ra !== undefined && ra !== "") return toNum(ra, 0);
-  return toNum(row.remaining, 0);
-}
-
-function isActiveRow(row){
-  // prefer active_auto if exists, else active
-  const aa = row.active_auto;
-  const active = (aa !== undefined && aa !== "") ? isTrue(aa) : isTrue(row.active);
-
-  // blessing row can have huge remaining; prizes must have remaining > 0
-  const remaining = getRemaining(row);
-  return active && remaining > 0;
-}
-
-function buildActivePool(){
-  const active = prizePool
-    .filter(isActiveRow)
-    .map(r => ({
-      prize: r.prize,
-      type: (r.type || "prize").toLowerCase(),
-      weight: Math.max(0, toNum(r.weight, 0)),
-      remaining: getRemaining(r)
-    }))
-    .filter(r => r.weight > 0);
-
-  // if nothing left, fallback to blessing only
-  if (!active.length){
-    return [{ prize: "Blessing", type:"blessing", weight: 1, remaining: 999999 }];
-  }
-  return active;
-}
-
-function weightedPick(items){
-  const total = items.reduce((s,x)=>s+x.weight,0);
-  let r = Math.random() * total;
-  for (const it of items){
-    r -= it.weight;
-    if (r <= 0) return it;
-  }
-  return items[items.length-1];
-}
-
-function pickRandomBlessing(){
-  const active = (blessingsList || []).filter(x => isTrue(x.active));
-  if (!active.length) return "Good luck is coming your way :)";
-  const picked = active[Math.floor(Math.random() * active.length)];
-  return picked.blessing || "Good luck is coming your way :)";
-}
-
-/* =========================
-   UI
-========================= */
-function updateUI(){
-  // follow links
-  igBtn.href = LINKS.instagram;
-  fbBtn.href = LINKS.facebook;
-  ttBtn.href = LINKS.tiktok;
-
-  // lock pill
-  lockPill.textContent = followUnlocked ? "🔓 Unlocked" : "🔒 Follow to unlock";
-  lockPill.className = "pill " + (followUnlocked ? "ok" : "lock");
-
-  // played state
-  if (alreadyPlayed){
-    spinBtn.disabled = true;
-    spinBtn.textContent = "✅ Already played on this device";
-    statePill.textContent = "✅ Played";
-    followNote.textContent = "Thanks for joining — see you at the dumpling stall!";
-    return;
-  }
-
-  // ready state
-  if (followUnlocked){
-    spinBtn.disabled = false;
-    spinBtn.textContent = "🎉 Spin";
-    statePill.textContent = "✅ Ready";
-    followNote.textContent = "Unlocked! Now tap Spin 🎁";
-  }else{
-    spinBtn.disabled = true;
-    spinBtn.textContent = "Follow to unlock 🎁";
-    statePill.textContent = "⏳ Locked";
-    followNote.textContent = "👉 Tap any one Follow button to unlock your spin.";
-  }
-}
-
-function showResult(outcome){
-  resultBox.style.display = "block";
-
-  const isBlessing = outcome.type === "blessing";
-  if (isBlessing){
-    resultTitle.textContent = "BLESSING ✨";
-    resultText.textContent = pickRandomBlessing();
-    resultText.classList.remove("win");
-    claimLine.style.display = "none";
-  } else {
-    resultTitle.textContent = "YOU WON 🎉";
-    resultText.textContent = outcome.prize;
-    resultText.classList.add("win");
-    claimLine.style.display = "block";
-  }
-}
-
-/* =========================
-   EVENTS
-========================= */
-function unlockFollow(){
-  if (alreadyPlayed) return;
-  followUnlocked = true;
-  localStorage.setItem(STORAGE.unlocked, "1");
-  updateUI();
-}
-
-// any click unlocks
-igBtn.addEventListener("click", unlockFollow);
-fbBtn.addEventListener("click", unlockFollow);
-ttBtn.addEventListener("click", unlockFollow);
-
-spinBtn.addEventListener("click", () => {
-  if (alreadyPlayed) return;
-  if (!followUnlocked) return;
-
-  const activePool = buildActivePool();
-  const picked = weightedPick(activePool);
-
-  // If picked blessing -> show one of your blessing lines
-  const outcome = (picked.type === "blessing")
-    ? { type: "blessing", prize: "Blessing" }
-    : { type: "prize", prize: picked.prize };
-
-  showResult(outcome);
-
-  // lock device
-  alreadyPlayed = true;
-  localStorage.setItem(STORAGE.played, "1");
-  updateUI();
+const rows=text.trim().split("\n").map(r=>r.split(","));
+const header=rows[0];
+return rows.slice(1).map(r=>{
+const o={};header.forEach((h,i)=>o[h.trim()]=r[i]?.trim());return o;
 });
+}
+function asBool(v){return String(v).toLowerCase()==="true";}
+function asNum(v){return Number(v)||0;}
 
-/* =========================
-   BOOT
-========================= */
-(async function boot(){
-  try{
-    await initData();
-  }catch(e){
-    // if sheet fetch fails, still let blessing work
-    prizePool = [{ prize:"Blessing", weight:"1", remaining:"999999", type:"blessing", active:"TRUE" }];
-    blessingsList = [{ blessing:"Good luck is coming your way :)", weight:"1", active:"TRUE" }];
-    window.prizePool = prizePool;
-    window.blessingList = blessingsList;
-  }finally{
-    updateUI();
-  }
-})();
+async function load(url){
+const res=await fetch(url,{cache:"no-store"});
+return parseCSV(await res.text());
+}
+
+function pickWeighted(items){
+const total=items.reduce((s,x)=>s+asNum(x.weight),0);
+let r=Math.random()*total;
+for(const it of items){r-=asNum(it.weight);if(r<=0)return it;}
+return items[0];
+}
+
+function isUnlocked(){return localStorage.getItem(KEY_UNLOCKED)==="1";}
+function setUnlocked(){localStorage.setItem(KEY_UNLOCKED,"1");refresh();}
+function hasPlayed(){return localStorage.getItem(KEY_PLAYED)==="1";}
+function setPlayed(){localStorage.setItem(KEY_PLAYED,"1");refresh();}
+
+function refresh(){
+spinBtn.disabled=!isUnlocked()||hasPlayed();
+playedPill.style.display=hasPlayed()?"block":"none";
+}
+
+igBtn.onclick=()=>{window.open(INSTAGRAM_URL,"_blank");setUnlocked();}
+fbBtn.onclick=()=>{window.open(FACEBOOK_URL,"_blank");setUnlocked();}
+ttBtn.onclick=()=>{window.open(TIKTOK_URL,"_blank");setUnlocked();}
+
+spinBtn.onclick=async()=>{
+if(hasPlayed())return;
+spinBtn.disabled=true;
+const pool=await load(POOL_CSV_URL);
+const blessings=await load(BLESS_CSV_URL);
+
+const activePool=pool.filter(p=>asBool(p.active_auto)&&asNum(p.remaining_auto)>0);
+if(!activePool.length){resultTag.textContent="BLESSING ✨";resultText.textContent="Good luck!";setPlayed();return;}
+
+const picked=pickWeighted(activePool);
+if(String(picked.type).toLowerCase()==="blessing"){
+const activeBless=blessings.filter(b=>asBool(b.active));
+const b=pickWeighted(activeBless);
+resultTag.textContent="BLESSING ✨";
+resultText.textContent=b?.blessing||"Good luck!";
+claimText.textContent="";
+}else{
+resultTag.textContent="YOU WON 🎉";
+resultText.textContent=picked.prize;
+claimText.innerHTML='If you win a <b>prize</b>, show this screen to our staff to claim.';
+}
+resultBox.style.display="block";
+setPlayed();
+};
+
+refresh();
 </script>
 </body>
 </html>
