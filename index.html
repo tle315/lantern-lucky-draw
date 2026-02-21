@@ -12,231 +12,666 @@
   --ink:#151515;
   --muted:#6f6a62;
   --brand:#7a2c2c;
+  --brand2:#9b3a36;
   --border:#e6dccb;
+  --gold:#f3d38a;
   --shadow:0 18px 45px rgba(20,20,20,.08);
+  --shadow2:0 22px 60px rgba(20,20,20,.12);
   --radius:28px;
+  --radius2:22px;
 }
+
 *{box-sizing:border-box}
+html,body{height:100%}
 body{
   margin:0;
-  background: radial-gradient(1200px 600px at 50% -10%, #fff, var(--bg));
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
   color:var(--ink);
-  padding:22px 14px 28px;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background:
+    radial-gradient(900px 520px at 50% -20%, #ffffff 10%, rgba(255,255,255,0) 60%),
+    radial-gradient(1100px 700px at 10% 0%, #fff3dc 0%, rgba(255,243,220,0) 62%),
+    radial-gradient(1100px 700px at 90% 20%, #ffe9ea 0%, rgba(255,233,234,0) 62%),
+    linear-gradient(180deg, #fff, var(--bg));
+  padding:20px 14px 26px;
+  overflow-x:hidden;
 }
+
 .wrap{max-width:980px;margin:0 auto}
 .card{
   background:linear-gradient(180deg,#fff, var(--card));
   border:1px solid var(--border);
-  box-shadow:var(--shadow);
+  box-shadow:var(--shadow2);
   border-radius:var(--radius);
-  padding:28px 22px 26px;
+  padding:22px 18px 22px;
+  position:relative;
+  overflow:hidden;
 }
+.card:before{
+  content:"";
+  position:absolute;inset:-180px -220px auto;
+  height:360px;
+  background: radial-gradient(circle at 30% 30%, rgba(243,211,138,.55), rgba(243,211,138,0) 60%),
+              radial-gradient(circle at 70% 35%, rgba(155,58,54,.18), rgba(155,58,54,0) 55%);
+  filter: blur(2px);
+  pointer-events:none;
+}
+.cardInner{position:relative; z-index:2}
+
+.badgeRow{display:flex;justify-content:center;margin-top:4px}
 .badge{
-  display:inline-flex;align-items:center;gap:8px;
+  display:inline-flex;align-items:center;gap:10px;
   padding:10px 16px;border-radius:999px;
   border:1px solid var(--border);
   background:linear-gradient(180deg,#fff6dd,#f6e6c6);
-  font-weight:800;color:#5a4b2d;margin:6px auto 18px;
+  font-weight:900;color:#5a4b2d;
+  box-shadow:0 10px 25px rgba(90,75,45,.10);
 }
-.title{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.badgeDot{
+  width:10px;height:10px;border-radius:99px;
+  background: radial-gradient(circle at 30% 30%, #fff, #f0b84d);
+  box-shadow:0 0 0 4px rgba(243,211,138,.35);
+}
+
 .fu{
-  width:52px;height:52px;border-radius:12px;
+  width:64px;height:64px;border-radius:18px;
   display:grid;place-items:center;
   background:linear-gradient(180deg,#d34d3a,#8f1d16);
-  color:#ffd46b;font-weight:900;font-size:26px;
+  color:#ffd46b;font-weight:1000;font-size:30px;
+  margin:18px auto 10px;
+  box-shadow:0 18px 40px rgba(143,29,22,.18);
 }
-h1{margin:0;font-size:clamp(34px,5vw,62px);letter-spacing:-1px}
-.sub{text-align:center;color:var(--muted);margin:8px 0 18px}
 
-.gate{
-  margin:16px auto 18px;
-  padding:18px;border-radius:22px;
+.title{
+  font-size:38px;
+  line-height:1.08;
+  letter-spacing:-0.03em;
+  margin:6px 0 12px;
+  text-align:center;
+  text-wrap:balance;
+}
+@media (min-width:768px){
+  .title{font-size:66px;line-height:1.02}
+}
+
+.sub{
+  text-align:center;
+  color:var(--muted);
+  margin:0 auto 18px;
+  font-size:18px;
+  font-weight:700;
+}
+.sub strong{color:#3f3a34}
+
+.panel{
   border:1px solid var(--border);
   background:#fff;
+  border-radius:var(--radius);
+  padding:16px;
+  box-shadow:var(--shadow);
 }
-.row{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap}
-.btn{
-  border:1px solid var(--border);
-  background:#fff;border-radius:999px;
-  padding:14px 18px;font-weight:900;
-  cursor:pointer;display:inline-flex;
-  align-items:center;gap:10px;
-}
-.btn:hover{transform:translateY(-1px)}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
-.icon{width:22px;height:22px;fill:currentColor}
-.or{font-weight:900;color:#7a6a55}
 
-.spinWrap{display:flex;justify-content:center;margin:18px 0}
-.spinBtn{
-  border-radius:18px;padding:16px 22px;
-  background:linear-gradient(180deg,#9b3a36,#7a2c2c);
-  color:#fff;font-weight:950;font-size:20px;
-  border:none;
+.followTitle{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:12px;
 }
-.pill{
-  margin:10px auto 0;width:fit-content;
-  padding:14px 18px;border-radius:999px;
-  background:#eee;font-weight:900;
+.kicker{
+  font-weight:950;letter-spacing:.06em;font-size:12px;
+  color:#7a6a55;text-transform:uppercase;
+}
+.statusPill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:999px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,#fff,#fbf6ec);
+  font-weight:900;color:#6b6257;
+}
+.statusPill .dot{
+  width:9px;height:9px;border-radius:99px;background:#c7c1b9;
+}
+.statusPill.unlocked{
+  background:linear-gradient(180deg,#effff2,#e7ffea);
+  border-color:#cdebd1;
+  color:#2f6b39;
+}
+.statusPill.unlocked .dot{background:#34c759; box-shadow:0 0 0 5px rgba(52,199,89,.15);}
+
+.followGrid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+@media (min-width:560px){
+  .followGrid{grid-template-columns:1fr auto 1fr auto 1fr}
+}
+.or{
+  display:none;
+  font-weight:1000;
+  color:#7a6a55;
+  align-self:center;
+  justify-self:center;
+}
+@media (min-width:560px){
+  .or{display:block}
+}
+
+.socialBtn{
+  width:100%;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,#fff,#fff);
+  border-radius:999px;
+  padding:14px 16px;
+  font-weight:950;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  transition: transform .12s ease, box-shadow .12s ease, background .2s ease;
+}
+.socialBtn:hover{
+  transform: translateY(-1px);
+  box-shadow:0 10px 22px rgba(20,20,20,.06);
+}
+.socialBtn:active{transform: translateY(0px) scale(.99)}
+.socialBtn .icon{width:22px;height:22px}
+
+.socialBtn.ig{color:#1f1f1f}
+.socialBtn.fb{color:#0b57d0}
+.socialBtn.tt{color:#111}
+
+.hint{
+  margin:12px 4px 0;
+  color:var(--muted);
+  font-weight:700;
+  font-size:14px;
+  text-align:center;
+}
+.hint span{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:999px;
+  border:1px dashed rgba(122,44,44,.28);
+  background:rgba(255,255,255,.65);
+}
+
+.spinWrap{display:flex;justify-content:center;margin:16px 0 4px}
+.spinBtn{
+  width:min(420px, 88%);
+  border-radius:22px;
+  padding:18px 22px;
+  background:linear-gradient(180deg,var(--brand2),var(--brand));
+  color:#fff;
+  font-weight:1000;
+  font-size:22px;
+  border:none;
+  box-shadow:0 18px 38px rgba(122,44,44,.20);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition: transform .14s ease, box-shadow .14s ease, filter .2s ease;
+}
+.spinBtn:hover{transform:translateY(-1px); box-shadow:0 22px 48px rgba(122,44,44,.24)}
+.spinBtn:active{transform:translateY(0px) scale(.99)}
+.spinBtn[disabled]{
+  opacity:.45;
+  cursor:not-allowed;
+  filter:saturate(.6);
+  box-shadow:0 10px 22px rgba(20,20,20,.08);
+}
+.lockChip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.75);
+  color:#6b6257;
+  font-weight:900;
+  margin:10px auto 0;
+  width:fit-content;
+}
+.lockChip.ok{
+  background:linear-gradient(180deg,#effff2,#e7ffea);
+  border-color:#cdebd1;
+  color:#2f6b39;
+}
+.lockChip .miniDot{
+  width:10px;height:10px;border-radius:99px;background:#c7c1b9
+}
+.lockChip.ok .miniDot{background:#34c759; box-shadow:0 0 0 5px rgba(52,199,89,.15)}
+
+.result{
+  margin-top:14px;
+  border-radius:24px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg,#fff, #fffaf1);
+  padding:18px 16px;
+  display:none;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.result:before{
+  content:"";
+  position:absolute; inset:-40px -80px auto;
+  height:160px;
+  background: radial-gradient(circle at 30% 30%, rgba(243,211,138,.35), rgba(243,211,138,0) 65%);
+  pointer-events:none;
+}
+.resultInner{position:relative; z-index:2}
+.resultTag{
+  font-weight:950;
+  letter-spacing:.12em;
+  font-size:12px;
+  color:#6b6257;
+  margin-bottom:8px;
+  text-transform:uppercase;
+}
+.resultText{
+  font-size:36px;
+  font-weight:1100;
+  color:#7b2f2c;
+  line-height:1.06;
+  text-wrap:balance;
+}
+@media (min-width:768px){
+  .resultText{font-size:42px}
+}
+.claim{
+  margin-top:8px;
+  color:var(--muted);
+  font-weight:750;
+  font-size:14px;
+}
+.ticketRow{
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
+  margin-top:10px;
+}
+.ticket{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:#fff;
+  color:#6b6257;
+  font-weight:900;
+  font-size:12px;
+}
+
+.footerNote{
+  text-align:center;
+  margin-top:16px;
+  color:var(--muted);
+  font-weight:800;
+  font-size:15px;
+}
+
+.shake{
+  animation: shake .35s ease;
+}
+@keyframes shake{
+  0%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+  100%{transform:translateX(0)}
+}
+
+.pulse{
+  animation:pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1); filter:brightness(1)}
+  50%{transform:scale(1.02); filter:brightness(1.05)}
+}
+
+.fadeInUp{
+  animation:fadeInUp .35s ease both;
+}
+@keyframes fadeInUp{
+  from{opacity:0; transform:translateY(10px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* confetti canvas */
+#confetti{
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:9999;
   display:none;
 }
-.result{
-  margin:18px auto 0;max-width:820px;
-  border-radius:24px;border:1px solid var(--border);
-  background:#fff;padding:20px;
-  display:none;text-align:center;
+
+/* small top corner watermark (optional) */
+.corner{
+  position:absolute; right:18px; top:18px;
+  font-weight:950;
+  color:#7a6a55;
+  font-size:12px;
+  opacity:.65;
+  letter-spacing:.08em;
 }
-.tag{font-weight:900;letter-spacing:2px;color:#6b6257;font-size:13px}
-.won{font-size:clamp(32px,4vw,56px);font-weight:1000;color:#7b2f2c}
-.claim{color:var(--muted);font-weight:600}
-.footerNote{text-align:center;margin:18px 0 0;color:var(--muted);font-weight:700}
-@media(max-width:520px){.or{display:none}}
 </style>
 </head>
 
 <body>
+<canvas id="confetti"></canvas>
+
 <div class="wrap">
-<div class="card">
+  <div class="card">
+    <div class="corner">PGE • Lucky Draw</div>
 
-<div style="display:flex;justify-content:center">
-  <div class="badge">Lantern Festival Special</div>
-</div>
+    <div class="cardInner">
+      <div class="badgeRow">
+        <div class="badge"><span class="badgeDot"></span>Lantern Festival Special</div>
+      </div>
 
-<div class="title">
-  <div class="fu">福</div>
-  <h1>PandaGoldenEar Lucky Draw</h1>
-</div>
+      <div class="fu">福</div>
 
-<div class="sub">Follow any ONE account to unlock your spin.</div>
+      <h1 class="title">
+        PandaGoldenEar<br>
+        Lucky Draw
+      </h1>
 
-<div class="gate">
-<div class="row">
-<button class="btn" id="igBtn">
-<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-<rect x="3" y="3" width="18" height="18" rx="5" ry="5"></rect>
-<circle cx="12" cy="12" r="4"></circle>
-<circle cx="17.5" cy="6.5" r="1.5"></circle>
-</svg>
-Instagram
-</button>
+      <div class="sub">Follow <strong>any ONE</strong> account to unlock your spin.</div>
 
-<span class="or">or</span>
+      <div class="panel">
+        <div class="followTitle">
+          <div class="kicker">Step 1 · Follow to unlock</div>
+          <div class="statusPill" id="statusPill"><span class="dot"></span><span id="statusText">Locked</span></div>
+        </div>
 
-<button class="btn" id="fbBtn">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M13.5 22v-8h2.7l.4-3H13.5V9.1c0-.9.3-1.6 1.6-1.6h1.6V4.8c-.3 0-1.4-.1-2.7-.1-2.6 0-4.3 1.6-4.3 4.5V11H7v3h2.1v8h4.4z"/>
-</svg>Facebook</button>
+        <div class="followGrid">
+          <button class="socialBtn ig" id="igBtn" aria-label="Instagram">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="6"></rect>
+              <circle cx="12" cy="12" r="4"></circle>
+              <circle cx="17.5" cy="6.5" r="1.5"></circle>
+            </svg>
+            Instagram
+          </button>
 
-<span class="or">or</span>
+          <div class="or">or</div>
 
-<button class="btn" id="ttBtn">
-<svg class="icon" viewBox="0 0 24 24">
-<path d="M14 3c.6 2.9 2.6 4.9 5 5.2V11c-2 0-3.8-.7-5-2v7.3c0 2.9-2.3 5.2-5.2 5.2A5.2 5.2 0 0 1 3.6 16c0-2.9 2.3-5.2 5.2-5.2.4 0 .8 0 1.2.1V14c-.3-.2-.7-.3-1.2-.3-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2V3h3z"/>
-</svg>TikTok</button>
-</div>
-</div>
+          <button class="socialBtn fb" id="fbBtn" aria-label="Facebook">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M13.5 22v-8h2.7l.4-3H13.5V9.1c0-.9.3-1.6 1.6-1.6h1.6V4.8c-.3 0-1.4-.1-2.7-.1-2.6 0-4.3 1.6-4.3 4.5V11H7v3h2.1v8h4.4z"/>
+            </svg>
+            Facebook
+          </button>
 
-<div class="spinWrap">
-<button class="btn spinBtn" id="spinBtn" disabled>🎉 Spin</button>
-</div>
+          <div class="or">or</div>
 
-<div class="pill" id="playedPill">Already played on this device</div>
+          <button class="socialBtn tt" id="ttBtn" aria-label="TikTok">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14 3c.6 2.9 2.6 4.9 5 5.2V11c-2 0-3.8-.7-5-2v7.3c0 2.9-2.3 5.2-5.2 5.2A5.2 5.2 0 0 1 3.6 16c0-2.9 2.3-5.2 5.2-5.2.4 0 .8 0 1.2.1V14c-.3-.2-.7-.3-1.2-.3-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2V3h3z"/>
+            </svg>
+            TikTok
+          </button>
+        </div>
 
-<div class="result" id="resultBox">
-<div class="tag" id="resultTag"></div>
-<div class="won" id="resultText"></div>
-<div class="claim" id="claimText"></div>
-</div>
+        <div class="hint">
+          <span>👉 Tap any button above. Then your spin unlocks.</span>
+        </div>
+      </div>
 
-<div class="footerNote">Thanks for joining — see you at the dumpling stall!</div>
+      <div class="spinWrap">
+        <button class="spinBtn" id="spinBtn" disabled>🎉 Spin</button>
+      </div>
 
-</div>
+      <div class="lockChip" id="lockChip">
+        <span class="miniDot"></span>
+        <span id="lockChipText">Locked — follow one account first</span>
+      </div>
+
+      <div class="result" id="resultBox">
+        <div class="resultInner fadeInUp">
+          <div class="resultTag" id="resultTag"></div>
+          <div class="resultText" id="resultText"></div>
+          <div class="claim" id="claimText"></div>
+
+          <div class="ticketRow" id="ticketRow" style="display:none">
+            <div class="ticket">✅ Show staff to claim</div>
+            <div class="ticket">🎟️ One-time prize</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footerNote">Thanks for joining — see you at the dumpling stall!</div>
+    </div>
+  </div>
 </div>
 
 <script>
-const POOL_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
-const BLESS_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
+/* ====== CONFIG ====== */
+const POOL="https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
+const BLESS="https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-const INSTAGRAM_URL="https://www.instagram.com/pandagoldenear/";
-const FACEBOOK_URL="https://www.facebook.com/pandagoldenear";
-const TIKTOK_URL="https://www.tiktok.com/@pandagoldenear?_r=1&_t=ZS-9469qJRTdAa";
+const IG="https://www.instagram.com/pandagoldenear/";
+const FB="https://www.facebook.com/pandagoldenear";
+const TT="https://www.tiktok.com/@pandagoldenear?_r=1&_t=ZS-9469qJRTdAa";
 
-const KEY_UNLOCKED="pge_unlocked_v1";
-const KEY_PLAYED="pge_played_v1";
+/* keys */
+const UNLOCK="pge_unlocked";
+const PLAYED="pge_played";
 
-const igBtn=document.getElementById("igBtn");
-const fbBtn=document.getElementById("fbBtn");
-const ttBtn=document.getElementById("ttBtn");
-const spinBtn=document.getElementById("spinBtn");
-const playedPill=document.getElementById("playedPill");
-const resultBox=document.getElementById("resultBox");
-const resultText=document.getElementById("resultText");
-const claimText=document.getElementById("claimText");
-const resultTag=document.getElementById("resultTag");
-
-function parseCSV(text){
-const rows=text.trim().split("\n").map(r=>r.split(","));
-const header=rows[0];
-return rows.slice(1).map(r=>{
-const o={};header.forEach((h,i)=>o[h.trim()]=r[i]?.trim());return o;
-});
+/* ====== helpers ====== */
+function parseCSV(t){
+  const lines = t.trim().split(/\r?\n/);
+  const rows = lines.map(r=>{
+    // naive CSV split (ok for your simple sheet)
+    return r.split(",").map(x=>x.trim());
+  });
+  const h = rows[0];
+  return rows.slice(1).map(r=>{
+    const o={};
+    h.forEach((k,i)=>o[k.trim()]=r[i] ?? "");
+    return o;
+  });
 }
-function asBool(v){return String(v).toLowerCase()==="true";}
-function asNum(v){return Number(v)||0;}
-
+function bool(v){return String(v).toLowerCase()==="true";}
+function num(v){return Number(v)||0;}
 async function load(url){
-const res=await fetch(url,{cache:"no-store"});
-return parseCSV(await res.text());
+  const r=await fetch(url,{cache:"no-store"});
+  return parseCSV(await r.text());
+}
+function pick(items){
+  const total=items.reduce((s,x)=>s+num(x.weight),0);
+  let r=Math.random()*total;
+  for(const it of items){ r-=num(it.weight); if(r<=0) return it; }
+  return items[0];
+}
+function unlocked(){return localStorage.getItem(UNLOCK)==="1";}
+function played(){return localStorage.getItem(PLAYED)==="1";}
+
+/* ====== UI refs ====== */
+const statusPill = document.getElementById("statusPill");
+const statusText = document.getElementById("statusText");
+const lockChip = document.getElementById("lockChip");
+const lockChipText = document.getElementById("lockChipText");
+
+const spinBtn = document.getElementById("spinBtn");
+const resultBox = document.getElementById("resultBox");
+const resultTag = document.getElementById("resultTag");
+const resultText = document.getElementById("resultText");
+const claimText = document.getElementById("claimText");
+const ticketRow = document.getElementById("ticketRow");
+
+const igBtn = document.getElementById("igBtn");
+const fbBtn = document.getElementById("fbBtn");
+const ttBtn = document.getElementById("ttBtn");
+
+/* ====== confetti (tiny built-in) ====== */
+const confettiCanvas = document.getElementById("confetti");
+const cctx = confettiCanvas.getContext("2d");
+let confettiTimer = null;
+
+function runConfetti(ms=1200){
+  confettiCanvas.style.display="block";
+  const W = confettiCanvas.width = window.innerWidth;
+  const H = confettiCanvas.height = window.innerHeight;
+
+  const colors = ["#f3d38a","#9b3a36","#7a2c2c","#34c759","#0b57d0","#111","#ff6b6b"];
+  const pieces = Array.from({length: 120}, ()=>({
+    x: Math.random()*W,
+    y: -20 - Math.random()*H*0.3,
+    r: 3 + Math.random()*5,
+    vx: -2 + Math.random()*4,
+    vy: 2 + Math.random()*5,
+    rot: Math.random()*Math.PI*2,
+    vr: -0.2 + Math.random()*0.4,
+    col: colors[Math.floor(Math.random()*colors.length)],
+    shape: Math.random() > 0.5 ? "rect" : "circle"
+  }));
+
+  const start = performance.now();
+  function frame(now){
+    const t = now - start;
+    cctx.clearRect(0,0,W,H);
+    for(const p of pieces){
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+      p.vy += 0.03; // gravity
+      if(p.x < -50) p.x = W+50;
+      if(p.x > W+50) p.x = -50;
+
+      cctx.save();
+      cctx.translate(p.x,p.y);
+      cctx.rotate(p.rot);
+      cctx.fillStyle = p.col;
+      if(p.shape==="rect"){
+        cctx.fillRect(-p.r, -p.r, p.r*2, p.r*1.4);
+      }else{
+        cctx.beginPath();
+        cctx.arc(0,0,p.r,0,Math.PI*2);
+        cctx.fill();
+      }
+      cctx.restore();
+    }
+
+    if(t < ms){
+      requestAnimationFrame(frame);
+    }else{
+      confettiCanvas.style.display="none";
+      cctx.clearRect(0,0,W,H);
+    }
+  }
+  requestAnimationFrame(frame);
 }
 
-function pickWeighted(items){
-const total=items.reduce((s,x)=>s+asNum(x.weight),0);
-let r=Math.random()*total;
-for(const it of items){r-=asNum(it.weight);if(r<=0)return it;}
-return items[0];
-}
-
-function isUnlocked(){return localStorage.getItem(KEY_UNLOCKED)==="1";}
-function setUnlocked(){localStorage.setItem(KEY_UNLOCKED,"1");refresh();}
-function hasPlayed(){return localStorage.getItem(KEY_PLAYED)==="1";}
-function setPlayed(){localStorage.setItem(KEY_PLAYED,"1");refresh();}
-
+/* ====== UI state ====== */
 function refresh(){
-spinBtn.disabled=!isUnlocked()||hasPlayed();
-playedPill.style.display=hasPlayed()?"block":"none";
+  // spin enabled if unlocked and not played
+  const canSpin = unlocked() && !played();
+  spinBtn.disabled = !canSpin;
+
+  if(!unlocked()){
+    statusPill.classList.remove("unlocked");
+    statusText.textContent = "Locked";
+    lockChip.classList.remove("ok");
+    lockChipText.textContent = "Locked — follow one account first";
+    spinBtn.classList.remove("pulse");
+  }else{
+    statusPill.classList.add("unlocked");
+    statusText.textContent = "Unlocked";
+    lockChip.classList.add("ok");
+    lockChipText.textContent = played() ? "Played — thanks!" : "Unlocked — you can spin now";
+    if(!played()) spinBtn.classList.add("pulse");
+  }
+
+  if(played()){
+    spinBtn.disabled = true;
+    spinBtn.classList.remove("pulse");
+  }
 }
 
-igBtn.onclick=()=>{window.open(INSTAGRAM_URL,"_blank");setUnlocked();}
-fbBtn.onclick=()=>{window.open(FACEBOOK_URL,"_blank");setUnlocked();}
-ttBtn.onclick=()=>{window.open(TIKTOK_URL,"_blank");setUnlocked();}
+/* ====== unlock handlers ====== */
+function unlockAndOpen(url){
+  window.open(url, "_blank");
+  if(!unlocked()){
+    localStorage.setItem(UNLOCK, "1");
+    // tiny highlight
+    lockChip.classList.add("shake");
+    setTimeout(()=>lockChip.classList.remove("shake"), 360);
+  }
+  refresh();
+}
+igBtn.onclick=()=>unlockAndOpen(IG);
+fbBtn.onclick=()=>unlockAndOpen(FB);
+ttBtn.onclick=()=>unlockAndOpen(TT);
+
+/* ====== spin logic ====== */
+function showResult({type, text, isPrize}){
+  resultBox.style.display = "block";
+  resultBox.scrollIntoView({behavior:"smooth", block:"center"});
+
+  if(type==="blessing"){
+    resultTag.textContent = "BLESSING ✨";
+    resultText.textContent = text;
+    claimText.textContent = "";
+    ticketRow.style.display = "none";
+  }else{
+    resultTag.textContent = "YOU WON 🎉";
+    resultText.textContent = text;
+    claimText.innerHTML = 'Show this screen to our staff to claim your <b>prize</b>.';
+    ticketRow.style.display = "flex";
+    runConfetti(1400);
+  }
+}
 
 spinBtn.onclick=async()=>{
-if(hasPlayed())return;
-spinBtn.disabled=true;
-const pool=await load(POOL_CSV_URL);
-const blessings=await load(BLESS_CSV_URL);
+  if(played()) return;
 
-const activePool=pool.filter(p=>asBool(p.active_auto)&&asNum(p.remaining_auto)>0);
-if(!activePool.length){resultTag.textContent="BLESSING ✨";resultText.textContent="Good luck!";setPlayed();return;}
+  if(!unlocked()){
+    // prevent spin + hint shake
+    lockChip.classList.add("shake");
+    setTimeout(()=>lockChip.classList.remove("shake"), 360);
+    return;
+  }
 
-const picked=pickWeighted(activePool);
-if(String(picked.type).toLowerCase()==="blessing"){
-const activeBless=blessings.filter(b=>asBool(b.active));
-const b=pickWeighted(activeBless);
-resultTag.textContent="BLESSING ✨";
-resultText.textContent=b?.blessing||"Good luck!";
-claimText.textContent="";
-}else{
-resultTag.textContent="YOU WON 🎉";
-resultText.textContent=picked.prize;
-claimText.innerHTML='If you win a <b>prize</b>, show this screen to our staff to claim.';
-}
-resultBox.style.display="block";
-setPlayed();
+  spinBtn.disabled = true;
+  spinBtn.textContent = "⏳ Spinning...";
+  try{
+    // add a tiny suspense delay
+    await new Promise(r=>setTimeout(r, 520));
+
+    const pool = await load(POOL);
+    const bless = await load(BLESS);
+
+    const active = pool
+      .filter(p => bool(p.active_auto) && num(p.remaining_auto) > 0);
+
+    if(!active.length){
+      const b = pick(bless.filter(x=>bool(x.active)));
+      showResult({type:"blessing", text: (b?.blessing || "Good luck!")});
+      localStorage.setItem(PLAYED,"1");
+      return;
+    }
+
+    const p = pick(active);
+    if(String(p.type).toLowerCase()==="blessing"){
+      const b = pick(bless.filter(x=>bool(x.active)));
+      showResult({type:"blessing", text: (b?.blessing || "Good luck!")});
+    }else{
+      showResult({type:"prize", text: p.prize, isPrize:true});
+    }
+
+    localStorage.setItem(PLAYED,"1");
+  }catch(e){
+    // fallback
+    showResult({type:"blessing", text:"Oops — try again in a moment :)"}); 
+    localStorage.setItem(PLAYED,"1");
+  }finally{
+    spinBtn.textContent = "🎉 Spin";
+    refresh();
+  }
 };
 
+/* init */
 refresh();
+
+/* keep confetti responsive */
+window.addEventListener("resize", ()=>{
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+});
 </script>
 </body>
 </html>
