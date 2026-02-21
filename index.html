@@ -1,347 +1,59 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PandaGoldenEar Lucky Draw</title>
-<style>
-:root{
-  --bg:#fbf6ea;
-  --card:#ffffff;
-  --red:#c62828;
-  --gold:#c9a227;
-  --text:#141414;
-  --muted:#6b6b6b;
-  --soft:#f4efe2;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:var(--bg);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100vh;
-  padding:22px 12px;
-  color:var(--text);
-}
-.card{
-  width:min(620px,94vw);
-  background:var(--card);
-  border-radius:24px;
-  padding:28px 22px;
-  box-shadow:0 14px 40px rgba(0,0,0,.08);
-  text-align:center;
-}
-h1{
-  margin:0 0 6px;
-  font-size:28px;
-  letter-spacing:-.2px;
-}
-.sub{
-  margin:0 0 18px;
-  color:var(--muted);
-  font-size:16px;
-}
-.btn{
-  width:100%;
-  padding:16px;
-  border-radius:16px;
-  border:0;
-  font-weight:800;
-  cursor:pointer;
-  margin-top:12px;
-  font-size:16px;
-}
-.primary{
-  background:linear-gradient(90deg,var(--red),#e53935);
-  color:#fff;
-}
-.secondary{
-  background:linear-gradient(90deg,var(--gold),#e0b94a);
-  color:#1a1a1a;
-}
-.btn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-.hint{
-  margin-top:8px;
-  color:var(--muted);
-  font-size:13px;
-}
-.links{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  margin:16px 0 6px;
-}
-.linkbtn{
-  display:block;
-  padding:12px 14px;
-  border-radius:14px;
-  background:var(--soft);
-  color:#222;
-  text-decoration:none;
-  font-weight:700;
-}
-.linkbtn small{
-  display:block;
-  font-weight:600;
-  color:var(--muted);
-  margin-top:2px;
-}
-.result{
-  margin-top:18px;
-  padding:16px;
-  border-radius:16px;
-  background:var(--soft);
-  font-size:18px;
-  font-weight:900;
-}
-.notice{
-  margin-top:12px;
-  font-size:12px;
-  color:#707070;
-  line-height:1.35;
-}
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#fff3cd;
-  color:#6b5500;
-  font-weight:800;
-  font-size:12px;
-  margin-bottom:10px;
-}
-.lock{
-  background:#f6f6f6;
-  border:1px dashed #d7d7d7;
-  padding:14px;
-  border-radius:16px;
-  margin-top:14px;
-  color:#555;
-  font-weight:700;
-}
-</style>
 </head>
+<body style="font-family:system-ui;background:#f6f1e8;text-align:center;padding:40px">
 
-<body>
-<div class="card">
-  <div class="badge">🏮 Lantern Festival Special</div>
-  <h1>🧧 PandaGoldenEar Lucky Draw</h1>
-  <p class="sub">Tap to reveal your surprise.</p>
+<h1>🧧 PandaGoldenEar Lucky Draw</h1>
+<p>Tap to reveal your surprise.</p>
 
-  <button class="btn primary" id="spin1">🎉 First Spin</button>
+<button onclick="spin()" style="padding:15px 25px;font-size:18px;border-radius:8px;background:#b53a34;color:white;border:none;">
+🎉 Spin
+</button>
 
-  <button class="btn secondary" id="spin2" disabled>🔥 Second Spin</button>
-  <div class="hint" id="spin2Hint">Follow us on any channel below to unlock your second spin.</div>
-
-  <div class="links">
-    <a class="linkbtn social" data-social="instagram" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">
-      Follow on Instagram
-      <small>Unlock your second spin ✅</small>
-    </a>
-    <a class="linkbtn social" data-social="facebook" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">
-      Follow on Facebook
-      <small>Unlock your second spin ✅</small>
-    </a>
-    <a class="linkbtn social" data-social="whatsapp" href="https://chat.whatsapp.com/IrWrt8Z8d1b4JhsH0knAbQ" target="_blank" rel="noopener">
-      Join WhatsApp Group
-      <small>Unlock your second spin ✅</small>
-    </a>
-  </div>
-
-  <div id="result" class="result" style="display:none;"></div>
-
-  <div class="notice" id="claimNote" style="display:none;">
-    ✅ <b>Show this screen to our staff to claim your prize.</b><br/>
-    (Blessings don’t need claiming.)
-  </div>
-
-  <div class="notice">
-    Device rule: one full play per day on this device/browser.
-  </div>
-
-  <div id="lockedBox" class="lock" style="display:none;"></div>
-</div>
+<h2 id="result" style="margin-top:30px;"></h2>
 
 <script>
-/** ===========================
- *  CONFIG
- *  ===========================
- */
+const SHEET_ID = "128d4NCaWKKlZF9RnPB-VmsmbTXSdejuRAM8PCE1B1Ds";
+const POOL = "pool";
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${POOL}`;
 
-// 统计接口（可选）
-// 方案A：留空（不影响运行）
-// 方案B：填你的 Google Apps Script Web App URL（下面我会给你步骤）
-const TRACK_ENDPOINT = ""; // e.g. "https://script.google.com/macros/s/XXXX/exec"
+async function spin(){
+  const res = await fetch(CSV_URL);
+  const text = await res.text();
 
-// 每天仅一次（设备/浏览器级别）
-const EVENT_CODE = "lantern2026"; // 你可改成活动名
-const today = new Date();
-const YYYYMMDD = today.toISOString().slice(0,10);
-const PLAY_KEY = `pge_draw_${EVENT_CODE}_${YYYYMMDD}`;
+  const rows = text.split("\n").map(r=>r.split(","));
+  const header = rows[0];
 
-// “库存开关”：你手动把 remaining 设为 0，即自动从抽奖池移除（并等价于“送完隐藏”）
-const REMAINING = {
-  "This is on us": 2, // 你想送完就改 0
-  "50% off for your next order": 999,
-  "+2 Dumplings": 30,
-  "+1 Drink": 999
-};
+  const prizeIndex = header.indexOf("prize");
+  const weightIndex = header.indexOf("weight");
+  const activeIndex = header.indexOf("active_auto");
+  const remainingIndex = header.indexOf("remaining_auto");
 
-// 奖项权重（你给的）
-const SECOND_SPIN_POOL = [
-  { name: "This is on us", weight: 1 },
-  { name: "50% off for your next order", weight: 5 },
-  { name: "+2 Dumplings", weight: 20 },
-  { name: "+1 Drink", weight: 10 },
-  { name: "Blessing", weight: 300 }
-];
+  const items = rows.slice(1).map(r=>({
+    prize:r[prizeIndex],
+    weight:parseInt(r[weightIndex])||0,
+    active:r[activeIndex]==="TRUE",
+    remaining:parseInt(r[remainingIndex])||0
+  })).filter(x=>x.active && x.remaining>0);
 
-// First spin 我建议保持“轻奖+祝福”为主（你现在也更顺畅）
-const FIRST_SPIN_POOL = [
-  { name: "+2 Dumplings", weight: 20 },
-  { name: "+1 Drink", weight: 10 },
-  { name: "Blessing", weight: 300 }
-];
+  let total = items.reduce((a,b)=>a+b.weight,0);
+  let rand = Math.random()*total;
 
-// 祝福（3条）
-const BLESSINGS = [
-  "Smile more, luck follows you.",
-  "This year brings you double joy.",
-  "Good vibes, good dumplings, good fortune."
-];
-
-/** ===========================
- *  UTIL
- *  ===========================
- */
-function track(eventName, payload = {}){
-  try{
-    if(!TRACK_ENDPOINT) return;
-    const body = JSON.stringify({
-      event: eventName,
-      ts: Date.now(),
-      date: YYYYMMDD,
-      page: location.href,
-      ...payload
-    });
-    navigator.sendBeacon
-      ? navigator.sendBeacon(TRACK_ENDPOINT, body)
-      : fetch(TRACK_ENDPOINT, {method:"POST", body, mode:"no-cors"});
-  }catch(e){}
-}
-
-function weightedPick(items){
-  const filtered = items
-    .filter(x => x.name === "Blessing" || (REMAINING[x.name] ?? 999) > 0)
-    .map(x => ({...x}));
-
-  const total = filtered.reduce((s,x)=>s+x.weight,0);
-  let r = Math.random()*total;
-  for(const item of filtered){
-    r -= item.weight;
-    if(r<=0) return item;
-  }
-  return filtered[filtered.length-1];
-}
-
-function randomBlessing(){
-  return BLESSINGS[Math.floor(Math.random()*BLESSINGS.length)];
-}
-
-function isClaimPrize(name){
-  return name !== "Blessing";
-}
-
-/** ===========================
- *  STATE
- *  ===========================
- */
-const resultBox = document.getElementById("result");
-const claimNote = document.getElementById("claimNote");
-const spin1Btn = document.getElementById("spin1");
-const spin2Btn = document.getElementById("spin2");
-const spin2Hint = document.getElementById("spin2Hint");
-const lockedBox = document.getElementById("lockedBox");
-
-let unlockedSecond = false;
-let firstDone = false;
-let secondDone = false;
-
-// 页面访问统计
-track("page_view");
-
-// 设备每日一次
-const alreadyPlayed = localStorage.getItem(PLAY_KEY) === "done";
-if(alreadyPlayed){
-  spin1Btn.disabled = true;
-  spin2Btn.disabled = true;
-  spin2Btn.style.display = "none";
-  spin2Hint.style.display = "none";
-  lockedBox.style.display = "block";
-  lockedBox.textContent = "You’ve already played today on this device. Come back tomorrow 🧧";
-}
-
-// 点击任意社媒链接 => 解锁 Second Spin
-document.querySelectorAll(".social").forEach(a=>{
-  a.addEventListener("click", ()=>{
-    if(alreadyPlayed) return;
-    if(!unlockedSecond){
-      unlockedSecond = true;
-      spin2Btn.disabled = false;
-      spin2Hint.textContent = "✅ Unlocked! Tap Second Spin anytime.";
-      track("unlock_second_spin", {via: a.dataset.social});
+  for(let item of items){
+    rand -= item.weight;
+    if(rand<=0){
+      document.getElementById("result").innerText = item.prize;
+      return;
     }
-    track("click_social", {channel: a.dataset.social});
-  });
-});
+  }
 
-// First Spin
-spin1Btn.onclick = ()=>{
-  if(alreadyPlayed) return;
-  const pick = weightedPick(FIRST_SPIN_POOL);
-
-  firstDone = true;
-  resultBox.style.display = "block";
-
-  const finalText = (pick.name === "Blessing") ? randomBlessing() : pick.name;
-  resultBox.textContent = finalText;
-
-  claimNote.style.display = isClaimPrize(pick.name) ? "block" : "none";
-
-  spin1Btn.disabled = true;
-  track("spin_first", {result: pick.name});
-
-  // Second spin 只有解锁后才能点（用户自己操作，不靠员工说）
-  // 这里不自动解锁，遵循你的策略：必须关注任意渠道
-};
-
-// Second Spin
-spin2Btn.onclick = ()=>{
-  if(alreadyPlayed) return;
-  if(!unlockedSecond) return;
-
-  const pick = weightedPick(SECOND_SPIN_POOL);
-  secondDone = true;
-
-  resultBox.style.display = "block";
-  const finalText = (pick.name === "Blessing") ? randomBlessing() : pick.name;
-  resultBox.textContent = finalText;
-
-  claimNote.style.display = isClaimPrize(pick.name) ? "block" : "none";
-
-  spin2Btn.disabled = true;
-  track("spin_second", {result: pick.name});
-
-  // 完成一次游戏（First + Second 或只 Second 也算），写入设备锁
-  localStorage.setItem(PLAY_KEY, "done");
-};
-
+  document.getElementById("result").innerText = "Good luck is coming your way :)";
+}
 </script>
+
 </body>
 </html>
