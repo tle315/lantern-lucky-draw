@@ -757,13 +757,18 @@ function refresh(){
 }
 
 function unlockAndOpen(url){
-  window.open(url, "_blank");
+  // 1) 先解锁（iOS Safari 更稳）
   if(!unlocked()){
     localStorage.setItem(UNLOCK, "1");
-    lockChip.classList.add("shake");
-    setTimeout(()=>lockChip.classList.remove("shake"), 360);
   }
   refresh();
+
+  // 2) 再打开链接（延迟一点点，防止被系统打断）
+  setTimeout(() => {
+    // iOS 更稳：优先用 location.href 同页跳转；想新标签就改成 window.open
+    window.open(url, "_blank");
+    // 或者：location.href = url;
+  }, 120);
 }
 
 igBtn.onclick=()=>unlockAndOpen(IG);
