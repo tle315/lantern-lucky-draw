@@ -2,429 +2,497 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PandaGoldenEar Lucky Draw</title>
   <style>
     :root{
-      --bg:#f6f1e8;
-      --card:#ffffffcc;
-      --text:#131313;
-      --muted:#6b6b6b;
-      --line:#e7dfd2;
-      --brand:#b53b35;   /* red */
-      --gold:#caa24b;    /* gold */
-      --shadow: 0 18px 50px rgba(0,0,0,.10);
-      --radius: 26px;
+      --bg: #f6f0e6;
+      --card: #fbfbf9;
+      --ink: #111111;
+      --muted: #666666;
+      --line: rgba(17,17,17,.12);
+      --shadow: 0 18px 50px rgba(0,0,0,.08);
+      --radius: 28px;
+      --btn: #9b3a33;
+      --btn2: #efe6d6;
+      --gold: #b88b2f;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background: radial-gradient(900px 500px at 50% 20%, #fff, var(--bg));
-      color:var(--text);
-    }
-    .wrap{
-      min-height:100vh;
+      background: var(--bg);
+      color: var(--ink);
+      min-height:100svh;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:18px;
+      padding: 18px;
     }
+    .wrap{width:min(920px, 100%)}
     .card{
-      width:min(860px, 100%);
-      background:var(--card);
-      border:1px solid var(--line);
+      background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding:28px 22px 22px;
-      backdrop-filter: blur(10px);
-    }
-    .tag{
-      width: fit-content;
-      margin: 0 auto 14px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(202,162,75,.22), rgba(181,59,53,.12));
-      border: 1px solid rgba(202,162,75,.35);
-      font-weight: 650;
-      color: #4b3a0d;
-      letter-spacing:.2px;
-    }
-    h1{
-      margin: 6px 0 4px;
-      text-align:center;
-      font-size: clamp(30px, 3.6vw, 44px);
-      letter-spacing: -0.5px;
-    }
-    .sub{
-      text-align:center;
-      color:var(--muted);
-      margin: 6px 0 18px;
-      font-size: 16px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
-      margin-top:16px;
-    }
-    .btn{
-      width: fit-content;
-      margin: 0 auto;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:center;
-      padding: 16px 22px;
-      border-radius: 18px;
-      border: 1px solid rgba(0,0,0,.08);
-      background: linear-gradient(180deg, rgba(181,59,53,.95), rgba(181,59,53,.85));
-      color: #fff;
-      cursor:pointer;
-      font-weight: 750;
-      font-size: 18px;
-      box-shadow: 0 14px 30px rgba(181,59,53,.25);
-      transition: transform .08s ease, filter .2s ease;
-      user-select:none;
-    }
-    .btn:hover{filter: brightness(1.03);}
-    .btn:active{transform: translateY(1px);}
-    .btn[disabled]{
-      cursor:not-allowed;
-      opacity:.55;
-      box-shadow:none;
-      background: linear-gradient(180deg, rgba(120,120,120,.6), rgba(120,120,120,.45));
-    }
-    .result{
-      margin-top:18px;
-      border-radius: 22px;
-      border:1px solid var(--line);
-      padding: 18px 16px;
-      background: rgba(255,255,255,.75);
-    }
-    .result .label{
-      color: var(--muted);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: .12em;
-    }
-    .result .text{
-      margin-top:10px;
-      font-size: clamp(22px, 3vw, 34px);
-      font-weight: 850;
-      letter-spacing: -.4px;
-      line-height:1.15;
-      text-align:center;
-    }
-    .result.prize{
-      border-color: rgba(181,59,53,.35);
-      background:
-        radial-gradient(1200px 250px at 50% 0%, rgba(181,59,53,.14), transparent 65%),
-        rgba(255,255,255,.78);
-    }
-    .pill{
-      width: fit-content;
-      margin: 12px auto 0;
-      padding: 9px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(181,59,53,.25);
-      background: rgba(181,59,53,.06);
-      color: #5f1d1a;
-      font-weight: 650;
-      font-size: 13px;
-    }
-    .links{
-      margin-top:16px;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      justify-content:center;
-    }
-    .linkBtn{
-      padding: 12px 14px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.7);
-      text-decoration:none;
-      color: var(--text);
-      font-weight: 700;
-      transition: transform .08s ease, background .2s ease;
-    }
-    .linkBtn:hover{background:#fff;}
-    .linkBtn:active{transform: translateY(1px);}
-
-    .fine{
-      margin-top:14px;
-      padding-top:14px;
-      border-top: 1px dashed rgba(0,0,0,.12);
-      color: var(--muted);
-      font-size: 13px;
-      line-height:1.45;
-      text-align:center;
-    }
-    .meta{
-      margin-top:10px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      justify-content:center;
-      color: var(--muted);
-      font-size: 12px;
+      border: 1px solid rgba(0,0,0,.06);
+      padding: 26px;
     }
     .badge{
-      border:1px solid rgba(0,0,0,.10);
-      background: rgba(255,255,255,.65);
-      padding: 7px 10px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 16px;
       border-radius: 999px;
+      background: linear-gradient(180deg, #f5e7c9, #f0dfbf);
+      border: 1px solid rgba(184,139,47,.35);
+      color: #5b471a;
+      font-weight: 700;
+      letter-spacing: .2px;
+      margin: 0 auto 12px;
+    }
+    .center{display:flex;flex-direction:column;align-items:center;text-align:center}
+    h1{
+      margin: 10px 0 6px;
+      font-size: clamp(36px, 5vw, 62px);
+      line-height: 1.06;
+      letter-spacing: -1px;
+    }
+    .sub{
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 20px);
+    }
+
+    .spinRow{
+      width: 100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin: 12px 0 18px;
+    }
+    .spinBtn{
+      appearance:none;
+      border:0;
+      border-radius: 18px;
+      padding: 18px 26px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: .2px;
+      color: #fff;
+      background: linear-gradient(180deg, #b2473f, #8f2f2a);
+      cursor:pointer;
+      box-shadow: 0 10px 26px rgba(155,58,51,.28);
+      transition: transform .12s ease, opacity .12s ease;
+      min-width: 190px;
+    }
+    .spinBtn:active{transform: translateY(1px) scale(.99)}
+    .spinBtn[disabled]{
+      opacity:.55;
+      cursor:not-allowed;
+      box-shadow: none;
+      background: #c8c2bb;
+      color: rgba(255,255,255,.95);
+    }
+
+    .result{
+      width:100%;
+      margin: 12px 0 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 18px 18px;
+      background: #fffdf8;
+      text-align:center;
+    }
+    .resultTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      color: #222;
+    }
+    .pill.ok{border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.08)}
+    .pill.lock{border-color: rgba(234,179,8,.35); background: rgba(234,179,8,.10)}
+    .resultTitle{
+      font-size: 14px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #666;
+      font-weight: 800;
+      margin: 8px 0 8px;
+    }
+    .resultText{
+      margin: 0;
+      font-size: clamp(26px, 4vw, 44px);
+      line-height: 1.15;
+      font-weight: 900;
+      letter-spacing: -.5px;
+    }
+    .win{
+      color: #8f2f2a;
+      text-shadow: 0 8px 28px rgba(155,58,51,.18);
+    }
+    .claim{
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333;
+      font-weight: 700;
+    }
+    .claim b{color:#8f2f2a}
+
+    .followGrid{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      gap: 12px;
+      flex-wrap:wrap;
+      margin: 6px 0 0;
+    }
+    .followBtn{
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #111;
+      font-weight: 900;
+      min-width: 220px;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .followBtn:hover{transform: translateY(-1px); background: #fffdf7}
+    .followNote{
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .tiny{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 10px;
+      display:none; /* ✅ 按你要求：不展示给客户 */
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card">
-      <div class="tag">🏮 Lantern Festival Special</div>
+    <div class="card center">
+      <div class="badge">🏮 Lantern Festival Special</div>
       <h1>🧧 PandaGoldenEar Lucky Draw</h1>
-      <div class="sub">Tap to reveal your surprise.</div>
+      <p class="sub">Tap to reveal your surprise.</p>
 
-      <button id="spinBtn" class="btn">
-        🎉 <span>Spin</span>
-      </button>
+      <div class="spinRow">
+        <button id="spinBtn" class="spinBtn" disabled>Follow to unlock 🎁</button>
+      </div>
 
-      <div id="resultBox" class="result" style="display:none;">
-        <div class="label" id="resultLabel">Result</div>
-        <div class="text" id="resultText"></div>
-        <div class="pill" id="staffHint" style="display:none;">
-          ✅ If you win any prize, please show our staff immediately.
+      <div class="result" id="resultBox" style="display:none;">
+        <div class="resultTop">
+          <div class="pill ok" id="statePill">✅ Ready</div>
+          <div class="pill lock" id="lockPill">🔒 Follow to unlock</div>
+        </div>
+        <div class="resultTitle" id="resultTitle">BLESSING ✨</div>
+        <p class="resultText" id="resultText">Loading…</p>
+        <div class="claim" id="claimLine" style="display:none;">
+          If you win a <b>prize</b>, show this screen to our staff to claim.
         </div>
       </div>
 
-      <div class="links">
-        <a class="linkBtn" target="_blank" rel="noopener" href="https://www.instagram.com/pandagoldenear/">Follow on Instagram</a>
-        <a class="linkBtn" target="_blank" rel="noopener" href="https://www.facebook.com/pandagoldenear">Follow on Facebook</a>
-        <a class="linkBtn" target="_blank" rel="noopener" href="https://www.tiktok.com/@pandagoldenear?_r=1&_t=ZS-9469qJRTdAa">Follow on TikTok</a>
+      <div class="followGrid">
+        <a id="igBtn" class="followBtn" target="_blank" rel="noopener">Follow on Instagram</a>
+        <a id="fbBtn" class="followBtn" target="_blank" rel="noopener">Follow on Facebook</a>
+        <a id="ttBtn" class="followBtn" target="_blank" rel="noopener">Follow on TikTok</a>
       </div>
+      <div class="followNote" id="followNote">👉 Tap any one Follow button to unlock your spin.</div>
 
-      <div class="fine">
-        • One play per device/browser (local).<br/>
-        • Prizes auto-hide when remaining is 0 (based on your Google Sheet).<br/>
-        • Keep your Sheet “sent” updated to avoid over-giving.
-      </div>
-
-      <div class="meta">
-        <div class="badge">📊 Clicks: <span id="clicks">0</span></div>
-        <div class="badge">🔒 Device limit: <span id="limitStatus">ON</span></div>
-        <div class="badge">🗂 Data: Google Sheet (CSV)</div>
+      <div class="tiny">
+        (Hidden notes / debug removed as requested)
       </div>
     </div>
   </div>
 
 <script>
-  // ====== YOUR PUBLISHED CSV URLS (from your screenshot) ======
-  const POOL_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
+/* =========================
+   ✅ CONFIG (use your links)
+========================= */
+const POOL_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
 
-  const BLESSINGS_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
+const BLESSINGS_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-  // ====== device limit + basic analytics ======
-  const KEY_PLAYED = "pge_lucky_played_v1";
-  const KEY_CLICKS = "pge_lucky_clicks_v1";
+const LINKS = {
+  instagram: "https://www.instagram.com/pandagoldenear/",
+  facebook: "https://www.facebook.com/pandagoldenear",
+  tiktok: "https://www.tiktok.com/@pandagoldenear?_r=1&_t=ZS-9469qJRTdAa"
+};
 
-  // UI
-  const spinBtn = document.getElementById("spinBtn");
-  const resultBox = document.getElementById("resultBox");
-  const resultText = document.getElementById("resultText");
-  const resultLabel = document.getElementById("resultLabel");
-  const staffHint = document.getElementById("staffHint");
-  const clicksEl = document.getElementById("clicks");
-  const limitStatus = document.getElementById("limitStatus");
+/* =========================
+   ✅ ELEMENTS
+========================= */
+const spinBtn = document.getElementById("spinBtn");
+const igBtn = document.getElementById("igBtn");
+const fbBtn = document.getElementById("fbBtn");
+const ttBtn = document.getElementById("ttBtn");
 
-  // Simple CSV parser (handles quoted commas)
-  function parseCSV(text){
-    const rows = [];
-    let row = [], cur = "", inQuotes = false;
-    for(let i=0;i<text.length;i++){
-      const c = text[i];
-      const n = text[i+1];
-      if(c === '"' && inQuotes && n === '"'){ cur += '"'; i++; continue; }
-      if(c === '"'){ inQuotes = !inQuotes; continue; }
-      if(c === ',' && !inQuotes){ row.push(cur); cur=""; continue; }
-      if((c === '\n' || c === '\r') && !inQuotes){
-        if(cur.length || row.length){ row.push(cur); rows.push(row); }
-        row = []; cur = "";
-        continue;
-      }
-      cur += c;
-    }
-    if(cur.length || row.length){ row.push(cur); rows.push(row); }
-    return rows.filter(r => r.some(cell => String(cell).trim() !== ""));
+const resultBox = document.getElementById("resultBox");
+const resultTitle = document.getElementById("resultTitle");
+const resultText = document.getElementById("resultText");
+const claimLine = document.getElementById("claimLine");
+
+const statePill = document.getElementById("statePill");
+const lockPill = document.getElementById("lockPill");
+const followNote = document.getElementById("followNote");
+
+/* =========================
+   ✅ STATE (local device)
+========================= */
+const STORAGE = {
+  played: "pge_lucky_played_v1",
+  unlocked: "pge_lucky_follow_unlocked_v1"
+};
+
+let followUnlocked = localStorage.getItem(STORAGE.unlocked) === "1";
+let alreadyPlayed  = localStorage.getItem(STORAGE.played) === "1";
+
+let prizePool = [];
+let blessingsList = [];
+
+/* =========================
+   CSV PARSER (simple/robust)
+========================= */
+function parseCSV(text){
+  const rows = [];
+  const lines = text.replace(/\r/g,"").trim().split("\n");
+  if (!lines.length) return rows;
+
+  const headers = splitCSVLine(lines[0]).map(h => h.trim());
+  for (let i=1;i<lines.length;i++){
+    const cols = splitCSVLine(lines[i]);
+    if (cols.length === 1 && cols[0].trim() === "") continue;
+    const obj = {};
+    headers.forEach((h, idx) => obj[h] = (cols[idx] ?? "").trim());
+    rows.push(obj);
   }
+  return rows;
+}
 
-  function rowsToObjects(rows){
-    if(!rows.length) return [];
-    const header = rows[0].map(h => String(h).trim());
-    return rows.slice(1).map(r => {
-      const obj = {};
-      header.forEach((h, idx) => obj[h] = (r[idx] ?? "").toString().trim());
-      return obj;
-    });
-  }
-
-  function toBool(v){
-    const s = String(v).trim().toLowerCase();
-    return s === "true" || s === "1" || s === "yes";
-  }
-
-  function toNum(v, fallback=0){
-    const n = Number(String(v).trim());
-    return Number.isFinite(n) ? n : fallback;
-  }
-
-  async function fetchTable(url){
-    const res = await fetch(url, { cache: "no-store" });
-    if(!res.ok) throw new Error("Failed to fetch: " + url);
-    const text = await res.text();
-    const rows = parseCSV(text);
-    return rowsToObjects(rows);
-  }
-
-  function pickWeighted(items, weightKey="weight"){
-    const active = items.filter(x => toNum(x[weightKey], 0) > 0);
-    const total = active.reduce((s, x) => s + toNum(x[weightKey],0), 0);
-    if(total <= 0) return null;
-    let r = Math.random() * total;
-    for(const it of active){
-      r -= toNum(it[weightKey],0);
-      if(r <= 0) return it;
-    }
-    return active[active.length-1] ?? null;
-  }
-
-  function setClicks(n){
-    clicksEl.textContent = String(n);
-    localStorage.setItem(KEY_CLICKS, String(n));
-  }
-
-  function incClicks(){
-    const n = Number(localStorage.getItem(KEY_CLICKS) || "0") + 1;
-    setClicks(n);
-  }
-
-  function hasPlayed(){
-    return localStorage.getItem(KEY_PLAYED) === "1";
-  }
-
-  function markPlayed(){
-    localStorage.setItem(KEY_PLAYED, "1");
-  }
-
-  function updatePlayLockUI(){
-    const locked = hasPlayed();
-    spinBtn.disabled = locked;
-    limitStatus.textContent = locked ? "USED" : "ON";
-    if(locked){
-      spinBtn.textContent = "✅ Already played on this device";
-    }else{
-      spinBtn.innerHTML = "🎉 <span>Spin</span>";
+function splitCSVLine(line){
+  const out = [];
+  let cur = "";
+  let inQ = false;
+  for (let i=0;i<line.length;i++){
+    const ch = line[i];
+    if (ch === '"' ){
+      if (inQ && line[i+1] === '"'){ cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (ch === "," && !inQ){
+      out.push(cur); cur = "";
+    } else {
+      cur += ch;
     }
   }
+  out.push(cur);
+  return out;
+}
 
-  function showResult(text, isPrize){
-    resultBox.style.display = "block";
-    resultText.textContent = text;
+function toNum(v, fallback=0){
+  const n = Number(String(v).trim());
+  return Number.isFinite(n) ? n : fallback;
+}
+function isTrue(v){
+  return String(v).toUpperCase() === "TRUE";
+}
 
-    if(isPrize){
-      resultBox.classList.add("prize");
-      resultLabel.textContent = "You won 🎁";
-      staffHint.style.display = "block";
-    }else{
-      resultBox.classList.remove("prize");
-      resultLabel.textContent = "Blessing ✨";
-      staffHint.style.display = "none";
-    }
-  }
+/* =========================
+   LOAD DATA
+========================= */
+async function initData(){
+  const [poolCsv, blessCsv] = await Promise.all([
+    fetch(POOL_CSV_URL, {cache:"no-store"}).then(r => r.text()),
+    fetch(BLESSINGS_CSV_URL, {cache:"no-store"}).then(r => r.text())
+  ]);
 
-  async function spinOnce(){
-    // 1) fetch pool + blessings
-    const [poolRaw, blessRaw] = await Promise.all([
-      fetchTable(POOL_CSV_URL),
-      fetchTable(BLESSINGS_CSV_URL)
-    ]);
+  prizePool = parseCSV(poolCsv);
+  blessingsList = parseCSV(blessCsv);
 
-    // 2) normalize pool items
-    // expected columns in pool: prize, weight, remaining_auto, type, active, active_auto
-    const pool = poolRaw.map(x => ({
-      prize: x.prize || x.Prize || x.name || "",
-      weight: toNum(x.weight, 0),
-      type: (x.type || "").toLowerCase(),               // prize / blessing
-      active: toBool(x.active),
-      active_auto: ("active_auto" in x) ? toBool(x.active_auto) : true,
-      remaining_auto: ("remaining_auto" in x) ? toNum(x.remaining_auto, 0) : toNum(x.remaining, 0)
+  // handy for your console checks
+  window.prizePool = prizePool;
+  window.blessingList = blessingsList;
+}
+
+/* =========================
+   POOL LOGIC
+========================= */
+function getRemaining(row){
+  // prefer remaining_auto if exists, else remaining
+  const ra = row.remaining_auto;
+  if (ra !== undefined && ra !== "") return toNum(ra, 0);
+  return toNum(row.remaining, 0);
+}
+
+function isActiveRow(row){
+  // prefer active_auto if exists, else active
+  const aa = row.active_auto;
+  const active = (aa !== undefined && aa !== "") ? isTrue(aa) : isTrue(row.active);
+
+  // blessing row can have huge remaining; prizes must have remaining > 0
+  const remaining = getRemaining(row);
+  return active && remaining > 0;
+}
+
+function buildActivePool(){
+  const active = prizePool
+    .filter(isActiveRow)
+    .map(r => ({
+      prize: r.prize,
+      type: (r.type || "prize").toLowerCase(),
+      weight: Math.max(0, toNum(r.weight, 0)),
+      remaining: getRemaining(r)
     }))
-    .filter(x => x.prize);
+    .filter(r => r.weight > 0);
 
-    // rule: only pick items where active_auto is TRUE
-    // and for prize-type, remaining_auto must be > 0
-    const eligible = pool.filter(x => {
-      if(!x.active_auto) return false;
-      if(x.type === "prize") return x.remaining_auto > 0;
-      // blessing can always be eligible
-      return true;
-    });
+  // if nothing left, fallback to blessing only
+  if (!active.length){
+    return [{ prize: "Blessing", type:"blessing", weight: 1, remaining: 999999 }];
+  }
+  return active;
+}
 
-    // 3) if we somehow have no eligible, fallback blessing
-    if(!eligible.length){
-      showResult("No jackpot today — but you’ve got year-long luck :)", false);
-      return;
-    }
+function weightedPick(items){
+  const total = items.reduce((s,x)=>s+x.weight,0);
+  let r = Math.random() * total;
+  for (const it of items){
+    r -= it.weight;
+    if (r <= 0) return it;
+  }
+  return items[items.length-1];
+}
 
-    // 4) pick from eligible by weight
-    const picked = pickWeighted(eligible, "weight");
-    if(!picked){
-      showResult("No jackpot today — but you’ve got year-long luck :)", false);
-      return;
-    }
+function pickRandomBlessing(){
+  const active = (blessingsList || []).filter(x => isTrue(x.active));
+  if (!active.length) return "Good luck is coming your way :)";
+  const picked = active[Math.floor(Math.random() * active.length)];
+  return picked.blessing || "Good luck is coming your way :)";
+}
 
-    // 5) if picked is blessing, pick a blessing line (weighted)
-    if(picked.type !== "prize"){
-      const blessings = blessRaw.map(x => ({
-        blessing: x.blessing || x.text || x.message || "",
-        weight: toNum(x.weight, 1),
-        active: toBool(x.active)
-      })).filter(x => x.active && x.blessing);
+/* =========================
+   UI
+========================= */
+function updateUI(){
+  // follow links
+  igBtn.href = LINKS.instagram;
+  fbBtn.href = LINKS.facebook;
+  ttBtn.href = LINKS.tiktok;
 
-      const pickedBless = pickWeighted(blessings, "weight");
-      showResult(pickedBless?.blessing || "Good luck is coming your way :)", false);
-      return;
-    }
+  // lock pill
+  lockPill.textContent = followUnlocked ? "🔓 Unlocked" : "🔒 Follow to unlock";
+  lockPill.className = "pill " + (followUnlocked ? "ok" : "lock");
 
-    // 6) prize
-    showResult(picked.prize, true);
+  // played state
+  if (alreadyPlayed){
+    spinBtn.disabled = true;
+    spinBtn.textContent = "✅ Already played on this device";
+    statePill.textContent = "✅ Played";
+    followNote.textContent = "Thanks for joining — see you at the dumpling stall!";
+    return;
   }
 
-  // init
-  (function init(){
-    setClicks(Number(localStorage.getItem(KEY_CLICKS) || "0"));
-    updatePlayLockUI();
+  // ready state
+  if (followUnlocked){
+    spinBtn.disabled = false;
+    spinBtn.textContent = "🎉 Spin";
+    statePill.textContent = "✅ Ready";
+    followNote.textContent = "Unlocked! Now tap Spin 🎁";
+  }else{
+    spinBtn.disabled = true;
+    spinBtn.textContent = "Follow to unlock 🎁";
+    statePill.textContent = "⏳ Locked";
+    followNote.textContent = "👉 Tap any one Follow button to unlock your spin.";
+  }
+}
 
-    spinBtn.addEventListener("click", async () => {
-      if(hasPlayed()) return;
+function showResult(outcome){
+  resultBox.style.display = "block";
 
-      incClicks();
-      spinBtn.disabled = true;
-      spinBtn.textContent = "Spinning…";
+  const isBlessing = outcome.type === "blessing";
+  if (isBlessing){
+    resultTitle.textContent = "BLESSING ✨";
+    resultText.textContent = pickRandomBlessing();
+    resultText.classList.remove("win");
+    claimLine.style.display = "none";
+  } else {
+    resultTitle.textContent = "YOU WON 🎉";
+    resultText.textContent = outcome.prize;
+    resultText.classList.add("win");
+    claimLine.style.display = "block";
+  }
+}
 
-      try{
-        await spinOnce();
-        markPlayed();
-      }catch(e){
-        console.error(e);
-        showResult("Good luck is coming your way :)", false);
-      }finally{
-        updatePlayLockUI();
-      }
-    });
-  })();
+/* =========================
+   EVENTS
+========================= */
+function unlockFollow(){
+  if (alreadyPlayed) return;
+  followUnlocked = true;
+  localStorage.setItem(STORAGE.unlocked, "1");
+  updateUI();
+}
+
+// any click unlocks
+igBtn.addEventListener("click", unlockFollow);
+fbBtn.addEventListener("click", unlockFollow);
+ttBtn.addEventListener("click", unlockFollow);
+
+spinBtn.addEventListener("click", () => {
+  if (alreadyPlayed) return;
+  if (!followUnlocked) return;
+
+  const activePool = buildActivePool();
+  const picked = weightedPick(activePool);
+
+  // If picked blessing -> show one of your blessing lines
+  const outcome = (picked.type === "blessing")
+    ? { type: "blessing", prize: "Blessing" }
+    : { type: "prize", prize: picked.prize };
+
+  showResult(outcome);
+
+  // lock device
+  alreadyPlayed = true;
+  localStorage.setItem(STORAGE.played, "1");
+  updateUI();
+});
+
+/* =========================
+   BOOT
+========================= */
+(async function boot(){
+  try{
+    await initData();
+  }catch(e){
+    // if sheet fetch fails, still let blessing work
+    prizePool = [{ prize:"Blessing", weight:"1", remaining:"999999", type:"blessing", active:"TRUE" }];
+    blessingsList = [{ blessing:"Good luck is coming your way :)", weight:"1", active:"TRUE" }];
+    window.prizePool = prizePool;
+    window.blessingList = blessingsList;
+  }finally{
+    updateUI();
+  }
+})();
 </script>
 </body>
 </html>
