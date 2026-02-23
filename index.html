@@ -223,7 +223,7 @@
 
 <script>
   // ====== CONFIG ======
-  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoi_LO4oJPoqJprBMeuXy-68Mml6hca27bwN7BuLGb7bd97vrA4AOw-BZe3LnGMyOX/exec";
   const SPIN_LOCK_KEY = "pge_has_spun";
 
   // ====== STATE ======
@@ -235,7 +235,13 @@
   const cx = W/2, cy = H/2;
   const radius = W/2 - 12;
 
-  let segments = []; // {label,type}
+  let segments = [
+  { label:"This is on us", type:"prize" },
+  { label:"50% off for your next order", type:"prize" },
+  { label:"2 more Dumplings", type:"prize" },
+  { label:"One More Drink", type:"prize" },
+  { label:"Blessing", type:"blessing" }
+];
   let currentRotation = -Math.PI/2;
   let spinning = false;
 
@@ -326,9 +332,22 @@
 
   // ====== API ======
   async function fetchData(){
-    const res = await fetch(SCRIPT_URL, {cache:"no-store"});
-    return await res.json();
+  const res = await fetch(SCRIPT_URL, { cache:"no-store" });
+
+  const ct = (res.headers.get("content-type") || "").toLowerCase();
+  const text = await res.text();
+
+  // 如果返回的是 HTML（通常是 404 或重定向页）
+  if (text.trim().startsWith("<!DOCTYPE") || ct.includes("text/html")) {
+    throw new Error("API returned HTML (not JSON). Check SCRIPT_URL / deployment access. First 60 chars: " + text.trim().slice(0,60));
   }
+
+  try {
+    return JSON.parse(text);
+  } catch(e){
+    throw new Error("Invalid JSON from API. First 60 chars: " + text.trim().slice(0,60));
+  }
+}
 
   // ====== RESULT UI ======
   const resultBox = document.getElementById("result");
