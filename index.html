@@ -1,60 +1,13 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lucky Draw</title>
-<style>
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  margin:0;
-  display:flex;
-  min-height:100vh;
-  align-items:center;
-  justify-content:center;
-  background:#f6efe7;
-}
-.card{
-  background:#fff;
-  border-radius:16px;
-  padding:20px;
-  border:1px solid #e8dccf;
-  text-align:center;
-}
-button{
-  padding:10px 16px;
-  border-radius:8px;
-  border:none;
-  background:#b46b52;
-  color:#fff;
-  font-weight:600;
-  cursor:pointer;
-}
-</style>
-</head>
-<body>
-
-<div class="card">
-  <h1>Lucky Draw Test</h1>
-  <button onclick="testAPI()">Test API</button>
-  <p id="result"></p>
-</div>
-
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoAGMXOOo7n7etov_649uXwxuP15bFgz7yQI9kZikFZXJQEUrEDyx3gDrNcdahfSg/exec";
-
 async function testAPI(){
   try{
     const res = await fetch(SCRIPT_URL);
     const data = await res.json();
+
     document.getElementById("result").innerText =
-      JSON.stringify(data);
+      "You got: " + data.prize;
+
   }catch(err){
     document.getElementById("result").innerText =
       "Error: " + err;
   }
 }
-</script>
-
-</body>
-</html>
