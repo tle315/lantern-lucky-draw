@@ -1,368 +1,257 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PandaGoldenEar Lucky Draw</title>
-  <style>
-    :root{
-      --bg:#f6efe7; --card:#fff7ef; --ink:#2b2b2b; --muted:#6f6a64; --line:#e8dccf; --accent:#b46b52;
-    }
-    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--ink); }
-    .wrap{ max-width:520px; margin:0 auto; padding:18px 16px 28px; }
-    .top{ display:flex; gap:10px; align-items:center; }
-    .fu{ width:40px;height:40px;border-radius:12px; display:flex;align-items:center;justify-content:center;
-         background:#a64a3a; color:#ffd56a; font-weight:900; user-select:none; box-shadow:0 6px 18px rgba(0,0,0,.08);}
-    h1{ margin:0; font-size:26px; }
-    .sub{ margin:6px 0 14px; color:var(--muted); font-size:14px; }
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PandaGoldenEar Lucky Draw</title>
 
-    .follow{ border:1px dashed var(--line); background:rgba(255,255,255,.35); border-radius:16px; padding:12px; text-align:center; }
-    .btns{ display:flex; gap:10px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
-    .pill{ padding:9px 14px; border-radius:999px; border:1px solid var(--line); background:#fff; color:var(--ink); text-decoration:none; font-weight:700; font-size:14px; }
+<style>
+:root{
+  --bg:#f6efe7;
+  --card:#ffffff;
+  --line:#e8dccf;
+  --brand:#b46b52;
+  --green:#1f6b3a;
+}
 
-    .wheelBox{ margin-top:16px; display:flex; flex-direction:column; align-items:center; gap:10px; }
-    .pointer{ width:0;height:0; border-left:12px solid transparent; border-right:12px solid transparent; border-bottom:18px solid #7a3b2d; margin-bottom:-6px; }
-    canvas{ background:#fff; border-radius:50%; border:10px solid rgba(255,255,255,.7); box-shadow:0 10px 30px rgba(0,0,0,.12); }
-    .spinBtn{ width:220px; padding:12px 14px; border-radius:999px; border:1px solid var(--line); background:var(--accent); color:#fff; font-weight:900; font-size:16px; cursor:pointer; }
-    .spinBtn:disabled{ opacity:.6; cursor:not-allowed; }
-    .hint{ color:var(--muted); font-size:13px; margin-top:6px; }
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  text-align:center;
+}
 
-    .result{ margin-top:16px; border:1px solid var(--line); background:var(--card); border-radius:18px; padding:14px; }
-    .badge{ display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:#fff; font-weight:900; font-size:13px; color:var(--accent); }
-    .got{ margin-top:10px; color:var(--muted); font-weight:800; letter-spacing:.4px; font-size:12px; }
-    .big{ font-size:28px; font-weight:900; margin-top:6px; line-height:1.12; }
-    .codeBox{ margin-top:12px; padding:10px 12px; background:#fff; border:1px solid var(--line); border-radius:14px; }
-    .codeLine{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
-    .code{ font-size:26px; font-weight:1000; letter-spacing:2px; }
-    .small{ color:var(--muted); font-size:12px; }
+.wrap{
+  max-width:520px;
+  margin:0 auto;
+  padding:16px;
+}
 
-    /* Staff modal */
-    .modalMask{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; padding:16px; }
-    .modal{ width:min(520px, 96vw); background:#fff; border-radius:18px; border:1px solid var(--line); padding:16px; }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-    input{ padding:10px 12px; border-radius:12px; border:1px solid var(--line); font-size:14px; flex:1; min-width:160px; }
-    .btn{ padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--accent); color:#fff; font-weight:900; cursor:pointer; }
-    .btn.secondary{ background:#fff; color:var(--ink); }
-    .msg{ margin-top:10px; font-size:13px; color:var(--muted); white-space:pre-wrap; }
-  </style>
+h1{
+  font-size:22px;
+  margin-bottom:12px;
+  cursor:pointer;
+}
+
+canvas{
+  width:100%;
+  max-width:360px;
+}
+
+.result{
+  margin-top:16px;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  display:none;
+}
+
+.wonPill{
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  font-weight:900;
+  color:#7a3b2d;
+}
+
+.claimBar{
+  margin:12px 0;
+  padding:12px;
+  border-radius:16px;
+  background:rgba(117,214,149,.2);
+  border:1px solid rgba(117,214,149,.5);
+  color:var(--green);
+  font-weight:900;
+}
+
+.big{
+  font-size:30px;
+  font-weight:1000;
+  margin-top:6px;
+  color:#7a3b2d;
+}
+
+.small{
+  margin-top:10px;
+  color:#8a857f;
+  font-size:13px;
+}
+</style>
 </head>
+
 <body>
 <div class="wrap">
-  <div class="top">
-    <div class="fu">福</div>
-    <div id="titleArea">
-      <h1 id="title">PandaGoldenEar Lucky Draw</h1>
-      <div class="sub">Tap Spin to reveal your surprise.</div>
-    </div>
-  </div>
 
-  <div class="follow">
-    💥 Don’t forget to follow us —
-    <div class="btns">
-      <a class="pill" href="https://instagram.com/" target="_blank">Instagram</a>
-      <a class="pill" href="https://facebook.com/" target="_blank">Facebook</a>
-      <a class="pill" href="https://tiktok.com/" target="_blank">TikTok</a>
-    </div>
-    <div class="sub" style="margin:10px 0 0;">Follow any ONE platform to stay updated 😉</div>
-  </div>
+<h1 id="titleArea">PandaGoldenEar Lucky Draw</h1>
 
-  <div class="wheelBox">
-    <div class="pointer"></div>
-    <canvas id="wheel" width="320" height="320"></canvas>
-    <button class="spinBtn" id="spin">Spin</button>
-    <div class="hint">Thanks! One play per device.</div>
-  </div>
+<canvas id="wheel" width="400" height="400"></canvas>
 
-  <div class="result" id="result" style="display:none;">
-    <div class="badge" id="badge">PRIZE</div>
-    <div class="got">YOU GOT</div>
-    <div class="big" id="bigText"></div>
-
-    <div id="codeWrap" style="display:none;">
-      <div class="codeBox">
-        <div class="codeLine">
-          <div>
-            <div class="small">Show staff this rolling code (expires fast)</div>
-            <div class="code" id="rollingCode">------</div>
-          </div>
-          <div class="small" id="codeHint">rolling…</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="small" style="margin-top:10px;">If you win a prize, please show staff.</div>
+<div class="result" id="result">
+  <div class="wonPill">YOU WON 🎉</div>
+  <div class="claimBar">🎁 Show this screen to claim</div>
+  <div class="big" id="bigText"></div>
+  <div class="small">
+    If you win a prize, show this screen to our staff to claim.
   </div>
 </div>
 
-<!-- Staff modal -->
-<div class="modalMask" id="mask">
-  <div class="modal">
-    <div style="font-weight:1000; font-size:18px;">Staff Panel</div>
-    <div class="small" style="margin-top:4px;">Enter PIN + rolling code to redeem.</div>
-
-    <div class="row">
-      <input id="pin" placeholder="Staff PIN" inputmode="numeric" />
-      <input id="code" placeholder="Rolling code (6 digits)" inputmode="numeric" />
-    </div>
-
-    <div class="row">
-      <button class="btn" id="redeemBtn">Redeem</button>
-      <button class="btn secondary" id="closeBtn">Close</button>
-    </div>
-
-    <div class="msg" id="staffMsg"></div>
-  </div>
 </div>
 
 <script>
-  /************ CONFIG ************/
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySMrIfBCITdsSG4M2DwUWM9EPCuwE7lSYobqz_EASeR2iVErd9ij5PqqWB0b3Vulfi/exec";
+const SCRIPT_URL = "你的AppsScript_URL";
 
-  /************ DEVICE ID ************/
-  const DEVICE_KEY = "pge_device_id";
-  function getDeviceId(){
-    let v = localStorage.getItem(DEVICE_KEY);
-    if(!v){
-      v = "dev_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
-      localStorage.setItem(DEVICE_KEY, v);
-    }
-    return v;
-  }
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
 
-  /************ WHEEL ************/
-  const canvas = document.getElementById('wheel');
-  const ctx = canvas.getContext('2d');
-  const cx = canvas.width/2, cy = canvas.height/2;
-  const radius = canvas.width/2 - 12;
+let prizes = [];
+let angle = 0;
+let spinning = false;
+let lastPrize = null;
 
-  let segments = ["Blessing"]; // will be replaced by config
-  let currentRotation = -Math.PI/2;
+function drawWheel(){
+  const cx = 200;
+  const cy = 200;
+  const radius = 180;
+  const step = 2*Math.PI/prizes.length;
 
-  function drawWheel(rotation=0){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    const n = segments.length;
-    const arc = (Math.PI*2)/n;
+  ctx.clearRect(0,0,400,400);
 
-    for(let i=0;i<n;i++){
-      const start = rotation + i*arc;
-      const end = start + arc;
+  prizes.forEach((p,i)=>{
+    const start = angle + i*step;
+    const end = start + step;
 
-      ctx.beginPath();
-      ctx.moveTo(cx,cy);
-      ctx.arc(cx,cy,radius,start,end);
-      ctx.closePath();
-      ctx.fillStyle = i%2===0 ? "rgba(180,107,82,.10)" : "rgba(255,255,255,.9)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(232,220,207,.9)";
-      ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,radius,start,end);
+    ctx.fillStyle = i%2===0 ? "rgba(180,107,82,.08)" : "#fff";
+    ctx.fill();
+    ctx.strokeStyle="#e8dccf";
+    ctx.stroke();
 
-      ctx.save();
-      ctx.translate(cx,cy);
-      ctx.rotate(start + arc/2);
-      ctx.textAlign = "right";
-      ctx.fillStyle = "#6b5248";
-      ctx.font = "700 13px system-ui";
-      ctx.fillText(segments[i], radius - 14, 5);
-      ctx.restore();
-    }
-
-    // center
-    ctx.beginPath(); ctx.arc(cx,cy,68,0,Math.PI*2); ctx.fillStyle="rgba(180,107,82,.25)"; ctx.fill();
-    ctx.beginPath(); ctx.arc(cx,cy,48,0,Math.PI*2); ctx.fillStyle="rgba(180,107,82,.35)"; ctx.fill();
-    ctx.fillStyle="#fff"; ctx.font="1000 20px system-ui"; ctx.textAlign="center"; ctx.fillText("Spin", cx, cy+7);
-    ctx.fillStyle="rgba(255,255,255,.85)"; ctx.font="800 12px system-ui"; ctx.fillText("tap to spin", cx, cy+30);
-  }
-
-  function indexOfPrize(prize){
-    const i = segments.findIndex(s => s.toLowerCase() === String(prize).toLowerCase());
-    return i >= 0 ? i : 0;
-  }
-
-  function spinToIndex(landIndex){
-    return new Promise(resolve => {
-      const n = segments.length;
-      const arc = (Math.PI*2)/n;
-      const target = -Math.PI/2 - (landIndex*arc + arc/2);
-      const spins = 6 * Math.PI*2;
-      const startRot = currentRotation;
-      const endRot = target - spins;
-      const duration = 3200;
-      const startTime = performance.now();
-      const easeOutCubic = t => 1 - Math.pow(1-t, 3);
-
-      function anim(now){
-        const t = Math.min(1, (now - startTime)/duration);
-        const k = easeOutCubic(t);
-        currentRotation = startRot + (endRot - startRot) * k;
-        drawWheel(currentRotation);
-        if(t < 1) requestAnimationFrame(anim);
-        else resolve();
-      }
-      requestAnimationFrame(anim);
-    });
-  }
-
-  /************ API ************/
-  async function api(action, params){
-    const u = new URL(SCRIPT_URL);
-    u.searchParams.set('action', action);
-    Object.entries(params || {}).forEach(([k,v]) => u.searchParams.set(k, v));
-    const res = await fetch(u.toString());
-    return await res.json();
-  }
-
-  /************ RESULT + ROLLING CODE ************/
-  const resultBox = document.getElementById('result');
-  const badge = document.getElementById('badge');
-  const bigText = document.getElementById('bigText');
-  const codeWrap = document.getElementById('codeWrap');
-  const rollingCodeEl = document.getElementById('rollingCode');
-  const codeHint = document.getElementById('codeHint');
-
-  let lastRedeemToken = "";
-  let codeStepSeconds = 10;
-  let rollingTimer = null;
-
-  function shaLikeNumber(str){
-    // simple deterministic hash -> number (client-side)
-    let h = 2166136261;
-    for (let i=0;i<str.length;i++){
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return Math.abs(h);
-  }
-
-  function computeRollingCode(token, step){
-    const num = shaLikeNumber(token + "|" + step) % 1000000;
-    return String(num).padStart(6, '0');
-  }
-
-  function startRollingCode(token){
-    stopRollingCode();
-    lastRedeemToken = token;
-    const tick = () => {
-      const step = Math.floor(Date.now()/1000/codeStepSeconds);
-      rollingCodeEl.textContent = computeRollingCode(token, step);
-      codeHint.textContent = `changes every ${codeStepSeconds}s`;
-    };
-    tick();
-    rollingTimer = setInterval(tick, 300);
-  }
-
-  function stopRollingCode(){
-    if (rollingTimer) clearInterval(rollingTimer);
-    rollingTimer = null;
-  }
-
-  function showResult(type, text, redeemToken){
-    resultBox.style.display = 'block';
-    badge.textContent = type.toUpperCase();
-    bigText.textContent = text;
-
-    if (redeemToken) {
-      codeWrap.style.display = 'block';
-      startRollingCode(redeemToken);
-    } else {
-      codeWrap.style.display = 'none';
-      stopRollingCode();
-    }
-  }
-
-  /************ STAFF PANEL (hidden) ************/
-  const mask = document.getElementById('mask');
-  const pinInput = document.getElementById('pin');
-  const codeInput = document.getElementById('code');
-  const staffMsg = document.getElementById('staffMsg');
-
-  function openStaff(){
-    mask.style.display = 'flex';
-    staffMsg.textContent = lastRedeemToken ? `Current token loaded ✅` : `No redeem token yet (need a real prize).`;
-  }
-  function closeStaff(){ mask.style.display = 'none'; }
-
-  document.getElementById('closeBtn').addEventListener('click', closeStaff);
-
-  // long-press title 2s
-  let pressTimer = null;
-  const titleArea = document.getElementById('titleArea');
-  titleArea.addEventListener('touchstart', () => { pressTimer = setTimeout(openStaff, 2000); }, {passive:true});
-  titleArea.addEventListener('touchend', () => { if(pressTimer) clearTimeout(pressTimer); });
-  titleArea.addEventListener('mousedown', () => { pressTimer = setTimeout(openStaff, 2000); });
-  titleArea.addEventListener('mouseup', () => { if(pressTimer) clearTimeout(pressTimer); });
-  titleArea.addEventListener('mouseleave', () => { if(pressTimer) clearTimeout(pressTimer); });
-
-  document.getElementById('redeemBtn').addEventListener('click', async () => {
-    staffMsg.textContent = "Redeeming...";
-    if (!lastRedeemToken) { staffMsg.textContent = "No redeem token."; return; }
-
-    // compute current rolling code
-    const step = Math.floor(Date.now()/1000/codeStepSeconds);
-    const currentCode = computeRollingCode(lastRedeemToken, step);
-
-    const pin = pinInput.value.trim();
-    const code = (codeInput.value.trim() || currentCode);
-
-    try{
-      const data = await api('redeem', { pin, redeem_token: lastRedeemToken, code });
-      staffMsg.textContent = JSON.stringify(data, null, 2);
-      if (data.ok) {
-        // after redeem, stop rolling (token is single use)
-        stopRollingCode();
-        codeWrap.style.display = 'none';
-      }
-    }catch(err){
-      staffMsg.textContent = "Error: " + err;
-    }
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(start + step/2);
+    ctx.textAlign="right";
+    ctx.fillStyle="#7a3b2d";
+    ctx.font="14px sans-serif";
+    ctx.fillText(p.label, radius-28, 6);
+    ctx.restore();
   });
 
-  /************ LOAD CONFIG + SPIN ************/
-  const btn = document.getElementById('spin');
+  // center button
+  ctx.beginPath();
+  ctx.arc(cx,cy,70,0,Math.PI*2);
+  ctx.fillStyle="rgba(180,107,82,.35)";
+  ctx.fill();
 
-  async function loadConfig(){
-    const cfg = await api('config', {});
-    if (!cfg.ok) throw new Error(cfg.error || 'config failed');
+  ctx.beginPath();
+  ctx.arc(cx,cy,50,0,Math.PI*2);
+  ctx.fillStyle="rgba(180,107,82,.55)";
+  ctx.fill();
 
-    codeStepSeconds = cfg.code_step_seconds || 10;
+  ctx.fillStyle="#fff";
+  ctx.font="bold 20px sans-serif";
+  ctx.textAlign="center";
+  ctx.fillText("Spin",cx,cy+6);
+}
 
-    // wheel segments = active items (可把 inactive 也显示，但这里先只显示 active)
-    const active = (cfg.segments || []).filter(x => x.active);
-    segments = active.length ? active.map(x => x.label) : ["Blessing"];
-    drawWheel(currentRotation);
+async function loadPrizes(){
+  const res = await fetch(SCRIPT_URL);
+  const data = await res.json();
+  prizes = data.prizes;
+  drawWheel();
+}
+
+function spinTo(targetIndex){
+  const step = 2*Math.PI/prizes.length;
+  const targetAngle = (2*Math.PI*5) + (2*Math.PI - targetIndex*step - step/2);
+  const duration = 3000;
+  const start = performance.now();
+  const initial = angle;
+
+  function animate(now){
+    const progress = (now-start)/duration;
+    if(progress>=1){
+      angle = targetAngle;
+      spinning=false;
+      drawWheel();
+      showResult(prizes[targetIndex]);
+      localStorage.setItem("pge_has_spun","1");
+      return;
+    }
+    angle = initial + (targetAngle-initial)*(1-Math.pow(1-progress,3));
+    drawWheel();
+    requestAnimationFrame(animate);
+  }
+  requestAnimationFrame(animate);
+}
+
+async function handleSpin(){
+  if(spinning) return;
+
+  if(localStorage.getItem("pge_has_spun")==="1"){
+    alert("Already played on this device.");
+    return;
   }
 
-  btn.addEventListener('click', async () => {
-    btn.disabled = true;
-    try{
-      const deviceId = getDeviceId();
-      const data = await api('draw', { device_id: deviceId });
+  spinning=true;
 
-      if(!data.ok){
-        showResult("error", data.error || "Unknown error", "");
-        btn.disabled = false;
-        return;
-      }
+  const res = await fetch(SCRIPT_URL);
+  const data = await res.json();
+  const index = prizes.findIndex(p=>p.label===data.prize);
 
-      // animate to prize
-      const idx = indexOfPrize(data.prize);
-      await spinToIndex(idx);
+  spinTo(index);
+}
 
-      const isBlessing = (String(data.type).toLowerCase()==='blessing') || (String(data.prize).toLowerCase()==='blessing');
-      const text = isBlessing ? (data.blessingText || "Good luck!") : data.prize;
-      showResult(isBlessing ? "blessing ✨" : "prize 🎉", text, data.redeem_token || "");
+function showResult(p){
+  const box=document.getElementById("result");
+  const text=document.getElementById("bigText");
 
-    }catch(err){
-      showResult("error", "Network/API error: " + err, "");
-    }finally{
-      btn.disabled = false;
-    }
-  });
+  if(p.type==="blessing"){
+    text.innerText = p.blessing;
+  }else{
+    text.innerText = p.label;
+  }
 
-  // init
-  (async () => {
-    try{ await loadConfig(); }
-    catch(e){ console.log(e); drawWheel(currentRotation); }
-  })();
+  box.style.display="block";
+}
+
+canvas.addEventListener("click",(e)=>{
+  const rect=canvas.getBoundingClientRect();
+  const x=e.clientX-rect.left-200;
+  const y=e.clientY-rect.top-200;
+  if(Math.sqrt(x*x+y*y)<=70){
+    handleSpin();
+  }
+});
+
+// staff long press reset
+let pressTimer=null;
+const titleArea=document.getElementById("titleArea");
+
+function resetDevice(){
+  if(confirm("Reset this device?")){
+    localStorage.removeItem("pge_has_spun");
+    document.getElementById("result").style.display="none";
+    alert("Reset done.");
+  }
+}
+
+function startPress(){
+  pressTimer=setTimeout(resetDevice,1500);
+}
+function endPress(){
+  clearTimeout(pressTimer);
+}
+
+titleArea.addEventListener("touchstart",startPress);
+titleArea.addEventListener("touchend",endPress);
+titleArea.addEventListener("mousedown",startPress);
+titleArea.addEventListener("mouseup",endPress);
+
+loadPrizes();
 </script>
 </body>
 </html>
