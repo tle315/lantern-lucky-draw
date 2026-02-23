@@ -1,273 +1,368 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>PandaGoldenEar Lucky Draw</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PandaGoldenEar Lucky Draw</title>
+  <style>
+    :root{
+      --bg:#f6efe7; --card:#fff7ef; --ink:#2b2b2b; --muted:#6f6a64; --line:#e8dccf; --accent:#b46b52;
+    }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--ink); }
+    .wrap{ max-width:520px; margin:0 auto; padding:18px 16px 28px; }
+    .top{ display:flex; gap:10px; align-items:center; }
+    .fu{ width:40px;height:40px;border-radius:12px; display:flex;align-items:center;justify-content:center;
+         background:#a64a3a; color:#ffd56a; font-weight:900; user-select:none; box-shadow:0 6px 18px rgba(0,0,0,.08);}
+    h1{ margin:0; font-size:26px; }
+    .sub{ margin:6px 0 14px; color:var(--muted); font-size:14px; }
 
-<style>
-:root{
-  --bg:#fbf6ef;
-  --card:#fffaf2;
-  --ink:#171717;
-  --muted:#6b625a;
-  --brand:#8f3a2e;
-  --line:rgba(0,0,0,.1);
-}
+    .follow{ border:1px dashed var(--line); background:rgba(255,255,255,.35); border-radius:16px; padding:12px; text-align:center; }
+    .btns{ display:flex; gap:10px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
+    .pill{ padding:9px 14px; border-radius:999px; border:1px solid var(--line); background:#fff; color:var(--ink); text-decoration:none; font-weight:700; font-size:14px; }
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto;
-  background:radial-gradient(1200px 800px at 50% 0%,#fff,var(--bg));
-  color:var(--ink);
-}
+    .wheelBox{ margin-top:16px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .pointer{ width:0;height:0; border-left:12px solid transparent; border-right:12px solid transparent; border-bottom:18px solid #7a3b2d; margin-bottom:-6px; }
+    canvas{ background:#fff; border-radius:50%; border:10px solid rgba(255,255,255,.7); box-shadow:0 10px 30px rgba(0,0,0,.12); }
+    .spinBtn{ width:220px; padding:12px 14px; border-radius:999px; border:1px solid var(--line); background:var(--accent); color:#fff; font-weight:900; font-size:16px; cursor:pointer; }
+    .spinBtn:disabled{ opacity:.6; cursor:not-allowed; }
+    .hint{ color:var(--muted); font-size:13px; margin-top:6px; }
 
-.wrap{max-width:900px;margin:auto;padding:24px}
-.panel{
-  background:rgba(255,255,255,.8);
-  border-radius:36px;
-  padding:24px;
-  box-shadow:0 20px 60px rgba(0,0,0,.08);
-}
+    .result{ margin-top:16px; border:1px solid var(--line); background:var(--card); border-radius:18px; padding:14px; }
+    .badge{ display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:#fff; font-weight:900; font-size:13px; color:var(--accent); }
+    .got{ margin-top:10px; color:var(--muted); font-weight:800; letter-spacing:.4px; font-size:12px; }
+    .big{ font-size:28px; font-weight:900; margin-top:6px; line-height:1.12; }
+    .codeBox{ margin-top:12px; padding:10px 12px; background:#fff; border:1px solid var(--line); border-radius:14px; }
+    .codeLine{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+    .code{ font-size:26px; font-weight:1000; letter-spacing:2px; }
+    .small{ color:var(--muted); font-size:12px; }
 
-.badge{
-  display:inline-block;
-  padding:8px 18px;
-  border-radius:999px;
-  background:#f2e6d6;
-  font-weight:700;
-  margin:auto;
-}
-
-.hero{text-align:center;margin-top:10px}
-.fu{
-  width:60px;height:60px;
-  border-radius:18px;
-  background:linear-gradient(#b94a3a,#7c2e26);
-  display:grid;place-items:center;
-  color:#f6d27a;
-  font-weight:900;font-size:32px;
-  margin:auto;
-}
-h1{
-  font-size:clamp(30px,6vw,56px);
-  margin:12px 0 4px;
-  line-height:1.05;
-}
-.sub{
-  font-size:18px;
-  color:var(--muted);
-  font-weight:600;
-}
-
-.note{
-  margin:18px auto;
-  padding:16px;
-  border-radius:22px;
-  border:1px dashed rgba(143,58,46,.3);
-  text-align:center;
-  font-weight:700;
-  color:#6a4b2f;
-}
-.pill{
-  display:inline-block;
-  padding:6px 14px;
-  border-radius:999px;
-  border:1px solid rgba(0,0,0,.1);
-  background:white;
-  margin:6px;
-}
-
-.wheel-area{
-  display:flex;
-  justify-content:center;
-  margin-top:10px;
-}
-
-.wheel-wrap{
-  position:relative;
-  width:min(420px,85vw);
-  aspect-ratio:1;
-  border-radius:50%;
-  background:white;
-  box-shadow:0 20px 60px rgba(0,0,0,.1);
-  overflow:hidden;
-}
-
-canvas{width:100%;height:100%}
-
-.pointer{
-  position:absolute;
-  top:-8px;
-  left:50%;
-  transform:translateX(-50%);
-  width:0;height:0;
-  border-left:14px solid transparent;
-  border-right:14px solid transparent;
-  border-bottom:22px solid var(--brand);
-}
-
-.center-btn{
-  position:absolute;
-  inset:50% auto auto 50%;
-  transform:translate(-50%,-50%);
-  width:44%;
-  aspect-ratio:1;
-  border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.8),rgba(202,165,143,.9));
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  box-shadow:0 18px 55px rgba(143,58,46,.2);
-  border:1px solid rgba(255,255,255,.6);
-}
-
-.center-btn:active{
-  transform:translate(-50%,-50%) scale(.97);
-}
-
-.center-btn span{
-  font-size:clamp(18px,4vw,28px);
-  font-weight:1000;
-  color:white;
-  letter-spacing:.1em;
-}
-
-.tap-hint{
-  text-align:center;
-  margin-top:8px;
-  color:rgba(0,0,0,.4);
-  font-weight:700;
-}
-
-.result{
-  margin-top:18px;
-  padding:18px;
-  border-radius:22px;
-  background:rgba(255,250,242,.9);
-  border:1px solid var(--line);
-  text-align:center;
-  display:none;
-}
-
-.result h2{
-  font-size:28px;
-  margin:10px 0;
-  color:var(--brand);
-}
-
-.footer{
-  margin-top:18px;
-  text-align:center;
-  font-weight:800;
-  color:rgba(0,0,0,.45);
-}
-</style>
+    /* Staff modal */
+    .modalMask{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; padding:16px; }
+    .modal{ width:min(520px, 96vw); background:#fff; border-radius:18px; border:1px solid var(--line); padding:16px; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+    input{ padding:10px 12px; border-radius:12px; border:1px solid var(--line); font-size:14px; flex:1; min-width:160px; }
+    .btn{ padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--accent); color:#fff; font-weight:900; cursor:pointer; }
+    .btn.secondary{ background:#fff; color:var(--ink); }
+    .msg{ margin-top:10px; font-size:13px; color:var(--muted); white-space:pre-wrap; }
+  </style>
 </head>
-
 <body>
 <div class="wrap">
-<div class="panel">
+  <div class="top">
+    <div class="fu">福</div>
+    <div id="titleArea">
+      <h1 id="title">PandaGoldenEar Lucky Draw</h1>
+      <div class="sub">Tap Spin to reveal your surprise.</div>
+    </div>
+  </div>
 
-<div style="text-align:center">
-<div class="badge">🏮 Lantern Festival Special</div>
+  <div class="follow">
+    💥 Don’t forget to follow us —
+    <div class="btns">
+      <a class="pill" href="https://instagram.com/" target="_blank">Instagram</a>
+      <a class="pill" href="https://facebook.com/" target="_blank">Facebook</a>
+      <a class="pill" href="https://tiktok.com/" target="_blank">TikTok</a>
+    </div>
+    <div class="sub" style="margin:10px 0 0;">Follow any ONE platform to stay updated 😉</div>
+  </div>
+
+  <div class="wheelBox">
+    <div class="pointer"></div>
+    <canvas id="wheel" width="320" height="320"></canvas>
+    <button class="spinBtn" id="spin">Spin</button>
+    <div class="hint">Thanks! One play per device.</div>
+  </div>
+
+  <div class="result" id="result" style="display:none;">
+    <div class="badge" id="badge">PRIZE</div>
+    <div class="got">YOU GOT</div>
+    <div class="big" id="bigText"></div>
+
+    <div id="codeWrap" style="display:none;">
+      <div class="codeBox">
+        <div class="codeLine">
+          <div>
+            <div class="small">Show staff this rolling code (expires fast)</div>
+            <div class="code" id="rollingCode">------</div>
+          </div>
+          <div class="small" id="codeHint">rolling…</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="small" style="margin-top:10px;">If you win a prize, please show staff.</div>
+  </div>
 </div>
 
-<div class="hero">
-<div class="fu">福</div>
-<h1>PandaGoldenEar<br>Lucky Draw</h1>
-<div class="sub">Tap <b>Spin</b> to reveal your surprise.</div>
+<!-- Staff modal -->
+<div class="modalMask" id="mask">
+  <div class="modal">
+    <div style="font-weight:1000; font-size:18px;">Staff Panel</div>
+    <div class="small" style="margin-top:4px;">Enter PIN + rolling code to redeem.</div>
 
-<div class="note">
-📸 Don’t forget to follow us —
-<div>
-<span class="pill">Instagram</span>
-<span class="pill">Facebook</span>
-<span class="pill">TikTok</span>
-</div>
-Follow any <b>ONE</b> platform to stay updated 😉
-</div>
-</div>
+    <div class="row">
+      <input id="pin" placeholder="Staff PIN" inputmode="numeric" />
+      <input id="code" placeholder="Rolling code (6 digits)" inputmode="numeric" />
+    </div>
 
-<div class="wheel-area">
-<div class="wheel-wrap">
-<div class="pointer"></div>
-<canvas id="wheelCanvas" width="800" height="800"></canvas>
-<div class="center-btn" id="spinBtn">
-<span>SPIN</span>
-</div>
-</div>
-</div>
+    <div class="row">
+      <button class="btn" id="redeemBtn">Redeem</button>
+      <button class="btn secondary" id="closeBtn">Close</button>
+    </div>
 
-<div class="tap-hint">Tap the wheel to spin</div>
-
-<div class="result" id="resultCard">
-<div id="resultText"></div>
-</div>
-
-<div class="footer">
-Thanks! One play per device.<br>
-See you at our dumpling food truck!
-</div>
-
-</div>
+    <div class="msg" id="staffMsg"></div>
+  </div>
 </div>
 
 <script>
-const prizes=[
-"Blessing",
-"This is on us",
-"50% off for you",
-"2 more Dumplings",
-"One More Drink"
-];
+  /************ CONFIG ************/
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbySMrIfBCITdsSG4M2DwUWM9EPCuwE7lSYobqz_EASeR2iVErd9ij5PqqWB0b3Vulfi/exec";
 
-const canvas=document.getElementById("wheelCanvas");
-const ctx=canvas.getContext("2d");
-const spinBtn=document.getElementById("spinBtn");
-const resultCard=document.getElementById("resultCard");
-const resultText=document.getElementById("resultText");
+  /************ DEVICE ID ************/
+  const DEVICE_KEY = "pge_device_id";
+  function getDeviceId(){
+    let v = localStorage.getItem(DEVICE_KEY);
+    if(!v){
+      v = "dev_" + Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+      localStorage.setItem(DEVICE_KEY, v);
+    }
+    return v;
+  }
 
-let angle=0;
-let spinning=false;
+  /************ WHEEL ************/
+  const canvas = document.getElementById('wheel');
+  const ctx = canvas.getContext('2d');
+  const cx = canvas.width/2, cy = canvas.height/2;
+  const radius = canvas.width/2 - 12;
 
-function drawWheel(){
-const arc=2*Math.PI/prizes.length;
-for(let i=0;i<prizes.length;i++){
-ctx.beginPath();
-ctx.moveTo(400,400);
-ctx.fillStyle=i%2?"#efe4d6":"#dcdcdc";
-ctx.arc(400,400,400,i*arc,(i+1)*arc);
-ctx.fill();
-ctx.save();
-ctx.translate(400,400);
-ctx.rotate(i*arc+arc/2);
-ctx.fillStyle="#5a4637";
-ctx.font="bold 20px sans-serif";
-ctx.textAlign="right";
-ctx.fillText(prizes[i],350,10);
-ctx.restore();
-}
-}
-drawWheel();
+  let segments = ["Blessing"]; // will be replaced by config
+  let currentRotation = -Math.PI/2;
 
-spinBtn.onclick=function(){
-if(spinning)return;
-spinning=true;
-const random=Math.floor(Math.random()*prizes.length);
-const arc=360/prizes.length;
-const finalAngle=360*6+(360-(random*arc+arc/2));
-canvas.style.transition="transform 4s cubic-bezier(.17,.67,.25,1)";
-canvas.style.transform=`rotate(${finalAngle}deg)`;
+  function drawWheel(rotation=0){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const n = segments.length;
+    const arc = (Math.PI*2)/n;
 
-setTimeout(()=>{
-resultCard.style.display="block";
-resultText.innerHTML="<h2>"+prizes[random]+"</h2>";
-spinning=false;
-},4200);
-}
+    for(let i=0;i<n;i++){
+      const start = rotation + i*arc;
+      const end = start + arc;
+
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,radius,start,end);
+      ctx.closePath();
+      ctx.fillStyle = i%2===0 ? "rgba(180,107,82,.10)" : "rgba(255,255,255,.9)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(232,220,207,.9)";
+      ctx.stroke();
+
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(start + arc/2);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#6b5248";
+      ctx.font = "700 13px system-ui";
+      ctx.fillText(segments[i], radius - 14, 5);
+      ctx.restore();
+    }
+
+    // center
+    ctx.beginPath(); ctx.arc(cx,cy,68,0,Math.PI*2); ctx.fillStyle="rgba(180,107,82,.25)"; ctx.fill();
+    ctx.beginPath(); ctx.arc(cx,cy,48,0,Math.PI*2); ctx.fillStyle="rgba(180,107,82,.35)"; ctx.fill();
+    ctx.fillStyle="#fff"; ctx.font="1000 20px system-ui"; ctx.textAlign="center"; ctx.fillText("Spin", cx, cy+7);
+    ctx.fillStyle="rgba(255,255,255,.85)"; ctx.font="800 12px system-ui"; ctx.fillText("tap to spin", cx, cy+30);
+  }
+
+  function indexOfPrize(prize){
+    const i = segments.findIndex(s => s.toLowerCase() === String(prize).toLowerCase());
+    return i >= 0 ? i : 0;
+  }
+
+  function spinToIndex(landIndex){
+    return new Promise(resolve => {
+      const n = segments.length;
+      const arc = (Math.PI*2)/n;
+      const target = -Math.PI/2 - (landIndex*arc + arc/2);
+      const spins = 6 * Math.PI*2;
+      const startRot = currentRotation;
+      const endRot = target - spins;
+      const duration = 3200;
+      const startTime = performance.now();
+      const easeOutCubic = t => 1 - Math.pow(1-t, 3);
+
+      function anim(now){
+        const t = Math.min(1, (now - startTime)/duration);
+        const k = easeOutCubic(t);
+        currentRotation = startRot + (endRot - startRot) * k;
+        drawWheel(currentRotation);
+        if(t < 1) requestAnimationFrame(anim);
+        else resolve();
+      }
+      requestAnimationFrame(anim);
+    });
+  }
+
+  /************ API ************/
+  async function api(action, params){
+    const u = new URL(SCRIPT_URL);
+    u.searchParams.set('action', action);
+    Object.entries(params || {}).forEach(([k,v]) => u.searchParams.set(k, v));
+    const res = await fetch(u.toString());
+    return await res.json();
+  }
+
+  /************ RESULT + ROLLING CODE ************/
+  const resultBox = document.getElementById('result');
+  const badge = document.getElementById('badge');
+  const bigText = document.getElementById('bigText');
+  const codeWrap = document.getElementById('codeWrap');
+  const rollingCodeEl = document.getElementById('rollingCode');
+  const codeHint = document.getElementById('codeHint');
+
+  let lastRedeemToken = "";
+  let codeStepSeconds = 10;
+  let rollingTimer = null;
+
+  function shaLikeNumber(str){
+    // simple deterministic hash -> number (client-side)
+    let h = 2166136261;
+    for (let i=0;i<str.length;i++){
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return Math.abs(h);
+  }
+
+  function computeRollingCode(token, step){
+    const num = shaLikeNumber(token + "|" + step) % 1000000;
+    return String(num).padStart(6, '0');
+  }
+
+  function startRollingCode(token){
+    stopRollingCode();
+    lastRedeemToken = token;
+    const tick = () => {
+      const step = Math.floor(Date.now()/1000/codeStepSeconds);
+      rollingCodeEl.textContent = computeRollingCode(token, step);
+      codeHint.textContent = `changes every ${codeStepSeconds}s`;
+    };
+    tick();
+    rollingTimer = setInterval(tick, 300);
+  }
+
+  function stopRollingCode(){
+    if (rollingTimer) clearInterval(rollingTimer);
+    rollingTimer = null;
+  }
+
+  function showResult(type, text, redeemToken){
+    resultBox.style.display = 'block';
+    badge.textContent = type.toUpperCase();
+    bigText.textContent = text;
+
+    if (redeemToken) {
+      codeWrap.style.display = 'block';
+      startRollingCode(redeemToken);
+    } else {
+      codeWrap.style.display = 'none';
+      stopRollingCode();
+    }
+  }
+
+  /************ STAFF PANEL (hidden) ************/
+  const mask = document.getElementById('mask');
+  const pinInput = document.getElementById('pin');
+  const codeInput = document.getElementById('code');
+  const staffMsg = document.getElementById('staffMsg');
+
+  function openStaff(){
+    mask.style.display = 'flex';
+    staffMsg.textContent = lastRedeemToken ? `Current token loaded ✅` : `No redeem token yet (need a real prize).`;
+  }
+  function closeStaff(){ mask.style.display = 'none'; }
+
+  document.getElementById('closeBtn').addEventListener('click', closeStaff);
+
+  // long-press title 2s
+  let pressTimer = null;
+  const titleArea = document.getElementById('titleArea');
+  titleArea.addEventListener('touchstart', () => { pressTimer = setTimeout(openStaff, 2000); }, {passive:true});
+  titleArea.addEventListener('touchend', () => { if(pressTimer) clearTimeout(pressTimer); });
+  titleArea.addEventListener('mousedown', () => { pressTimer = setTimeout(openStaff, 2000); });
+  titleArea.addEventListener('mouseup', () => { if(pressTimer) clearTimeout(pressTimer); });
+  titleArea.addEventListener('mouseleave', () => { if(pressTimer) clearTimeout(pressTimer); });
+
+  document.getElementById('redeemBtn').addEventListener('click', async () => {
+    staffMsg.textContent = "Redeeming...";
+    if (!lastRedeemToken) { staffMsg.textContent = "No redeem token."; return; }
+
+    // compute current rolling code
+    const step = Math.floor(Date.now()/1000/codeStepSeconds);
+    const currentCode = computeRollingCode(lastRedeemToken, step);
+
+    const pin = pinInput.value.trim();
+    const code = (codeInput.value.trim() || currentCode);
+
+    try{
+      const data = await api('redeem', { pin, redeem_token: lastRedeemToken, code });
+      staffMsg.textContent = JSON.stringify(data, null, 2);
+      if (data.ok) {
+        // after redeem, stop rolling (token is single use)
+        stopRollingCode();
+        codeWrap.style.display = 'none';
+      }
+    }catch(err){
+      staffMsg.textContent = "Error: " + err;
+    }
+  });
+
+  /************ LOAD CONFIG + SPIN ************/
+  const btn = document.getElementById('spin');
+
+  async function loadConfig(){
+    const cfg = await api('config', {});
+    if (!cfg.ok) throw new Error(cfg.error || 'config failed');
+
+    codeStepSeconds = cfg.code_step_seconds || 10;
+
+    // wheel segments = active items (可把 inactive 也显示，但这里先只显示 active)
+    const active = (cfg.segments || []).filter(x => x.active);
+    segments = active.length ? active.map(x => x.label) : ["Blessing"];
+    drawWheel(currentRotation);
+  }
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    try{
+      const deviceId = getDeviceId();
+      const data = await api('draw', { device_id: deviceId });
+
+      if(!data.ok){
+        showResult("error", data.error || "Unknown error", "");
+        btn.disabled = false;
+        return;
+      }
+
+      // animate to prize
+      const idx = indexOfPrize(data.prize);
+      await spinToIndex(idx);
+
+      const isBlessing = (String(data.type).toLowerCase()==='blessing') || (String(data.prize).toLowerCase()==='blessing');
+      const text = isBlessing ? (data.blessingText || "Good luck!") : data.prize;
+      showResult(isBlessing ? "blessing ✨" : "prize 🎉", text, data.redeem_token || "");
+
+    }catch(err){
+      showResult("error", "Network/API error: " + err, "");
+    }finally{
+      btn.disabled = false;
+    }
+  });
+
+  // init
+  (async () => {
+    try{ await loadConfig(); }
+    catch(e){ console.log(e); drawWheel(currentRotation); }
+  })();
 </script>
-
 </body>
 </html>
