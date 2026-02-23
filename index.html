@@ -18,6 +18,7 @@
       --success:#2e7d32;
       --shadow: 0 18px 50px rgba(0,0,0,.08);
       --shadow2: 0 10px 24px rgba(0,0,0,.06);
+      --gold: #f2c14e;
     }
     *{box-sizing:border-box}
     body{
@@ -26,11 +27,7 @@
       color:var(--ink);
       background: radial-gradient(1200px 700px at 50% -10%, #fff7ec 20%, var(--bg1) 60%, var(--bg2) 100%);
     }
-    .wrap{
-      width:min(980px, 100%);
-      margin:0 auto;
-      padding: 18px 14px 32px;
-    }
+    .wrap{ width:min(980px, 100%); margin:0 auto; padding: 18px 14px 32px; }
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.62));
       border:1px solid var(--line);
@@ -81,6 +78,7 @@
       letter-spacing:-.9px;
       text-align:left;
       user-select:none;
+      cursor: default;
     }
     .sub{
       text-align:center;
@@ -122,18 +120,9 @@
       text-decoration:none;
       box-shadow: 0 8px 18px rgba(0,0,0,.05);
     }
-    .follow-note{
-      color: var(--muted);
-      font-weight: 650;
-      margin-top: 2px;
-    }
+    .follow-note{ color: var(--muted); font-weight: 650; margin-top: 2px; }
 
-    .stage{
-      display:grid;
-      grid-template-columns: 1fr;
-      place-items:center;
-      gap: 10px;
-    }
+    .stage{ display:grid; grid-template-columns: 1fr; place-items:center; gap: 10px; }
 
     .wheel-shell{
       position:relative;
@@ -143,6 +132,7 @@
       filter: drop-shadow(0 24px 36px rgba(0,0,0,.10));
       user-select:none;
     }
+
     .pointer{
       position:absolute;
       top: -8px;
@@ -153,26 +143,40 @@
       border-right:18px solid transparent;
       border-bottom: 28px solid #6c3b2e;
       filter: drop-shadow(0 8px 8px rgba(0,0,0,.12));
-      z-index: 3;
+      z-index: 6;
+    }
+    .pointer.flash{
+      animation: pointerFlash .42s ease-in-out 3;
+    }
+    @keyframes pointerFlash{
+      0%{ filter: drop-shadow(0 8px 8px rgba(0,0,0,.12)); transform: translateX(-50%) scale(1); }
+      50%{ filter: drop-shadow(0 10px 16px rgba(242,193,78,.55)); transform: translateX(-50%) scale(1.06); }
+      100%{ filter: drop-shadow(0 8px 8px rgba(0,0,0,.12)); transform: translateX(-50%) scale(1); }
     }
 
-    /* rotating layer */
     .wheel-rotor{
       position:absolute;
       inset: 0;
       transform: rotate(0deg);
       will-change: transform;
+      z-index: 2;
     }
 
-    /* center button (smaller so it never covers text on arcs) */
+    /* Winner highlight (SVG paths get this class) */
+    .winner-seg{
+      stroke: var(--gold) !important;
+      stroke-width: 10 !important;
+      filter: drop-shadow(0 10px 14px rgba(242,193,78,.35));
+    }
+
     .spin-btn{
       position:absolute;
       left:50%; top:50%;
       transform: translate(-50%,-50%);
-      width: 130px; height:130px;
+      width: 120px; height:120px;
       border-radius: 999px;
       border: 2px solid rgba(255,255,255,.7);
-      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.8), rgba(184,148,132,.72));
+      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.85), rgba(184,148,132,.72));
       box-shadow: 0 18px 40px rgba(0,0,0,.16);
       display:flex;
       align-items:center;
@@ -182,24 +186,19 @@
       font-size: 26px;
       color:#fff;
       cursor:pointer;
-      z-index: 4;
+      z-index: 7;
       backdrop-filter: blur(4px);
       transition: transform .16s ease;
       text-shadow: 0 1px 0 rgba(0,0,0,.18);
     }
     .spin-btn:active{ transform: translate(-50%,-50%) scale(.97); }
-    .spin-btn.bounce{
-      animation: btnBounce .22s ease;
-    }
+    .spin-btn.bounce{ animation: btnBounce .22s ease; }
     @keyframes btnBounce{
       0%{ transform: translate(-50%,-50%) scale(1); }
       50%{ transform: translate(-50%,-50%) scale(1.06); }
       100%{ transform: translate(-50%,-50%) scale(1); }
     }
-    .spin-btn[disabled]{
-      opacity:.55;
-      cursor:not-allowed;
-    }
+    .spin-btn[disabled]{ opacity:.55; cursor:not-allowed; }
 
     .status{
       text-align:center;
@@ -207,8 +206,14 @@
       color:#6a543f;
       margin: 6px 0 10px;
     }
-    .status.good{
-      color: var(--success);
+    .status.good{ color: var(--success); }
+    .debug{
+      margin-top:8px;
+      text-align:center;
+      font-size: 13px;
+      color:#8a7f74;
+      word-break: break-word;
+      opacity:.9;
     }
 
     .result{
@@ -268,7 +273,6 @@
       margin-top: 6px;
     }
 
-    /* gold sparkle for PRIZE */
     .sparkle{
       pointer-events:none;
       position:absolute;
@@ -295,7 +299,7 @@
     }
 
     @media (max-width: 430px){
-      .spin-btn{ width: 118px; height:118px; font-size: 24px; }
+      .spin-btn{ width: 112px; height:112px; font-size: 24px; }
       .follow-box{ padding: 12px 12px 10px; }
     }
   </style>
@@ -307,14 +311,13 @@
 
       <div class="title-row">
         <div class="fu">福</div>
-        <!-- 长按这个标题进入 reset -->
         <h1 id="pageTitle">PandaGoldenEar<br/>Lucky Draw</h1>
       </div>
 
       <div class="sub">Tap <b>Spin</b> to reveal your surprise.</div>
 
       <div class="follow-box">
-        <div class="follow-top">📸 Don’t forget to follow us — 
+        <div class="follow-top">📸 Don’t forget to follow us —
           <a class="pill" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
           <a class="pill" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
           <span class="pill" style="pointer-events:none; opacity:.9;">TikTok</span>
@@ -324,16 +327,13 @@
 
       <div class="stage">
         <div class="wheel-shell">
-          <div class="pointer"></div>
-
-          <div id="wheelRotor" class="wheel-rotor" aria-label="Lucky draw wheel">
-            <!-- SVG wheel injected here -->
-          </div>
-
+          <div id="pointer" class="pointer"></div>
+          <div id="wheelRotor" class="wheel-rotor" aria-label="Lucky draw wheel"></div>
           <button id="spinBtn" class="spin-btn" type="button">🎉 <span>Spin</span></button>
         </div>
 
         <div id="status" class="status">Loading prizes…</div>
+        <div id="debug" class="debug" style="display:none;"></div>
 
         <div id="resultCard" class="result" style="display:none;">
           <div id="sparkle" class="sparkle">
@@ -351,7 +351,7 @@
 
           <div class="result-top">
             <div id="tagLeft" class="tag">PRIZE 🎁</div>
-            <div id="tagRight" class="tag muted">✅ Played — thanks!</div>
+            <div class="tag muted">✅ Played — thanks!</div>
           </div>
 
           <div class="yougot">YOU GOT</div>
@@ -368,32 +368,32 @@
 /** =========================
  *  CONFIG
  *  ========================= */
-const API_URL = https://script.google.com/macros/s/AKfycbxk94zQkTeLozqgk4a3fY_TV1LScNDjxU5CRE06ioOEzqUDLkT2-atxWjB4rx2tv38V/exec;
-// 如果你后端 action 名不是 pool / spin / health，请按你的实际改这里：
-const ACTION_POOL = "pool";
-const ACTION_SPIN = "spin";
-const ACTION_HEALTH = "health";
+const API_URL = "https://script.google.com/macros/s/AKfycbxk94zQkTeLozqgk4a3fY_TV1LScNDjxU5CRE06ioOEzqUDLkT2-atxWjB4rx2tv38V/exec";
 
-const LS_PLAYED_KEY = "pge_lucky_played_v3";
-const LS_DEVICE_KEY = "pge_lucky_device_v3";
-const LS_STAFF_KEY  = "pge_lucky_staff_v3";
+// 你后端可能用的 action 名不一致，这里我做了“自动试探”
+const POOL_ACTION_CANDIDATES = ["pool","getPool","prepare","init"];   // ✅ 不够就继续加
+const SPIN_ACTION_CANDIDATES = ["spin","draw","play"];               // ✅ 不够就继续加
+
+const LS_PLAYED_KEY = "pge_lucky_played_v4";
+const LS_DEVICE_KEY = "pge_lucky_device_v4";
 
 /** =========================
  *  STATE
  *  ========================= */
-let pool = [];            // [{row, label, weight, remaining_auto, active}]
+let pool = [];            // [{row,label,weight,remaining_auto,active}]
 let isSpinning = false;
-let currentRotation = 0;  // degrees
-let wheelSVGSize = 560;
+let currentRotation = 0;
 
 const elRotor = document.getElementById("wheelRotor");
 const elSpin  = document.getElementById("spinBtn");
 const elStatus = document.getElementById("status");
+const elDebug = document.getElementById("debug");
 const elResult = document.getElementById("resultCard");
 const elBig = document.getElementById("bigText");
 const elSmall = document.getElementById("smallText");
 const elSparkle = document.getElementById("sparkle");
 const elTagLeft = document.getElementById("tagLeft");
+const elPointer = document.getElementById("pointer");
 
 /** =========================
  *  UTIL
@@ -408,60 +408,80 @@ function getDeviceId(){
   if(!id){ id = uid(); localStorage.setItem(LS_DEVICE_KEY, id); }
   return id;
 }
-function setPlayed(v){
-  if(v) localStorage.setItem(LS_PLAYED_KEY, "1");
-  else localStorage.removeItem(LS_PLAYED_KEY);
-}
-function isPlayed(){
-  return localStorage.getItem(LS_PLAYED_KEY) === "1";
-}
-function degToRad(d){ return d * Math.PI / 180; }
-function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+function setPlayed(v){ v ? localStorage.setItem(LS_PLAYED_KEY, "1") : localStorage.removeItem(LS_PLAYED_KEY); }
+function isPlayed(){ return localStorage.getItem(LS_PLAYED_KEY) === "1"; }
 
 function setStatus(text, good=false){
   elStatus.textContent = text;
   elStatus.className = "status" + (good ? " good" : "");
 }
-function safeText(s){
-  return String(s ?? "").replace(/\s+/g," ").trim();
+function showDebug(msg){
+  elDebug.style.display = "block";
+  elDebug.textContent = msg;
 }
+function hideDebug(){
+  elDebug.style.display = "none";
+  elDebug.textContent = "";
+}
+function safeText(s){ return String(s ?? "").replace(/\s+/g," ").trim(); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[m]));
+}
+function degToRad(d){ return d * Math.PI / 180; }
+function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
 
 /** =========================
- *  FETCH HELPERS
+ *  API
  *  ========================= */
 async function apiGet(params){
   const url = new URL(API_URL);
   Object.entries(params).forEach(([k,v])=> url.searchParams.set(k, v));
   const res = await fetch(url.toString(), { method:"GET", cache:"no-store" });
   const txt = await res.text();
-  // 兼容后端返回 JSON / text
   try { return JSON.parse(txt); } catch { return { ok:true, raw: txt }; }
 }
 
+/** Find a pool array anywhere inside response (very robust) */
+function findPoolDeep(obj){
+  if(!obj) return null;
+  if(Array.isArray(obj)){
+    // if array items look like pool rows
+    if(obj.length && typeof obj[0] === "object") return obj;
+    return null;
+  }
+  if(typeof obj !== "object") return null;
+
+  // common keys
+  if(Array.isArray(obj.pool)) return obj.pool;
+  if(Array.isArray(obj.data?.pool)) return obj.data.pool;
+  if(Array.isArray(obj.result?.pool)) return obj.result.pool;
+
+  // deep search
+  for(const k of Object.keys(obj)){
+    const found = findPoolDeep(obj[k]);
+    if(found) return found;
+  }
+  return null;
+}
+
 /** =========================
- *  WHEEL (SVG with arc text)
+ *  WHEEL SVG (arc labels) + winner highlight hooks
  *  ========================= */
 function buildWheelSVG(items){
-  // responsive size
   const size = Math.min(560, Math.floor(window.innerWidth * 0.92));
-  wheelSVGSize = size;
-
   const cx = size/2, cy=size/2;
-  const R  = size * 0.47;          // outer radius
-  const rInner = size * 0.18;      // inner radius (keeps center clear)
+  const R  = size * 0.47;
+  const rInner = size * 0.20;  // keep center clear so Spin never blocks text
   const ringStroke = size * 0.015;
 
   const N = Math.max(2, items.length);
   const step = 360 / N;
 
-  const colors = [
-    "#f7e7d6","#f2f6ff","#e9f8f1","#fff2d9","#f6e9ff","#ffe9ee"
-  ];
+  const colors = ["#f7e7d6","#f2f6ff","#e9f8f1","#fff2d9","#f6e9ff","#ffe9ee"];
 
-  // helpers to create arc path
-  function polarToXY(rad, radius){
-    return [cx + Math.cos(rad)*radius, cy + Math.sin(rad)*radius];
-  }
+  function polarToXY(rad, radius){ return [cx + Math.cos(rad)*radius, cy + Math.sin(rad)*radius]; }
   function arcPath(startDeg, endDeg, radius){
     const start = degToRad(startDeg - 90);
     const end   = degToRad(endDeg - 90);
@@ -488,38 +508,31 @@ function buildWheelSVG(items){
     ].join(" ");
   }
 
-  const svgParts = [];
-  svgParts.push(`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">`);
+  const svg = [];
+  svg.push(`<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">`);
+  svg.push(`<circle cx="${cx}" cy="${cy}" r="${R}" fill="rgba(255,255,255,.60)" stroke="#e6d8c8" stroke-width="${ringStroke}"/>`);
+  svg.push(`<circle cx="${cx}" cy="${cy}" r="${rInner}" fill="rgba(255,255,255,.65)" stroke="#e6d8c8" stroke-width="${ringStroke}"/>`);
 
-  // outer ring
-  svgParts.push(`<circle cx="${cx}" cy="${cy}" r="${R}" fill="rgba(255,255,255,.60)" stroke="#e6d8c8" stroke-width="${ringStroke}"/>`);
-  svgParts.push(`<circle cx="${cx}" cy="${cy}" r="${rInner}" fill="rgba(255,255,255,.65)" stroke="#e6d8c8" stroke-width="${ringStroke}"/>`);
-
-  // defs for arc text paths
-  svgParts.push(`<defs>`);
+  svg.push(`<defs>`);
   for(let i=0;i<N;i++){
     const start = i*step;
     const end   = (i+1)*step;
-    // place text on an arc slightly inside outer edge so it never touches the center button
-    const textRadius = R * 0.80;
-    const p = arcPath(start+8, end-8, textRadius);
-    svgParts.push(`<path id="arc-${i}" d="${p}" />`);
+    const textRadius = R * 0.82;
+    svg.push(`<path id="arc-${i}" d="${arcPath(start+8, end-8, textRadius)}" />`);
   }
-  svgParts.push(`</defs>`);
+  svg.push(`</defs>`);
 
-  // wedges + labels
   for(let i=0;i<N;i++){
     const start = i*step;
     const end   = (i+1)*step;
     const fill  = colors[i % colors.length];
     const label = safeText(items[i]?.label || `Item ${i+1}`);
-
-    svgParts.push(`<path d="${wedgePath(start,end)}" fill="${fill}" stroke="#e6d8c8" stroke-width="${ringStroke*0.9}"/>`);
-
-    // Arc label (horizontal along curve)
-    // Use startOffset=50% to center the text along arc.
     const fontSize = clamp(size * 0.045, 14, 22);
-    svgParts.push(`
+
+    // IMPORTANT: give each wedge an id for highlighting later
+    svg.push(`<path id="seg-${i}" d="${wedgePath(start,end)}" fill="${fill}" stroke="#e6d8c8" stroke-width="${ringStroke*0.9}"/>`);
+
+    svg.push(`
       <text fill="#5a4b37" font-weight="800" font-size="${fontSize}" letter-spacing=".2px">
         <textPath href="#arc-${i}" startOffset="50%" text-anchor="middle">
           ${escapeHtml(label)}
@@ -528,61 +541,58 @@ function buildWheelSVG(items){
     `);
   }
 
-  // subtle inner shading
-  svgParts.push(`<circle cx="${cx}" cy="${cy}" r="${R*0.62}" fill="rgba(255,255,255,.10)"/>`);
-
-  svgParts.push(`</svg>`);
-  return svgParts.join("");
+  svg.push(`<circle cx="${cx}" cy="${cy}" r="${R*0.62}" fill="rgba(255,255,255,.10)"/>`);
+  svg.push(`</svg>`);
+  return svg.join("");
 }
 
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, m => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[m]));
+function clearWinnerHighlight(){
+  for(const p of document.querySelectorAll(".winner-seg")){
+    p.classList.remove("winner-seg");
+  }
+}
+function highlightWinner(index){
+  clearWinnerHighlight();
+  const path = document.getElementById(`seg-${index}`);
+  if(path) path.classList.add("winner-seg");
+}
+function flashPointer(){
+  elPointer.classList.remove("flash");
+  void elPointer.offsetHeight;
+  elPointer.classList.add("flash");
 }
 
 /** =========================
- *  SPIN LOGIC
- *  Uses backend pool_row to land precisely
+ *  SPIN
  *  ========================= */
 function segmentCenterAngle(index, total){
-  // pointer is at 0deg (top). Our wheel starts at 0deg.
   const step = 360 / total;
-  return (index * step) + step/2; // degrees, 0 at top
+  return (index * step) + step/2;
 }
 
 function spinToIndex(index){
   const N = pool.length;
   const targetCenter = segmentCenterAngle(index, N);
-
-  // We want the wheel to rotate so that targetCenter lands under pointer at top.
-  // If wheel rotates by rot degrees, a segment at angle targetCenter moves to (targetCenter + rot) mod 360.
-  // We want (targetCenter + rot) mod 360 === 0  => rot ≡ -targetCenter (mod 360)
   const normalizedTarget = ((-targetCenter) % 360 + 360) % 360;
-
-  // add multiple full spins + deceleration feel
-  const extraTurns = 7 + Math.floor(Math.random()*3); // 7~9
+  const extraTurns = 7 + Math.floor(Math.random()*3);
   const finalRotation = extraTurns*360 + normalizedTarget;
 
-  // animate
   isSpinning = true;
   elSpin.disabled = true;
 
-  // physical-ish easing
-  const duration = 5200; // ms
+  const duration = 5200;
   elRotor.style.transition = `transform ${duration}ms cubic-bezier(.12,.92,.16,1)`;
   currentRotation += finalRotation;
   elRotor.style.transform = `rotate(${currentRotation}deg)`;
 
   return new Promise(resolve=>{
     setTimeout(()=>{
-      // snap to a clean modulo to avoid huge number drift
       const mod = ((currentRotation % 360) + 360) % 360;
       currentRotation = mod;
       elRotor.style.transition = "none";
       elRotor.style.transform = `rotate(${currentRotation}deg)`;
-      // force reflow then allow future transitions
       void elRotor.offsetHeight;
+
       isSpinning = false;
       elSpin.disabled = false;
       resolve();
@@ -591,10 +601,9 @@ function spinToIndex(index){
 }
 
 /** =========================
- *  UI RESULT
+ *  RESULT UI
  *  ========================= */
 function showResult(payload){
-  // payload: {result_type, result_text}
   const type = safeText(payload?.result_type).toLowerCase();
   const text = safeText(payload?.result_text);
 
@@ -605,16 +614,13 @@ function showResult(payload){
     elTagLeft.textContent = "BLESSING ✨";
     elTagLeft.style.background = "rgba(255,255,255,.70)";
     elTagLeft.style.color = "#6a543f";
-    elTagLeft.style.borderColor = "var(--line)";
     elSmall.textContent = "Thanks for playing — see you at our dumpling food truck!";
-    // no gold shimmer on blessing
     elSparkle.classList.remove("on");
   }else{
     elTagLeft.textContent = "PRIZE 🎁";
     elTagLeft.style.background = "rgba(240,255,244,.85)";
     elTagLeft.style.color = "#246b2a";
     elSmall.textContent = "If you win a prize, show this screen to our staff to claim.";
-    // gold shimmer
     elSparkle.classList.remove("on");
     void elSparkle.offsetHeight;
     elSparkle.classList.add("on");
@@ -622,55 +628,68 @@ function showResult(payload){
 }
 
 /** =========================
- *  INIT + EVENTS
+ *  LOAD POOL (auto try actions + deep parse)
  *  ========================= */
 async function loadPool(){
   setStatus("Loading prizes…");
+  hideDebug();
+
   try{
-    // optional health check
-    try{ await apiGet({ action: ACTION_HEALTH, t: Date.now() }); }catch(e){}
+    let lastRaw = null;
+    let foundList = null;
+    let usedAction = null;
 
-    const data = await apiGet({ action: ACTION_POOL, t: Date.now() });
+    for(const act of POOL_ACTION_CANDIDATES){
+      const resp = await apiGet({ action: act, t: Date.now() });
+      lastRaw = resp;
+      const list = findPoolDeep(resp);
+      if(list && list.length){
+        foundList = list;
+        usedAction = act;
+        break;
+      }
+    }
 
-    // Expect backend to return: { ok:true, pool:[{row,label,weight,remaining_auto,active}] }
-    // Fallback if returned as array.
-    const list = Array.isArray(data?.pool) ? data.pool : (Array.isArray(data) ? data : null);
-    if(!list || !list.length){
-      console.log("POOL raw:", data);
+    if(!foundList){
+      console.log("POOL raw last:", lastRaw);
       setStatus("Pool not loaded. Check API response in console.", false);
+      showDebug("Tip: Your backend pool action may not be in POOL_ACTION_CANDIDATES. Add the correct one there. Also check if Web App is 'Anyone' access.");
       return;
     }
 
-    pool = list.map((x, i)=>({
-      row: Number(x.row ?? x.pool_row ?? (i+1)),
-      label: safeText(x.label ?? x.prize ?? x.prize_text ?? x.name ?? x.text),
+    // normalize pool rows
+    pool = foundList.map((x, i)=>({
+      row: Number(x.row ?? x.pool_row ?? x.poolRow ?? (i+1)),
+      label: safeText(x.label ?? x.prize ?? x.prize_text ?? x.name ?? x.text ?? x.result_text),
       weight: Number(x.weight ?? 1),
-      remaining_auto: Number(x.remaining_auto ?? x.remaining ?? x.after_remaining ?? 999999),
+      remaining_auto: Number(x.remaining_auto ?? x.remainingAuto ?? x.remaining ?? x.after_remaining ?? 999999),
       active: (x.active === true || String(x.active).toUpperCase()==="TRUE" || x.active === 1 || x.active === "1")
     }));
 
-    // only active items for drawing display, but wheel should show active items (or all)
-    // For your use-case, show ALL active items; if none active, show all.
+    // keep active if provided
     const active = pool.filter(p=>p.active !== false);
     if(active.length >= 2) pool = active;
 
-    // render wheel
     elRotor.innerHTML = buildWheelSVG(pool);
+    clearWinnerHighlight();
 
-    // played state
     if(isPlayed()){
       setStatus("✅ Already played on this device", true);
       elSpin.disabled = true;
     }else{
-      setStatus("Ready — tap Spin 🎉", true);
+      setStatus(`Ready — tap Spin 🎉 (pool action: ${usedAction})`, true);
       elSpin.disabled = false;
     }
   }catch(err){
     console.error(err);
     setStatus("Failed to load prizes. Check API URL / permissions.", false);
+    showDebug("If this is a Google Apps Script web app: redeploy + set access to Anyone with link; then refresh.");
   }
 }
 
+/** =========================
+ *  DO SPIN (auto try actions)
+ *  ========================= */
 async function doSpin(){
   if(isSpinning) return;
   if(isPlayed()){
@@ -685,46 +704,58 @@ async function doSpin(){
   elSpin.classList.remove("bounce");
   void elSpin.offsetHeight;
   elSpin.classList.add("bounce");
-
   setStatus("Spinning…", true);
 
   try{
     const device_id = getDeviceId();
-    const resp = await apiGet({ action: ACTION_SPIN, device_id, t: Date.now() });
 
-    // Expect: { ok:true, pool_row, result_type, result_text }
+    let resp = null;
+    let usedAction = null;
+    for(const act of SPIN_ACTION_CANDIDATES){
+      const r = await apiGet({ action: act, device_id, t: Date.now() });
+      // crude check: must have result_text or pool_row-ish or ok
+      if(r && (r.ok !== false) && (r.pool_row || r.result_text || r.result_type || r.row || r.poolRow)){
+        resp = r; usedAction = act; break;
+      }
+      resp = r; usedAction = act;
+    }
+
     if(!resp || resp.ok === false){
       console.log("SPIN raw:", resp);
       setStatus("Spin failed. Check API response.", false);
+      showDebug("Open DevTools → Network → click the request to your script.google.com URL and inspect Response.");
       return;
     }
 
     const poolRow = Number(resp.pool_row ?? resp.poolRow ?? resp.row);
-    const idx = pool.findIndex(p => p.row === poolRow);
+    let idx = pool.findIndex(p => p.row === poolRow);
 
-    // If backend didn't return row, fall back to matching by label
-    let finalIndex = idx;
-    if(finalIndex < 0){
+    // fallback: match by result_text
+    if(idx < 0){
       const txt = safeText(resp.prize ?? resp.result_text ?? resp.resultText);
-      finalIndex = pool.findIndex(p => safeText(p.label).toLowerCase() === txt.toLowerCase());
+      idx = pool.findIndex(p => safeText(p.label).toLowerCase() === txt.toLowerCase());
     }
-    if(finalIndex < 0) finalIndex = Math.floor(Math.random()*pool.length);
+    if(idx < 0) idx = Math.floor(Math.random()*pool.length);
 
-    await spinToIndex(finalIndex);
+    await spinToIndex(idx);
 
-    // show result (always trust backend text/type)
+    // 🔥 highlight + pointer flash AFTER spin stops
+    highlightWinner(idx);
+    flashPointer();
+
     showResult({
       result_type: resp.result_type ?? resp.type,
       result_text: resp.result_text ?? resp.text ?? resp.result
     });
 
     setPlayed(true);
-    setStatus("✅ Played — thanks!", true);
+    setStatus(`✅ Played — thanks! (spin action: ${usedAction})`, true);
     elSpin.disabled = true;
 
   }catch(err){
     console.error(err);
-    setStatus("Spin error (network / CORS / permissions).", false);
+    setStatus("Spin error (network / permissions).", false);
+    showDebug("If you see 401/403, redeploy Apps Script web app and ensure 'Anyone' access.");
   }
 }
 
@@ -734,18 +765,14 @@ async function doSpin(){
 (function staffLongPress(){
   const title = document.getElementById("pageTitle");
   let pressTimer = null;
-  let startedAt = 0;
 
   function start(){
     if(pressTimer) return;
-    startedAt = Date.now();
     pressTimer = setTimeout(()=>{
       pressTimer = null;
       const code = prompt("Staff reset: type 'reset' to clear this device.");
       if(String(code).trim().toLowerCase() === "reset"){
         localStorage.removeItem(LS_PLAYED_KEY);
-        // keep device id (or clear it if you want new id each reset)
-        // localStorage.removeItem(LS_DEVICE_KEY);
         alert("Reset done ✅");
         location.reload();
       }else if(code !== null){
@@ -753,18 +780,13 @@ async function doSpin(){
       }
     }, 1200);
   }
-
   function cancel(){
-    if(pressTimer){
-      clearTimeout(pressTimer);
-      pressTimer = null;
-    }
+    if(pressTimer){ clearTimeout(pressTimer); pressTimer = null; }
   }
 
   title.addEventListener("touchstart", start, {passive:true});
   title.addEventListener("touchend", cancel, {passive:true});
   title.addEventListener("touchcancel", cancel, {passive:true});
-
   title.addEventListener("mousedown", start);
   window.addEventListener("mouseup", cancel);
   title.addEventListener("mouseleave", cancel);
