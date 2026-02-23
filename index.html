@@ -113,6 +113,7 @@
       color:#7a6f67;
       font-weight:800;
     }
+    .hint.loading{ opacity:.85; }
 
     .result{
       margin-top:16px;
@@ -175,9 +176,6 @@
         radial-gradient(circle at 40% 80%, rgba(117,214,149,.14) 0 4px, transparent 5px);
       pointer-events:none;
     }
-
-    /* small pressed feedback text */
-    .hint.loading{ opacity:.85; }
   </style>
 </head>
 
@@ -199,7 +197,7 @@
     <div class="follow">
       <div class="followTitle">💥 Don’t forget to follow us —</div>
       <div class="btns">
-        <a class="pill" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>        
+        <a class="pill" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
         <a class="pill" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
         <a class="pill" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
       </div>
@@ -235,26 +233,33 @@
   const cx = W/2, cy = H/2;
   const radius = W/2 - 12;
 
-  let segments = [
-  { label:"This is on us", type:"prize" },
-  { label:"50% off for your next order", type:"prize" },
-  { label:"2 more Dumplings", type:"prize" },
-  { label:"One More Drink", type:"prize" },
-  { label:"Blessing", type:"blessing" }
-];
+  let segments = []; // {label,type}
   let currentRotation = -Math.PI/2;
   let spinning = false;
 
-  // five palette (premium pastel)
+  // premium pastel palette (5 slices)
   const PALETTE = ["#FFF8F0", "#EAF7F1", "#F1EEFF", "#FFEFE6", "#FFF6D8"];
 
-  // ====== helpers ======
-  function ellipsis(str, max=20){
-    str = String(str||"");
-    return str.length>max ? str.slice(0,max-1)+"…" : str;
+  // ====== label mapping (short labels on wheel) ======
+  const LABEL_MAP = {
+    "50% off for your next order": "50% OFF",
+    "2 more Dumplings": "2 Dumplings",
+    "One More Drink": "1 Drink",
+    "This is on us": "FREE",
+    "Blessing": "Blessing"
+  };
+  function displayLabel(label){
+    const key = String(label || "");
+    return LABEL_MAP[key] || key;
   }
 
-  // ====== DRAW (horizontal labels, closer to outer ring) ======
+  // ====== helpers ======
+  async function fetchData(){
+    const res = await fetch(SCRIPT_URL, {cache:"no-store"});
+    return await res.json();
+  }
+
+  // ====== DRAW (horizontal labels + auto-fit, never overflow) ======
   function drawWheel(rot, press=false){
     ctx.clearRect(0,0,W,H);
 
@@ -265,6 +270,7 @@
       const start = rot + i*arc;
       const end = start + arc;
 
+      // slice
       ctx.beginPath();
       ctx.moveTo(cx,cy);
       ctx.arc(cx,cy,radius,start,end);
@@ -276,17 +282,30 @@
       ctx.lineWidth = 1;
       ctx.stroke();
 
+      // label
       const mid = start + arc/2;
       const tx = cx + Math.cos(mid) * (radius * 0.78);
       const ty = cy + Math.sin(mid) * (radius * 0.78);
+
+      const raw = segments[i]?.label || "";
+      const text = displayLabel(raw);
+
+      const maxWidth = radius * 0.58;
+      let fontSize = 12;
 
       ctx.save();
       ctx.translate(tx, ty);
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "#6b5248";
-      ctx.font = "900 12px system-ui";
-      ctx.fillText(ellipsis(segments[i]?.label || "", 22), 0, 0, 150);
+
+      ctx.font = `900 ${fontSize}px system-ui`;
+      const w = ctx.measureText(text).width;
+      if (w > maxWidth) {
+        fontSize = Math.max(9, Math.floor(fontSize * (maxWidth / w)));
+        ctx.font = `900 ${fontSize}px system-ui`;
+      }
+      ctx.fillText(text, 0, 0);
       ctx.restore();
     }
 
@@ -330,25 +349,6 @@
     ctx.fillText(spinning ? "loading" : "tap to spin", cx, cy+30);
   }
 
-  // ====== API ======
-  async function fetchData(){
-  const res = await fetch(SCRIPT_URL, { cache:"no-store" });
-
-  const ct = (res.headers.get("content-type") || "").toLowerCase();
-  const text = await res.text();
-
-  // 如果返回的是 HTML（通常是 404 或重定向页）
-  if (text.trim().startsWith("<!DOCTYPE") || ct.includes("text/html")) {
-    throw new Error("API returned HTML (not JSON). Check SCRIPT_URL / deployment access. First 60 chars: " + text.trim().slice(0,60));
-  }
-
-  try {
-    return JSON.parse(text);
-  } catch(e){
-    throw new Error("Invalid JSON from API. First 60 chars: " + text.trim().slice(0,60));
-  }
-}
-
   // ====== RESULT UI ======
   const resultBox = document.getElementById("result");
   const topPill = document.getElementById("topPill");
@@ -374,11 +374,31 @@
     bigText.textContent = prize;
   }
 
-  // ====== SPIN ======
+  // ====== SPIN math ======
   function indexOfPrize(name){
     const s = String(name||"").toLowerCase();
     const i = segments.findIndex(x => String(x.label).toLowerCase() === s);
     return i>=0 ? i : 0;
+  }
+
+  function microNudge(){
+    return new Promise(resolve=>{
+      const startRot = currentRotation;
+      const endRot = currentRotation - Math.PI/5;
+      const duration = 220;
+      const t0 = performance.now();
+      const ease = t => 1 - Math.pow(1-t,2);
+
+      function anim(now){
+        const t = Math.min(1, (now - t0)/duration);
+        const k = ease(t);
+        currentRotation = startRot + (endRot - startRot)*k;
+        drawWheel(currentRotation);
+        if(t<1) requestAnimationFrame(anim);
+        else resolve();
+      }
+      requestAnimationFrame(anim);
+    });
   }
 
   function spinToIndex(landIndex){
@@ -386,7 +406,7 @@
       const n = segments.length;
       const arc = (Math.PI*2)/n;
 
-      // pointer is at top (-pi/2), so rotate slice center to that
+      // pointer at top (-pi/2), rotate slice center to it
       const target = -Math.PI/2 - (landIndex*arc + arc/2);
 
       // add multiple spins
@@ -410,70 +430,48 @@
     });
   }
 
-  // instant feedback micro-spin
-  function microNudge(){
-    return new Promise(resolve=>{
-      const startRot = currentRotation;
-      const endRot = currentRotation - Math.PI/5;
-      const duration = 220;
-      const t0 = performance.now();
-      const ease = t => 1 - Math.pow(1-t,2);
-
-      function anim(now){
-        const t = Math.min(1, (now - t0)/duration);
-        const k = ease(t);
-        currentRotation = startRot + (endRot - startRot)*k;
-        drawWheel(currentRotation);
-        if(t<1) requestAnimationFrame(anim);
-        else resolve();
-      }
-      requestAnimationFrame(anim);
-    });
-  }
-
+  // ====== MAIN spin handler ======
   async function handleSpin(){
     if(spinning) return;
 
-if(localStorage.getItem(SPIN_LOCK_KEY)==="1"){
-  // Consumer-friendly message, no staff hint
-  hint.textContent = "✅ Played — thanks!";
-  // optional tiny shake feedback to acknowledge tap
-  drawWheel(currentRotation, true);
-  setTimeout(()=>drawWheel(currentRotation,false),120);
-  return;
-}
+    // if already played: consumer-friendly, no staff hint
+    if(localStorage.getItem(SPIN_LOCK_KEY)==="1"){
+      hint.textContent = "✅ Played — thanks!";
+      drawWheel(currentRotation, true);
+      setTimeout(()=>drawWheel(currentRotation,false),120);
+      return;
+    }
 
     spinning = true;
     hint.classList.add("loading");
     hint.textContent = "Spinning…";
-
-    // pressed visual feedback instantly
     drawWheel(currentRotation, true);
 
-    // micro feedback even if network is slow
+    // ALWAYS give instant feedback first
     await microNudge();
 
     try{
       const data = await fetchData();
       if(!data.ok){
-        alert(data.error || "API error");
-        spinning = false;
         hint.classList.remove("loading");
-        hint.textContent = "Thanks! One play per device.";
-        drawWheel(currentRotation);
+        hint.textContent = "Network error. Please try again.";
+        spinning = false;
+        drawWheel(currentRotation,false);
         return;
       }
 
-      // update segments from server
-      segments = data.prizes || segments;
+      // update segments from server (real config)
+      if(Array.isArray(data.prizes) && data.prizes.length){
+        segments = data.prizes;
+      }
       drawWheel(currentRotation);
 
       const idx = indexOfPrize(data.prize);
       await spinToIndex(idx);
 
       localStorage.setItem(SPIN_LOCK_KEY,"1");
-      hint.textContent = "✅ Played — thanks!";
       hint.classList.remove("loading");
+      hint.textContent = "✅ Played — thanks!";
 
       if(String(data.type).toLowerCase()==="blessing"){
         showBlessing(data.blessingText || "Good luck!");
@@ -481,26 +479,16 @@ if(localStorage.getItem(SPIN_LOCK_KEY)==="1"){
         showPrize(data.prize);
       }
     }catch(err){
-      alert("Network error: " + err);
       hint.classList.remove("loading");
       hint.textContent = "Network error. Please try again.";
+      alert("Network error: " + err);
     }finally{
       spinning = false;
-      drawWheel(currentRotation);
+      drawWheel(currentRotation,false);
     }
   }
 
-  // better touch responsiveness: use touchstart + click
-  function onPointer(){
-    const rect = canvas.getBoundingClientRect();
-    return function (clientX, clientY){
-      const x = (clientX - rect.left) * (canvas.width / rect.width) - cx;
-      const y = (clientY - rect.top)  * (canvas.height / rect.height) - cy;
-      const r = Math.sqrt(x*x + y*y);
-      if(r <= 78) handleSpin(); // bigger hit box
-    }
-  }
-
+  // ====== click/touch hitbox for center button ======
   canvas.addEventListener("touchstart",(e)=>{
     if(!e.touches || !e.touches[0]) return;
     const rect = canvas.getBoundingClientRect();
@@ -520,17 +508,34 @@ if(localStorage.getItem(SPIN_LOCK_KEY)==="1"){
     if(Math.sqrt(x*x+y*y) <= 78) handleSpin();
   });
 
-  // ====== Staff Reset (single device) ======
-  let pressTimer = null;
-  const titleArea = document.getElementById("titleArea");
-  function resetDevice(){
+  // ====== Hidden reset (single device) ======
+  async function resetDevice(){
     const ok = confirm("Reset this device?");
     if(!ok) return;
+
     localStorage.removeItem(SPIN_LOCK_KEY);
-    resultBox.style.display="none";
-    hint.textContent = "Reset done ✅ One play per device.";
+
+    // reset UI state
+    resultBox.style.display = "none";
+    hint.classList.remove("loading");
+    hint.textContent = "Thanks! One play per device.";
+    spinning = false;
+
+    // IMPORTANT: preload prizes so next spin feels like first spin (no 2s wait)
+    try{
+      const data = await fetchData();
+      if(data.ok && Array.isArray(data.prizes) && data.prizes.length){
+        segments = data.prizes;
+      }
+    }catch(e){}
+
+    drawWheel(currentRotation,false);
     alert("Reset done ✅");
   }
+
+  // long-press title area 1.5s
+  let pressTimer = null;
+  const titleArea = document.getElementById("titleArea");
   function startPress(){ pressTimer = setTimeout(resetDevice, 1500); }
   function endPress(){ if(pressTimer) clearTimeout(pressTimer); pressTimer=null; }
 
@@ -541,19 +546,28 @@ if(localStorage.getItem(SPIN_LOCK_KEY)==="1"){
   titleArea.addEventListener("mouseup", endPress);
   titleArea.addEventListener("mouseleave", endPress);
 
-  // ====== INIT ======
-  (async ()=>{
-    try{
-      const data = await fetchData();
-      if(data.ok){
-        segments = data.prizes || [];
-      }else{
-        segments = [{label:"Blessing", type:"blessing"}];
-      }
-    }catch(e){
-      segments = [{label:"Blessing", type:"blessing"}];
-    }
-    drawWheel(currentRotation);
+  // ====== INIT: draw immediately (no blank wheel), then refresh from API ======
+  (function init(){
+    // immediate default wheel (prevents 2s blank on slow network)
+    segments = [
+      {label:"Blessing", type:"blessing"},
+      {label:"This is on us", type:"prize"},
+      {label:"50% off for your next order", type:"prize"},
+      {label:"2 more Dumplings", type:"prize"},
+      {label:"One More Drink", type:"prize"}
+    ];
+    drawWheel(currentRotation,false);
+
+    // background refresh to real config
+    (async ()=>{
+      try{
+        const data = await fetchData();
+        if(data.ok && Array.isArray(data.prizes) && data.prizes.length){
+          segments = data.prizes;
+          drawWheel(currentRotation,false);
+        }
+      }catch(e){}
+    })();
   })();
 </script>
 </body>
