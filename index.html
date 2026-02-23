@@ -16,14 +16,12 @@
       --brand2:#7a3b2d;
       --green:#1f6b3a;
     }
-
     body{
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
       background:radial-gradient(1200px 600px at 50% -10%, #fff8f0 0%, var(--bg) 60%, #f3e8dd 120%);
       color:var(--ink);
     }
-
     .wrap{ max-width:520px; margin:0 auto; padding:18px 16px 28px; }
 
     .badgeTop{
@@ -36,15 +34,11 @@
       color:#6b5248;
       margin:0 auto 14px;
     }
-
-    .lantern{ font-size:18px; }
-
     .header{
       display:flex; align-items:center; justify-content:center;
       gap:12px;
       user-select:none;
     }
-
     .fu{
       width:46px; height:46px; border-radius:14px;
       display:flex; align-items:center; justify-content:center;
@@ -54,7 +48,6 @@
       box-shadow:0 10px 22px rgba(0,0,0,.12);
       flex:0 0 auto;
     }
-
     h1{
       margin:0;
       font-size:30px;
@@ -63,7 +56,6 @@
       letter-spacing:-.3px;
       cursor:pointer; /* long press for reset */
     }
-
     .sub{
       text-align:center;
       margin:10px 0 14px;
@@ -79,17 +71,12 @@
       background:rgba(255,255,255,.35);
       text-align:center;
     }
-
     .followTitle{
       font-weight:1000;
       color:#6b5248;
       margin-bottom:10px;
     }
-
-    .btns{
-      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
-    }
-
+    .btns{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
     .pill{
       padding:10px 16px;
       border-radius:999px;
@@ -107,22 +94,20 @@
       align-items:center;
       gap:10px;
     }
-
     .pointer{
       width:0;height:0;
       border-left:14px solid transparent;
       border-right:14px solid transparent;
       border-bottom:20px solid var(--brand2);
       margin-bottom:-6px;
-      filter:drop-shadow(0 6px 10px rgba(0,0,0,.10));
+      filter:drop-shadow(0 10px 14px rgba(0,0,0,.16));
     }
-
     canvas{
       background:transparent;
       border-radius:50%;
-      box-shadow:0 12px 30px rgba(0,0,0,.10);
+      box-shadow:0 14px 34px rgba(0,0,0,.12);
+      touch-action:manipulation;
     }
-
     .hint{
       margin-top:6px;
       color:#7a6f67;
@@ -132,14 +117,13 @@
     .result{
       margin-top:16px;
       border:1px solid var(--line);
-      background:rgba(255,255,255,.78);
+      background:rgba(255,255,255,.80);
       border-radius:22px;
       padding:16px;
       display:none;
       position:relative;
       overflow:hidden;
     }
-
     .pillSmall{
       display:inline-flex; align-items:center; gap:8px;
       padding:8px 12px;
@@ -149,7 +133,6 @@
       font-weight:1000;
       color:#7a3b2d;
     }
-
     .claimBar{
       margin:12px 0 10px;
       padding:12px 14px;
@@ -159,7 +142,6 @@
       color:var(--green);
       font-weight:1000;
     }
-
     .yougot{
       margin-top:10px;
       font-weight:900;
@@ -168,7 +150,6 @@
       text-align:center;
       font-size:12px;
     }
-
     .big{
       margin-top:8px;
       font-size:34px;
@@ -177,34 +158,33 @@
       color:#111;
       text-align:center;
     }
-
     .big.bless{ font-size:30px; }
-
     .foot{
       margin-top:12px;
       color:#8a857f;
       font-weight:700;
       text-align:center;
     }
-
-    /* little confetti dots */
     .result:before{
       content:"";
       position:absolute;
       inset:-40px;
       background:
-        radial-gradient(circle at 20% 20%, rgba(255,196,0,.18) 0 4px, transparent 5px),
-        radial-gradient(circle at 70% 30%, rgba(180,107,82,.18) 0 4px, transparent 5px),
-        radial-gradient(circle at 40% 80%, rgba(117,214,149,.18) 0 4px, transparent 5px);
+        radial-gradient(circle at 20% 20%, rgba(255,196,0,.16) 0 4px, transparent 5px),
+        radial-gradient(circle at 70% 30%, rgba(180,107,82,.14) 0 4px, transparent 5px),
+        radial-gradient(circle at 40% 80%, rgba(117,214,149,.14) 0 4px, transparent 5px);
       pointer-events:none;
     }
+
+    /* small pressed feedback text */
+    .hint.loading{ opacity:.85; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <div style="text-align:center;">
-      <div class="badgeTop"><span class="lantern">🏮</span> Lantern Festival Special</div>
+      <div class="badgeTop">🏮 Lantern Festival Special</div>
     </div>
 
     <div class="header" id="titleArea">
@@ -219,9 +199,9 @@
     <div class="follow">
       <div class="followTitle">💥 Don’t forget to follow us —</div>
       <div class="btns">
-        <a class="pill" href="https://instagram.com/" target="_blank">Instagram</a>
-        <a class="pill" href="https://facebook.com/" target="_blank">Facebook</a>
-        <a class="pill" href="https://tiktok.com/" target="_blank">TikTok</a>
+        <a class="pill" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>        
+        <a class="pill" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
+        <a class="pill" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
       </div>
       <div class="sub" style="margin:10px 0 0;">Follow any ONE platform to stay updated 😉</div>
     </div>
@@ -234,28 +214,23 @@
 
     <div class="result" id="result">
       <div id="topPill" class="pillSmall">BLESSING ✨</div>
-
-      <div id="claimBar" class="claimBar" style="display:none;">
-        🎁 Show this screen to claim
-      </div>
-
+      <div id="claimBar" class="claimBar" style="display:none;">🎁 Show this screen to claim</div>
       <div class="yougot" id="yougot">YOU GOT</div>
       <div class="big" id="bigText"></div>
-
-      <div class="foot" id="foot">
-        Thanks for joining — see you at our dumpling food truck!
-      </div>
+      <div class="foot" id="foot">Thanks for joining — see you at our dumpling food truck!</div>
     </div>
   </div>
 
 <script>
   // ====== CONFIG ======
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYr7kHnw3MFiBkbtVuX6J5hG7pU7zobLGqCFRjhXXElDS5loZpKfya-A6TJc5bLwfM/exec"; // ← 改这里
-  const SPIN_LOCK_KEY = "pge_has_spun"; // one play per device
+  const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  const SPIN_LOCK_KEY = "pge_has_spun";
 
   // ====== STATE ======
   const canvas = document.getElementById("wheel");
   const ctx = canvas.getContext("2d");
+  const hint = document.getElementById("hint");
+
   const W = canvas.width, H = canvas.height;
   const cx = W/2, cy = H/2;
   const radius = W/2 - 12;
@@ -264,8 +239,17 @@
   let currentRotation = -Math.PI/2;
   let spinning = false;
 
-  // ====== DRAW WHEEL (horizontal labels) ======
-  function drawWheel(rot){
+  // five palette (premium pastel)
+  const PALETTE = ["#FFF8F0", "#EAF7F1", "#F1EEFF", "#FFEFE6", "#FFF6D8"];
+
+  // ====== helpers ======
+  function ellipsis(str, max=20){
+    str = String(str||"");
+    return str.length>max ? str.slice(0,max-1)+"…" : str;
+  }
+
+  // ====== DRAW (horizontal labels, closer to outer ring) ======
+  function drawWheel(rot, press=false){
     ctx.clearRect(0,0,W,H);
 
     const n = Math.max(segments.length, 1);
@@ -275,69 +259,74 @@
       const start = rot + i*arc;
       const end = start + arc;
 
-      // slice
       ctx.beginPath();
       ctx.moveTo(cx,cy);
       ctx.arc(cx,cy,radius,start,end);
       ctx.closePath();
-      ctx.fillStyle = i%2===0 ? "rgba(180,107,82,.08)" : "rgba(255,255,255,.92)";
+      ctx.fillStyle = PALETTE[i % PALETTE.length];
       ctx.fill();
+
       ctx.strokeStyle = "rgba(232,220,207,.95)";
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      // label position (keep horizontal)
       const mid = start + arc/2;
-      const tx = cx + Math.cos(mid) * (radius * 0.63);
-      const ty = cy + Math.sin(mid) * (radius * 0.63);
+      const tx = cx + Math.cos(mid) * (radius * 0.78);
+      const ty = cy + Math.sin(mid) * (radius * 0.78);
 
       ctx.save();
       ctx.translate(tx, ty);
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "#6b5248";
-      ctx.font = "900 14px system-ui";
-      ctx.fillText(segments[i]?.label || "", 0, 0, 130);
+      ctx.font = "900 12px system-ui";
+      ctx.fillText(ellipsis(segments[i]?.label || "", 22), 0, 0, 150);
       ctx.restore();
     }
 
-    // outer ring
+    // outer double ring for premium look
     ctx.beginPath();
-    ctx.arc(cx,cy,radius+1,0,Math.PI*2);
-    ctx.strokeStyle="rgba(190,160,135,.55)";
-    ctx.lineWidth=6;
+    ctx.arc(cx,cy,radius+2,0,Math.PI*2);
+    ctx.strokeStyle="rgba(190,160,135,.45)";
+    ctx.lineWidth=8;
     ctx.stroke();
 
-    // inner ring
+    ctx.beginPath();
+    ctx.arc(cx,cy,radius-6,0,Math.PI*2);
+    ctx.strokeStyle="rgba(255,255,255,.85)";
+    ctx.lineWidth=3;
+    ctx.stroke();
+
+    // inner glow ring
     ctx.beginPath();
     ctx.arc(cx,cy,radius*0.62,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,255,255,.45)";
+    ctx.fillStyle="rgba(255,255,255,.42)";
     ctx.fill();
 
-    // center button
+    // center button (pressed feedback)
     ctx.beginPath();
-    ctx.arc(cx,cy,70,0,Math.PI*2);
-    ctx.fillStyle="rgba(180,107,82,.30)";
+    ctx.arc(cx,cy,72,0,Math.PI*2);
+    ctx.fillStyle = press ? "rgba(180,107,82,.42)" : "rgba(180,107,82,.30)";
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(cx,cy,52,0,Math.PI*2);
-    ctx.fillStyle="rgba(180,107,82,.55)";
+    ctx.arc(cx,cy,54,0,Math.PI*2);
+    ctx.fillStyle = press ? "rgba(180,107,82,.70)" : "rgba(180,107,82,.55)";
     ctx.fill();
 
     ctx.fillStyle="#fff";
     ctx.font="1000 24px system-ui";
     ctx.textAlign="center";
-    ctx.fillText("Spin", cx, cy+8);
+    ctx.fillText(spinning ? "..." : "Spin", cx, cy+8);
 
-    ctx.fillStyle="rgba(255,255,255,.85)";
+    ctx.fillStyle="rgba(255,255,255,.88)";
     ctx.font="900 12px system-ui";
-    ctx.fillText("tap to spin", cx, cy+30);
+    ctx.fillText(spinning ? "loading" : "tap to spin", cx, cy+30);
   }
 
   // ====== API ======
   async function fetchData(){
-    const res = await fetch(SCRIPT_URL);
+    const res = await fetch(SCRIPT_URL, {cache:"no-store"});
     return await res.json();
   }
 
@@ -366,7 +355,7 @@
     bigText.textContent = prize;
   }
 
-  // ====== SPIN LOGIC ======
+  // ====== SPIN ======
   function indexOfPrize(name){
     const s = String(name||"").toLowerCase();
     const i = segments.findIndex(x => String(x.label).toLowerCase() === s);
@@ -378,7 +367,10 @@
       const n = segments.length;
       const arc = (Math.PI*2)/n;
 
+      // pointer is at top (-pi/2), so rotate slice center to that
       const target = -Math.PI/2 - (landIndex*arc + arc/2);
+
+      // add multiple spins
       const spins = 6 * Math.PI*2;
       const startRot = currentRotation;
       const endRot = target - spins;
@@ -399,67 +391,127 @@
     });
   }
 
+  // instant feedback micro-spin
+  function microNudge(){
+    return new Promise(resolve=>{
+      const startRot = currentRotation;
+      const endRot = currentRotation - Math.PI/5;
+      const duration = 220;
+      const t0 = performance.now();
+      const ease = t => 1 - Math.pow(1-t,2);
+
+      function anim(now){
+        const t = Math.min(1, (now - t0)/duration);
+        const k = ease(t);
+        currentRotation = startRot + (endRot - startRot)*k;
+        drawWheel(currentRotation);
+        if(t<1) requestAnimationFrame(anim);
+        else resolve();
+      }
+      requestAnimationFrame(anim);
+    });
+  }
+
   async function handleSpin(){
     if(spinning) return;
 
-    // one play per device
-    if(localStorage.getItem(SPIN_LOCK_KEY)==="1"){
-      alert("Already played on this device. (Staff can reset by long-pressing the title)");
-      return;
-    }
+if(localStorage.getItem(SPIN_LOCK_KEY)==="1"){
+  // Consumer-friendly message, no staff hint
+  hint.textContent = "✅ Played — thanks!";
+  // optional tiny shake feedback to acknowledge tap
+  drawWheel(currentRotation, true);
+  setTimeout(()=>drawWheel(currentRotation,false),120);
+  return;
+}
 
     spinning = true;
+    hint.classList.add("loading");
+    hint.textContent = "Spinning…";
+
+    // pressed visual feedback instantly
+    drawWheel(currentRotation, true);
+
+    // micro feedback even if network is slow
+    await microNudge();
+
     try{
       const data = await fetchData();
       if(!data.ok){
         alert(data.error || "API error");
         spinning = false;
+        hint.classList.remove("loading");
+        hint.textContent = "Thanks! One play per device.";
+        drawWheel(currentRotation);
         return;
       }
 
+      // update segments from server
       segments = data.prizes || segments;
       drawWheel(currentRotation);
 
       const idx = indexOfPrize(data.prize);
       await spinToIndex(idx);
 
-      // lock after successful play
       localStorage.setItem(SPIN_LOCK_KEY,"1");
+      hint.textContent = "✅ Played — thanks!";
+      hint.classList.remove("loading");
 
       if(String(data.type).toLowerCase()==="blessing"){
         showBlessing(data.blessingText || "Good luck!");
       }else{
         showPrize(data.prize);
       }
-
     }catch(err){
       alert("Network error: " + err);
+      hint.classList.remove("loading");
+      hint.textContent = "Network error. Please try again.";
     }finally{
       spinning = false;
+      drawWheel(currentRotation);
     }
   }
 
-  // center click only
+  // better touch responsiveness: use touchstart + click
+  function onPointer(){
+    const rect = canvas.getBoundingClientRect();
+    return function (clientX, clientY){
+      const x = (clientX - rect.left) * (canvas.width / rect.width) - cx;
+      const y = (clientY - rect.top)  * (canvas.height / rect.height) - cy;
+      const r = Math.sqrt(x*x + y*y);
+      if(r <= 78) handleSpin(); // bigger hit box
+    }
+  }
+
+  canvas.addEventListener("touchstart",(e)=>{
+    if(!e.touches || !e.touches[0]) return;
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+    const x = (t.clientX - rect.left) * (canvas.width / rect.width) - cx;
+    const y = (t.clientY - rect.top)  * (canvas.height / rect.height) - cy;
+    if(Math.sqrt(x*x+y*y) <= 78) {
+      e.preventDefault();
+      handleSpin();
+    }
+  }, {passive:false});
+
   canvas.addEventListener("click",(e)=>{
     const rect = canvas.getBoundingClientRect();
     const x = (e.clientX - rect.left) * (canvas.width / rect.width) - cx;
     const y = (e.clientY - rect.top)  * (canvas.height / rect.height) - cy;
-    const r = Math.sqrt(x*x + y*y);
-    if(r <= 70) handleSpin();
+    if(Math.sqrt(x*x+y*y) <= 78) handleSpin();
   });
 
-  // ====== Staff Reset: long press title (1.5s), single device only ======
+  // ====== Staff Reset (single device) ======
   let pressTimer = null;
   const titleArea = document.getElementById("titleArea");
-
   function resetDevice(){
-    const ok = confirm("Staff: Reset this device so it can spin again?");
+    const ok = confirm("Reset this device?");
     if(!ok) return;
     localStorage.removeItem(SPIN_LOCK_KEY);
     resultBox.style.display="none";
+    hint.textContent = "Reset done ✅ One play per device.";
     alert("Reset done ✅");
   }
-
   function startPress(){ pressTimer = setTimeout(resetDevice, 1500); }
   function endPress(){ if(pressTimer) clearTimeout(pressTimer); pressTimer=null; }
 
