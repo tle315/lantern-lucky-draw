@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lucky Draw Test</title>
+</head>
+<body>
+  <h1>Lucky Draw Test</h1>
+  <button id="btn">Test API</button>
+  <pre id="result">Ready.</pre>
+
+  <script>
+    const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+    async function testAPI(){
+      const el = document.getElementById("result");
+      el.textContent = "Calling API...";
+      try{
+        const res = await fetch(SCRIPT_URL);
+        const data = await res.json();
+        el.textContent = JSON.stringify(data, null, 2);
+      }catch(err){
+        el.textContent = "Error: " + err;
+      }
+    }
+
+    document.getElementById("btn").addEventListener("click", testAPI);
+  </script>
+</body>
+</html>
