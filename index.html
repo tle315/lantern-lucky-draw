@@ -171,6 +171,16 @@
     }
     canvas{ width:100%; height:100%; display:block; }
 
+    /* Confetti overlay */
+    #confetti{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
     .centerBtn{
       position:absolute;
       inset:0;
@@ -354,6 +364,8 @@
       <div class="wheelZone">
         <div class="wheelWrap" id="wheelWrap">
           <canvas id="wheel" width="900" height="900"></canvas>
+          <canvas id="confetti"></canvas>
+
           <div class="centerBtn">
             <div class="btnCore disabled" id="spinBtn" role="button" aria-label="Spin button" tabindex="0">
               <div class="spinTxt">Spin</div>
@@ -391,19 +403,14 @@ const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71Iv
 /* =========================
    State
 ========================= */
-const LS_KEY = "pge_lucky_draw_played_v2"; // bump to new version
-let cache = {
-  ready:false,
-  pool:[],
-  blessings:[],
-  labels:[],  // segment labels (prize names)
-  weights:[], // weights for drawing choice
-  types:[],   // type per segment
-};
+const LS_KEY = "pge_lucky_draw_played_v3"; // bump to new version
+let cache = { ready:false, pool:[], blessings:[], labels:[], weights:[], types:[] };
 
 let ui = {
   wheel: document.getElementById("wheel"),
   ctx: document.getElementById("wheel").getContext("2d"),
+  confetti: document.getElementById("confetti"),
+  cfx: document.getElementById("confetti").getContext("2d"),
   spinBtn: document.getElementById("spinBtn"),
   spinHint: document.getElementById("spinHint"),
   resultCard: document.getElementById("resultCard"),
@@ -413,19 +420,124 @@ let ui = {
   chipRight: document.getElementById("chipRight"),
   toast: document.getElementById("toast"),
   titleHoldArea: document.getElementById("titleHoldArea"),
+  wheelWrap: document.getElementById("wheelWrap"),
 };
 
 let spinning = false;
 let currentAngle = 0; // radians
 let rafId = null;
 
-const SEG_COLORS = [
-  "#F6E4D6", // warm cream
-  "#E6F0EA", // mint
-  "#E8E3F4", // lavender
-  "#F3EACF", // honey
-  "#F7DDE0", // blush
+/* 5 base colors (we will gradient them) */
+const SEG_BASE = [
+  "#F6E4D6",
+  "#E6F0EA",
+  "#E8E3F4",
+  "#F3EACF",
+  "#F7DDE0",
 ];
+
+/* =========================
+   Audio (tick) - WebAudio synth (no external file)
+========================= */
+let audioCtx = null;
+let audioUnlocked = false;
+
+function ensureAudio(){
+  if(audioUnlocked) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if(audioCtx.state === "suspended") audioCtx.resume();
+    audioUnlocked = true;
+  }catch(e){ /* ignore */ }
+}
+
+function playTick(strength=1){
+  if(!audioUnlocked || !audioCtx) return;
+  const t = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  // short "click": triangle + fast decay
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(1200, t);
+  osc.frequency.exponentialRampToValueAtTime(600, t + 0.03);
+
+  const vol = 0.03 * strength; // subtle
+  gain.gain.setValueAtTime(vol, t);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
+
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(t);
+  osc.stop(t + 0.055);
+}
+
+/* =========================
+   Confetti (lightweight)
+========================= */
+function resizeConfetti(){
+  const r = ui.wheelWrap.getBoundingClientRect();
+  ui.confetti.width  = Math.floor(r.width * devicePixelRatio);
+  ui.confetti.height = Math.floor(r.height * devicePixelRatio);
+}
+window.addEventListener("resize", resizeConfetti);
+resizeConfetti();
+
+function burstConfetti(){
+  resizeConfetti();
+  const ctx = ui.cfx;
+  const W = ui.confetti.width, H = ui.confetti.height;
+
+  const colors = ["#caa35a","#9a3b2f","#2f7a4a","#b16d56","#ffffff"];
+  const parts = [];
+  const N = 80;
+
+  for(let i=0;i<N;i++){
+    parts.push({
+      x: (W/2) + (Math.random()*80-40)*devicePixelRatio,
+      y: (H*0.20) + (Math.random()*40-20)*devicePixelRatio,
+      vx: (Math.random()*2-1) * 7 * devicePixelRatio,
+      vy: (Math.random()*-1) * 12 * devicePixelRatio,
+      g: 0.55 * devicePixelRatio,
+      r: (Math.random()*4+3) * devicePixelRatio,
+      rot: Math.random()*Math.PI*2,
+      vr: (Math.random()*2-1)*0.18,
+      c: colors[i % colors.length],
+      life: 0
+    });
+  }
+
+  const dur = 1100;
+  const t0 = performance.now();
+
+  function step(now){
+    const t = now - t0;
+    ctx.clearRect(0,0,W,H);
+
+    for(const p of parts){
+      p.life = t/dur;
+      p.vy += p.g;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+
+      const alpha = Math.max(0, 1 - p.life);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.r, -p.r*0.55, p.r*2, p.r*1.1);
+      ctx.restore();
+    }
+
+    if(t < dur){
+      requestAnimationFrame(step);
+    }else{
+      ctx.clearRect(0,0,W,H);
+    }
+  }
+  requestAnimationFrame(step);
+}
 
 /* =========================
    Utilities
@@ -443,7 +555,6 @@ async function fetchCSV(url){
   return await res.text();
 }
 
-// CSV parser (handles quotes)
 function parseCSV(text){
   const rows = [];
   let row = [], cur = "", inQ = false;
@@ -468,7 +579,6 @@ function parseCSV(text){
   if(cur.length || row.length){
     row.push(cur); rows.push(row);
   }
-
   while(rows.length && rows[rows.length-1].every(x => String(x).trim()==="")) rows.pop();
   return rows;
 }
@@ -503,21 +613,40 @@ function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
 
 function shortLabel(s){
   s = String(s || "").trim();
-  // keep it tidy on wheel
   if(s.length > 22) return s.slice(0, 20) + "…";
   return s;
 }
 
-function isPlayed(){
-  return localStorage.getItem(LS_KEY) === "1";
-}
-function setPlayed(v){
-  localStorage.setItem(LS_KEY, v ? "1" : "0");
-}
+function isPlayed(){ return localStorage.getItem("pge_lucky_draw_played_v3") === "1"; }
+function setPlayed(v){ localStorage.setItem("pge_lucky_draw_played_v3", v ? "1" : "0"); }
 
 /* =========================
-   Drawing (canvas wheel)
+   Wheel drawing (gradient segments)
 ========================= */
+function brighten(hex, amt=18){
+  // very small helper for subtle gradient; hex like #RRGGBB
+  const h = hex.replace("#","");
+  const r = parseInt(h.slice(0,2),16);
+  const g = parseInt(h.slice(2,4),16);
+  const b = parseInt(h.slice(4,6),16);
+  const nr = clamp(r + amt, 0, 255);
+  const ng = clamp(g + amt, 0, 255);
+  const nb = clamp(b + amt, 0, 255);
+  const toHex = (x)=> x.toString(16).padStart(2,"0");
+  return "#" + toHex(nr) + toHex(ng) + toHex(nb);
+}
+function darken(hex, amt=16){
+  const h = hex.replace("#","");
+  const r = parseInt(h.slice(0,2),16);
+  const g = parseInt(h.slice(2,4),16);
+  const b = parseInt(h.slice(4,6),16);
+  const nr = clamp(r - amt, 0, 255);
+  const ng = clamp(g - amt, 0, 255);
+  const nb = clamp(b - amt, 0, 255);
+  const toHex = (x)=> x.toString(16).padStart(2,"0");
+  return "#" + toHex(nr) + toHex(ng) + toHex(nb);
+}
+
 function drawWheel(labels){
   const ctx = ui.ctx;
   const W = ui.wheel.width, H = ui.wheel.height;
@@ -537,7 +666,6 @@ function drawWheel(labels){
   const outerR = W * 0.46;
   const innerR = W * 0.18;
 
-  // rotate wheel by currentAngle
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate(currentAngle);
@@ -547,47 +675,55 @@ function drawWheel(labels){
     const start = (i * 2*Math.PI / N) - Math.PI/2;
     const end   = ((i+1) * 2*Math.PI / N) - Math.PI/2;
 
-    // segment
+    const base = SEG_BASE[i % SEG_BASE.length];
+    const grad = ctx.createRadialGradient(cx, cy, innerR*0.7, cx, cy, outerR);
+    grad.addColorStop(0, brighten(base, 26));
+    grad.addColorStop(0.55, base);
+    grad.addColorStop(1, darken(base, 10));
+
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     ctx.arc(cx, cy, outerR, start, end);
     ctx.closePath();
-
-    ctx.fillStyle = SEG_COLORS[i % SEG_COLORS.length];
+    ctx.fillStyle = grad;
     ctx.fill();
 
-    ctx.strokeStyle = "rgba(120,90,70,.16)";
+    // subtle highlight strip near outer edge
+    ctx.save();
+    ctx.globalAlpha = 0.10;
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR*0.98, start, end);
+    ctx.arc(cx, cy, outerR*0.88, end, start, true);
+    ctx.closePath();
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(120,90,70,.15)";
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // label (smaller, outward, not blocking center)
+    // labels (smaller, outward)
     const mid = (start + end) / 2;
     const text = shortLabel(labels[i]);
-
     const tx = cx + Math.cos(mid) * (outerR * 0.78);
     const ty = cy + Math.sin(mid) * (outerR * 0.78);
 
     ctx.save();
     ctx.translate(tx, ty);
 
-    // slightly align with arc but keep readable (avoid vertical)
     let rot = mid;
-    // normalize angle to [-pi, pi]
     while(rot > Math.PI) rot -= 2*Math.PI;
     while(rot < -Math.PI) rot += 2*Math.PI;
-
-    // If too vertical, flatten it
     if(Math.abs(rot) > 1.2) rot = rot > 0 ? 1.2 : -1.2;
-
     ctx.rotate(rot);
 
-    ctx.font = "800 30px ui-sans-serif, system-ui";
-    ctx.fillStyle = "rgba(55,40,30,.78)";
+    ctx.font = "800 28px ui-sans-serif, system-ui";
+    ctx.fillStyle = "rgba(55,40,30,.80)";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    // wrap into 2 lines max
-    const maxW = outerR * 0.55;
+    const maxW = outerR * 0.56;
     const words = text.split(" ");
     const lines = [];
     let line = "";
@@ -603,7 +739,7 @@ function drawWheel(labels){
     }
     if(line && lines.length < 2) lines.push(line);
 
-    const lh = 34;
+    const lh = 32;
     const offset = (lines.length-1) * lh * 0.5;
     for(let li=0;li<lines.length;li++){
       ctx.fillText(lines[li], 0, (li*lh) - offset);
@@ -631,14 +767,11 @@ function drawWheel(labels){
 }
 
 /* =========================
-   Load data (prefetch + cache)
+   Load data (weights from sheet)
 ========================= */
 async function loadData(){
   try{
-    const [poolText, blessText] = await Promise.all([
-      fetchCSV(POOL_CSV_URL),
-      fetchCSV(BLESS_CSV_URL),
-    ]);
+    const [poolText, blessText] = await Promise.all([ fetchCSV(POOL_CSV_URL), fetchCSV(BLESS_CSV_URL) ]);
 
     const pool = rowsToObjects(parseCSV(poolText))
       .filter(x => String(x.active ?? "TRUE").toUpperCase() !== "FALSE");
@@ -660,7 +793,6 @@ async function loadData(){
       types.push(String(r.type ?? "prize").trim().toLowerCase());
     }
 
-    // Fallback if sheet empty
     if(labels.length === 0){
       labels.push("Blessing");
       weights.push(1);
@@ -674,11 +806,9 @@ async function loadData(){
     cache.types = types;
     cache.ready = true;
 
-    // Enable spin immediately when ready
     ui.spinBtn.classList.remove("disabled");
     ui.spinHint.textContent = "tap to spin";
 
-    // redraw with real labels
     drawWheel(cache.labels);
 
   }catch(e){
@@ -688,48 +818,60 @@ async function loadData(){
 }
 
 /* =========================
-   Spin logic (guaranteed spin)
+   Spin logic + click tick while spinning
 ========================= */
 function computeStopAngleForIndex(index){
   const N = cache.labels.length;
   const seg = 2*Math.PI / N;
-
-  // pointer is at top (-pi/2). Our segment 0 starts at top due to draw offset.
-  // We want chosen segment center to land at top.
   const targetCenter = (index + 0.5) * seg;
-  // because we rotate canvas by currentAngle, we need currentAngle such that:
-  // currentAngle + targetCenter = 0 (top), but we included -pi/2 in drawing start.
-  // With our draw math, "top" corresponds to angle 0 in our rotated coordinate.
-  // Thus: currentAngle = -targetCenter
   return -targetCenter;
 }
 
+let lastTickIndex = -1;
+function tickByAngle(){
+  const N = cache.labels.length;
+  const seg = 2*Math.PI / N;
+  // map currentAngle to segment boundary crossings
+  const a = ((currentAngle % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+  const idx = Math.floor(a / seg);
+  if(idx !== lastTickIndex){
+    lastTickIndex = idx;
+    playTick(1);
+  }
+}
+
 function animateToAngle(targetAngle){
-  // fast + premium easing
   const start = currentAngle;
   let delta = targetAngle - start;
 
-  // normalize delta to shortest but then add multiple spins
   while(delta < 0) delta += 2*Math.PI;
-  delta += 2*Math.PI * (4 + Math.floor(Math.random()*2)); // 4~5 full spins
+  delta += 2*Math.PI * (4 + Math.floor(Math.random()*2)); // 4~5 spins
 
-  const duration = 1600 + Math.floor(Math.random()*250); // ~1.6-1.85s
+  const duration = 1600 + Math.floor(Math.random()*250);
   const t0 = performance.now();
 
   function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+  lastTickIndex = -1;
 
   function tick(now){
     const t = clamp((now - t0)/duration, 0, 1);
     const eased = easeOutCubic(t);
     currentAngle = start + delta * eased;
+
     drawWheel(cache.labels);
+    // subtle click while spinning (not too frequent)
+    if(t < 0.98) tickByAngle();
 
     if(t < 1){
       rafId = requestAnimationFrame(tick);
     }else{
-      // normalize angle
       currentAngle = ((currentAngle % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
       drawWheel(cache.labels);
+
+      // final "click"
+      playTick(1.2);
+
       spinning = false;
       ui.spinHint.textContent = "tap to spin";
       ui.spinBtn.classList.remove("disabled");
@@ -746,12 +888,13 @@ function showResult({type, prize, blessingText}){
     ui.chipLeft.textContent = "BLESSING ✨";
     ui.chipLeft.className = "chip";
     ui.resultBig.textContent = blessingText || "Good luck is coming your way :)";
-    ui.resultClaim.textContent = ""; // no claim text for blessing
+    ui.resultClaim.textContent = "";
   }else{
-    ui.chipLeft.textContent = "PRIZE 🎁";
+    ui.chipLeft.textContent = "YOU WON 🎉";
     ui.chipLeft.className = "chip prize";
     ui.resultBig.textContent = prize;
     ui.resultClaim.textContent = "If you win a prize, show this screen to our staff to claim.";
+    burstConfetti();
   }
 }
 
@@ -771,34 +914,30 @@ function pickBlessingText(){
 function spinOnce(){
   if(spinning) return;
 
-  // If already played: do NOT expose staff hint
+  // unlock audio on user gesture
+  ensureAudio();
+
   if(isPlayed()){
     showToast("Already played on this device.", 1400);
     return;
   }
-
   if(!cache.ready){
     showToast("Loading… try again in a moment.", 1400);
     return;
   }
 
-  // lock
   spinning = true;
   ui.spinBtn.classList.add("disabled");
   ui.spinHint.textContent = "spinning…";
 
-  // Decide outcome immediately (no network)
   const chosenIndex = pickWeightedIndex(cache.weights);
   const chosenType = cache.types[chosenIndex] || "prize";
   const chosenPrize = cache.labels[chosenIndex] || "Prize";
-
   const blessingText = (chosenType === "blessing") ? pickBlessingText() : "";
 
-  // Start animation immediately (guaranteed spin feel)
   const stopAngle = computeStopAngleForIndex(chosenIndex);
   animateToAngle(stopAngle);
 
-  // Mark played & show result slightly before animation ends feels good
   setTimeout(()=>{
     setPlayed(true);
     showResult({ type: chosenType, prize: chosenPrize, blessingText });
@@ -812,16 +951,14 @@ function setupLongPressReset(){
   let pressTimer = null;
   let pressed = false;
 
-  const start = (e)=>{
+  const start = ()=>{
     if(pressed) return;
     pressed = true;
     pressTimer = setTimeout(()=>{
-      // reset local only
       setPlayed(false);
       ui.resultCard.style.display = "none";
       showToast("Reset on this device ✅", 1200);
 
-      // ensure wheel is instantly ready again (no slow loading)
       ui.spinHint.textContent = cache.ready ? "tap to spin" : "loading…";
       ui.spinBtn.classList.toggle("disabled", !cache.ready);
       spinning = false;
@@ -844,16 +981,12 @@ function setupLongPressReset(){
 setupLongPressReset();
 
 /* =========================
-   Boot
+   Boot (instant placeholder wheel)
 ========================= */
-// Draw instant placeholder wheel (no 2s blank)
 const placeholder = ["Blessing","This is on us","50% off next","2 more Dumplings","One more Drink"];
 drawWheel(placeholder);
-
-// Prefetch data ASAP (parallel) — once loaded enable spin
 loadData();
 
-// Spin events (button only, no extra button)
 ui.spinBtn.addEventListener("click", (e)=>{ e.preventDefault(); spinOnce(); });
 ui.spinBtn.addEventListener("keydown", (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); spinOnce(); }});
 </script>
