@@ -432,7 +432,8 @@
 
         // ✅ text: smaller + further out to avoid center button
         const mid = (start+end)/2;
-        const rText = outerR*0.80;     // was ~0.70
+        const rText = outerR * 0.89;  // ✅ 更靠外，远离 Spin
+        ctx.font = "800 24px ui-sans-serif, system-ui, -apple-system"; // ✅ 略小更稳
         ctx.save();
         ctx.rotate(mid);
         ctx.translate(rText,0);
