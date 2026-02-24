@@ -1,1 +1,758 @@
-<!doctype html> <html lang="en"> <head> <meta charset="utf-8" /> <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" /> <meta name="theme-color" content="#F6F1E8" /> <title>PandaGoldenEar Lucky Draw</title> <style> :root{ --bg:#F6F1E8; --ink:#1b1b1b; --muted:#7a726a; --line:#E8DDCF; --dash:#D7C6B2; --brand:#9a3b2f; --brand2:#b06a57; --shadow: 0 14px 36px rgba(20,20,20,.08); --radius: 22px; } *{box-sizing:border-box} html,body{height:100%} body{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"; color:var(--ink); background: radial-gradient(1000px 520px at 50% -120px, #fff 0%, var(--bg) 55%, #f2e8db 110%); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; } a{color:inherit;text-decoration:none} a:active{opacity:.85} .wrap{max-width:740px;margin:0 auto;padding:18px 14px 28px;} .badge-top{display:flex;justify-content:center;margin-top:6px;margin-bottom:10px;} .badge-top .pill{ display:inline-flex;align-items:center;gap:10px; padding:10px 16px;border:1px solid var(--line); border-radius:999px;background:#fff8efaa; box-shadow:0 6px 18px rgba(20,20,20,.06); color:#6b4e3b;font-weight:700;letter-spacing:.2px; } .titleRow{ display:flex;align-items:center;justify-content:center;gap:14px; margin:6px 0 6px;text-align:center; user-select:none;-webkit-user-select:none;touch-action:manipulation; } .fu{ width:54px;height:54px;border-radius:16px; background:linear-gradient(180deg,#b55a45 0%,#8f2f25 100%); display:grid;place-items:center;color:#f7d48c; font-weight:900;font-size:28px; box-shadow:0 10px 24px rgba(154,59,47,.22); flex:0 0 auto; } h1{margin:0;line-height:1.05;font-size:40px;letter-spacing:-0.6px;} .subtitle{text-align:center;margin:8px 0 14px;color:var(--muted);font-size:18px;font-weight:600;} .follow{ border:2px dashed var(--dash);border-radius:var(--radius); padding:14px 14px 12px;background:#fff6ed88; box-shadow:0 10px 28px rgba(20,20,20,.05); } .follow h3{margin:0 0 10px;text-align:center;font-size:22px;letter-spacing:-.2px;color:#6b4e3b;} .follow .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;} .chipLink{ display:inline-flex;align-items:center;justify-content:center;min-width:140px; padding:12px 16px;border-radius:999px;border:1px solid var(--line); background:#fff;box-shadow:0 8px 18px rgba(20,20,20,.05); font-weight:800;color:#4b3a2f; } .follow .hint{text-align:center;color:#7a726a;font-size:18px;font-weight:650;margin:0;} .wheelBlock{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;} .pointer{ width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent; border-bottom:18px solid #7b3a2f; filter:drop-shadow(0 6px 10px rgba(20,20,20,.14)); margin-top:6px; } .wheelShell{ position:relative;width:min(92vw,520px);aspect-ratio:1/1;border-radius:999px; box-shadow:var(--shadow); background:radial-gradient(circle at 30% 20%, #ffffffcc 0%, #f7efe5 40%, #f1e4d5 100%); border:8px solid #ead9c6;overflow:hidden; } canvas#wheel{width:100%;height:100%;display:block;transform:rotate(0deg);will-change:transform;} /* ✅ center button smaller so it won't cover labels */ .centerBtn{ position:absolute;inset:50% auto auto 50%; transform:translate(-50%,-50%); width:46%; /* was 54% */ aspect-ratio:1/1;border-radius:999px;border:10px solid #ffffffbb; background:radial-gradient(circle at 30% 20%, #c9826d 0%, var(--brand2) 30%, var(--brand) 100%); box-shadow:0 18px 44px rgba(154,59,47,.22); display:flex;align-items:center;justify-content:center;flex-direction:column; color:#fff;cursor:pointer;touch-action:manipulation; user-select:none;-webkit-user-select:none; } .centerBtn:active{transform:translate(-50%,-50%) scale(.99)} .centerBtn .big{ font-size:40px;line-height:1;font-weight:950;letter-spacing:-.8px; text-shadow:0 6px 16px rgba(0,0,0,.12);margin-bottom:6px; } .centerBtn .small{font-size:14px;opacity:.92;font-weight:700;letter-spacing:.2px;} .onePlay{text-align:center;color:#7a726a;font-weight:800;font-size:22px;margin:4px 0 6px;} .statusLine{color:var(--muted);font-weight:700;font-size:18px;margin-top:2px;min-height:22px;} .card{ width:min(92vw,560px); border:2px solid var(--line); border-radius:var(--radius); background:#fffdf9cc; box-shadow:0 18px 44px rgba(20,20,20,.06); padding:16px 14px 14px; position:relative;overflow:hidden; } .card .topRow{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;} .pill{ display:inline-flex;align-items:center;gap:10px; padding:10px 14px;border-radius:999px;border:2px solid var(--line); background:#fff;font-weight:900;letter-spacing:.3px; box-shadow:0 10px 22px rgba(20,20,20,.05); white-space:nowrap; } .pill.win{background:#e7f6ed;border-color:#ccead8;color:#1e6b3b;} .pill.played{background:#fff6ed;border-color:#ead8c3;color:#6b4e3b;} .card .label{text-align:center;color:#8b8177;font-weight:900;letter-spacing:7px;margin:6px 0 8px;} .card h2{margin:0;text-align:center;font-size:44px;line-height:1.03;letter-spacing:-.6px;} .card h2.prize{color:var(--brand);} .card .sub{ text-align:center;color:#7a726a;font-weight:700; font-size:14px;line-height:1.35;margin-top:10px; } .card .sub strong{color:#5a524b} canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40;} @media (max-width:420px){ h1{font-size:34px} .fu{width:50px;height:50px;border-radius:14px} .follow h3{font-size:20px} .follow .hint{font-size:16px} .centerBtn .big{font-size:38px} .card h2{font-size:38px} .onePlay{font-size:20px} } </style> </head> <body> <canvas id="confetti"></canvas> <div class="wrap"> <div class="badge-top"> <div class="pill">🏮 Lantern Festival Special</div> </div> <!-- long-press this titleRow 1.2s to reset device --> <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)"> <div class="fu">福</div> <div> <h1>PandaGoldenEar<br/>Lucky Draw</h1> </div> </div> <div class="subtitle">Tap <b>Spin</b> to reveal your surprise.</div> <div class="follow"> <h3>💥 Don’t forget to follow us —</h3> <div class="btns"> <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a> <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a> <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a> </div> <p class="hint">Follow any <b>ONE</b> platform to stay updated 😉</p> </div> <div class="wheelBlock"> <div class="pointer" aria-hidden="true"></div> <div class="wheelShell" id="wheelShell"> <canvas id="wheel" width="900" height="900" aria-label="Prize wheel"></canvas> <div id="centerBtn" class="centerBtn" role="button" tabindex="0" aria-label="Spin"> <div class="big">Spin</div> <div class="small" id="centerSub">tap to spin</div> </div> </div> <div class="onePlay">Thanks! One play per device.</div> <div class="statusLine" id="statusLine"></div> <div class="card" id="resultCard" style="display:none;"> <div class="topRow"> <div class="pill win" id="pillLeft" style="display:none;">YOU WON 🎉</div> <div style="flex:1"></div> <div class="pill played" id="pillRight">✅ Played — thanks!</div> </div> <div class="label">YOU GOT</div> <h2 id="resultTitle"></h2> <div class="sub" id="resultSub"></div> </div> </div> </div> <script> /*********************** * CONFIG (your CSV URLs) ***********************/ const POOL_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv"; const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv"; /*********************** * STATE ***********************/ const LS_KEY = "pge_lucky_played_v1"; let played = localStorage.getItem(LS_KEY) === "1"; let pool = []; let blessings = []; let segments = []; let spinning = false; let rotation = 0; let targetRotation = 0; let startRotation = 0; let spinStartTs = 0; let spinDuration = 3200; let selectedIndex = -1; // audio tick optional let audioEnabled = true; let audioReady = false; let audioCtx = null; const el = { wheel: document.getElementById("wheel"), centerBtn: document.getElementById("centerBtn"), centerSub: document.getElementById("centerSub"), statusLine: document.getElementById("statusLine"), resultCard: document.getElementById("resultCard"), resultTitle: document.getElementById("resultTitle"), resultSub: document.getElementById("resultSub"), pillLeft: document.getElementById("pillLeft"), titleRow: document.getElementById("titleRow"), confetti: document.getElementById("confetti"), }; const ctx = el.wheel.getContext("2d"); /*********************** * CSV parsing ***********************/ function parseCSV(text){ const rows = []; let row = [], cur = "", inQ = false; for(let i=0;i<text.length;i++){ const ch = text[i], next = text[i+1]; if(ch === '"'){ if(inQ && next === '"'){ cur += '"'; i++; } else inQ = !inQ; } else if(ch === ',' && !inQ){ row.push(cur); cur = ""; } else if((ch === '\n' || ch === '\r') && !inQ){ if(cur.length || row.length){ row.push(cur); rows.push(row); row=[]; cur=""; } if(ch === '\r' && next === '\n') i++; } else cur += ch; } if(cur.length || row.length){ row.push(cur); rows.push(row); } return rows; } function toBool(v){ const s = String(v ?? "").trim().toLowerCase(); return (s === "true" || s === "1" || s === "yes" || s === "y"); } function toNum(v){ const n = Number(String(v ?? "").trim()); return Number.isFinite(n) ? n : 0; } async function fetchCSV(url){ const res = await fetch(url, { cache:"no-store" }); if(!res.ok) throw new Error("Failed to fetch CSV"); return await res.text(); } /*********************** * Load data ***********************/ async function loadData(){ const [poolText, blessText] = await Promise.all([ fetchCSV(POOL_CSV_URL), fetchCSV(BLESS_CSV_URL), ]); const poolRows = parseCSV(poolText); const headers = poolRows[0].map(h => String(h).trim().toLowerCase()); const idx = (name) => headers.indexOf(name); const iPrize = idx("prize"); const iWeight = idx("weight"); const iRemaining = idx("remaining"); const iActive = idx("active"); pool = poolRows.slice(1) .map(r => ({ prize: (r[iPrize] ?? "").trim(), weight: toNum(r[iWeight]), remaining: (iRemaining >= 0) ? toNum(r[iRemaining]) : 999999, active: (iActive >= 0) ? toBool(r[iActive]) : true })) .filter(x => x.prize); const blessRows = parseCSV(blessText); const bHeaders = blessRows[0].map(h => String(h).trim().toLowerCase()); const bIdx = bHeaders.indexOf("blessing"); const bActive = bHeaders.indexOf("active"); blessings = blessRows.slice(1) .map(r => ({ text: (r[bIdx] ?? "").trim(), active: (bActive >= 0) ? toBool(r[bActive]) : true })) .filter(x => x.text && x.active) .map(x => x.text); rebuildSegments(); drawWheel(); // draw immediately after data updatePlayedUI(); } function rebuildSegments(){ let filtered = pool.filter(p => p.active && (p.remaining > 0)); const hasBlessing = filtered.some(p => p.prize.toLowerCase() === "blessing"); if(!hasBlessing){ const b = pool.find(p => p.prize.toLowerCase()==="blessing" && p.active); if(b) filtered.push({...b, remaining:999999}); } segments = filtered.map(p => ({ label: p.prize, weight: Math.max(0, p.weight), isBlessing: p.prize.toLowerCase() === "blessing" })); if(segments.length === 0){ segments = [{label:"Blessing", weight:1, isBlessing:true}]; } } /*********************** * Probability (weight-based, from Google Sheet) ***********************/ function pickWeightedIndex(){ const total = segments.reduce((s,x)=> s + (x.weight||0), 0); if(total <= 0) return Math.floor(Math.random()*segments.length); let r = Math.random() * total; for(let i=0;i<segments.length;i++){ r -= (segments[i].weight||0); if(r <= 0) return i; } return segments.length - 1; } /*********************** * Wheel drawing ***********************/ const palette = [ {a:"#f7d7d1", b:"#f3bfb5"}, {a:"#d9f0e6", b:"#bfe6d4"}, {a:"#e5ddfb", b:"#cfc2f6"}, {a:"#fff0c9", b:"#f7e1a1"}, {a:"#e9f1ff", b:"#cfe0ff"}, ]; function wrapText(ctx, text, maxWidth){ const t = String(text); if(ctx.measureText(t).width <= maxWidth) return t; let cut = t; while(cut.length > 3 && ctx.measureText(cut + "…").width > maxWidth){ cut = cut.slice(0,-1); } return cut + "…"; } function drawWheel(){ const W = el.wheel.width, H = el.wheel.height; ctx.clearRect(0,0,W,H); ctx.save(); ctx.translate(W/2,H/2); const outerR = W*0.47; ctx.beginPath(); ctx.arc(0,0,outerR,0,Math.PI*2); ctx.fillStyle = "#ffffff"; ctx.fill(); const n = segments.length; const slice = (Math.PI*2)/n; for(let i=0;i<n;i++){ const start = -Math.PI/2 + i*slice; const end = start + slice; const c = palette[i % palette.length]; const grad = ctx.createRadialGradient(-outerR*0.2, -outerR*0.2, outerR*0.1, 0,0, outerR); grad.addColorStop(0, c.a); grad.addColorStop(1, c.b); ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,outerR,start,end); ctx.closePath(); ctx.fillStyle = grad; ctx.fill(); ctx.strokeStyle = "rgba(120,90,70,.20)"; ctx.lineWidth = 3; ctx.stroke(); // ✅ text: smaller + further out to avoid center button const mid = (start+end)/2; const rText = outerR*0.80; // was ~0.70 ctx.save(); ctx.rotate(mid); ctx.translate(rText,0); ctx.rotate(-mid); // keep horizontal ctx.font = "800 28px ui-sans-serif, system-ui, -apple-system"; // smaller ctx.fillStyle = "rgba(40,30,25,.72)"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; const maxW = outerR*0.42; const label = wrapText(ctx, segments[i].label, maxW); ctx.fillText(label, 0, 0); ctx.restore(); } // inner ring ctx.beginPath(); ctx.arc(0,0,outerR*0.62,0,Math.PI*2); ctx.strokeStyle = "rgba(255,255,255,.65)"; ctx.lineWidth = 10; ctx.stroke(); ctx.restore(); // apply rotation via CSS transform for smoothness el.wheel.style.transform = rotate(${rotation}rad); } /*********************** * Spin animation ***********************/ function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); } // ✅ Correct angle math so wheel lands on the selected slice center at the pointer (top) function spinToIndex(idx){ const n = segments.length; const slice = (Math.PI*2)/n; // With our drawing starting at -90deg: // slice i center (wheel coords) = -90deg + i*slice + slice/2 // To bring that center to the pointer top (-90deg), wheel rotation should be: // rotationTarget = -(i*slice + slice/2) + extraTurns const desired = -(idx*slice + slice/2); const extra = (Math.PI*2) * (3 + Math.floor(Math.random()*2)); // 3-4 turns targetRotation = desired + extra; startRotation = rotation; spinStartTs = performance.now(); spinning = true; el.centerSub.textContent = "spinning…"; el.statusLine.textContent = ""; lastTickBucket = null; requestAnimationFrame(animate); } function animate(){ if(!spinning) return; const now = performance.now(); const t = Math.min(1, (now - spinStartTs) / spinDuration); const eased = easeOutCubic(t); rotation = startRotation + (targetRotation - startRotation) * eased; maybeTick(); drawWheel(); if(t < 1){ requestAnimationFrame(animate); } else { spinning = false; el.centerSub.textContent = "tap to spin"; onSpinEnd(); } } /*********************** * Result rendering ***********************/ function showResult(seg){ const isBlessing = seg.isBlessing; el.pillLeft.style.display = isBlessing ? "none" : "inline-flex"; el.resultCard.style.display = "block"; el.resultTitle.classList.toggle("prize", !isBlessing); if(isBlessing){ el.resultTitle.textContent = "Blessing"; const line = blessings.length ? blessings[Math.floor(Math.random()*blessings.length)] : "Good luck is coming your way :)"; el.resultSub.innerHTML = <strong>${escapeHTML(line)}</strong><br/><br/>Thanks for joining — see you at our dumpling food truck!; } else { el.resultTitle.textContent = seg.label; el.resultSub.innerHTML = If you win a prize, show this screen to our staff to claim.<br/><br/>Thanks for joining — see you at our dumpling food truck!; } } function escapeHTML(s){ return String(s) .replaceAll("&","&amp;") .replaceAll("<","&lt;") .replaceAll(">","&gt;") .replaceAll('"',"&quot;") .replaceAll("'","&#039;"); } /*********************** * Confetti (lightweight, only for non-blessing) ***********************/ let confettiRAF = null; function burstConfetti(){ const c = el.confetti; const cctx = c.getContext("2d"); const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1)); const w = window.innerWidth, h = window.innerHeight; c.width = Math.floor(w * dpr); c.height = Math.floor(h * dpr); c.style.width = w + "px"; c.style.height = h + "px"; cctx.setTransform(dpr,0,0,dpr,0,0); const colors = ["#f2b5a7","#cfe0ff","#bfe6d4","#f7e1a1","#cfc2f6","#ffffff"]; const pieces = []; const N = 110; for(let i=0;i<N;i++){ pieces.push({ x: w*0.5 + (Math.random()-0.5)*40, y: h*0.36 + (Math.random()-0.5)*20, vx: (Math.random()-0.5)*8, vy: - (4 + Math.random()*6), g: 0.22 + Math.random()*0.18, s: 4 + Math.random()*4, r: Math.random()*Math.PI, vr: (Math.random()-0.5)*0.25, col: colors[Math.floor(Math.random()*colors.length)], life: 0, max: 120 + Math.random()*40 }); } let frame = 0; cancelAnimationFrame(confettiRAF); function loop(){ frame++; cctx.clearRect(0,0,w,h); for(const p of pieces){ p.life++; p.x += p.vx; p.y += p.vy; p.vy += p.g; p.r += p.vr; const alpha = Math.max(0, 1 - p.life/p.max); cctx.save(); cctx.translate(p.x,p.y); cctx.rotate(p.r); cctx.globalAlpha = alpha; cctx.fillStyle = p.col; cctx.fillRect(-p.s/2, -p.s/2, p.s, p.s*0.66); cctx.restore(); } if(frame < 180) confettiRAF = requestAnimationFrame(loop); else cctx.clearRect(0,0,w,h); } loop(); } /*********************** * Audio tick (optional) ***********************/ function initAudio(){ if(!audioEnabled || audioReady) return; try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); audioReady = true; } catch(e){ audioReady = false; } } function playTick(){ if(!audioReady || !audioCtx) return; const t = audioCtx.currentTime; const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = "square"; o.frequency.setValueAtTime(900, t); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.06, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03); o.connect(g); g.connect(audioCtx.destination); o.start(t); o.stop(t + 0.04); } let lastTickBucket = null; function maybeTick(){ if(!audioEnabled || !audioReady) return; const n = segments.length; const two = Math.PI*2; const slice = two / n; const bucket = Math.floor(((rotation % two) + two) % two / slice); if(bucket !== lastTickBucket){ lastTickBucket = bucket; playTick(); } } /*********************** * Played / reset ***********************/ function updatePlayedUI(){ if(played){ el.statusLine.textContent = ""; } else { el.statusLine.textContent = ""; el.resultCard.style.display = "none"; } } function setPlayed(v){ played = v; localStorage.setItem(LS_KEY, v ? "1" : "0"); updatePlayedUI(); } // Hidden long-press reset on title (1.2s) let lpTimer = null; let lpArmed = false; function armLongPress(){ lpArmed = true; clearTimeout(lpTimer); lpTimer = setTimeout(()=>{ if(!lpArmed) return; setPlayed(false); spinning = false; rotation = 0; targetRotation = 0; el.wheel.style.transform = "rotate(0rad)"; el.centerSub.textContent = "tap to spin"; }, 1200); } function cancelLongPress(){ lpArmed = false; clearTimeout(lpTimer); } /*********************** * Spin interaction (responsive + consistent result) ***********************/ function canSpin(){ return !spinning && !played; } async function doSpin(){ if(!canSpin()) return; // iOS audio unlock initAudio(); if(audioCtx && audioCtx.state === "suspended"){ try{ await audioCtx.resume(); }catch(e){} } selectedIndex = pickWeightedIndex(); // snappy like first time spinDuration = 2900 + Math.random()*650; spinToIndex(selectedIndex); } function onSpinEnd(){ // ✅ DO NOT recompute by rotation; use selectedIndex to avoid mismatch const seg = segments[selectedIndex] || segments[0]; setPlayed(true); showResult(seg); if(!seg.isBlessing){ burstConfetti(); } } // pointerdown is most reliable on mobile el.centerBtn.addEventListener("pointerdown", (e)=>{ e.preventDefault(); doSpin(); }, {passive:false}); // keyboard el.centerBtn.addEventListener("keydown", (e)=>{ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); doSpin(); } }); // silent ignore after played el.centerBtn.addEventListener("click", ()=>{ // no popups, no staff hints }); // long press reset el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true}); el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true}); el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true}); el.titleRow.addEventListener("pointerleave", cancelLongPress, {passive:true}); /*********************** * Boot ***********************/ (async function init(){ // placeholder wheel immediately (avoid blank) segments = [ {label:"Blessing", weight:1, isBlessing:true}, {label:"This is on us", weight:1, isBlessing:false}, {label:"50% off for your next order", weight:1, isBlessing:false}, {label:"2 more Dumplings", weight:1, isBlessing:false}, {label:"One More Drink", weight:1, isBlessing:false}, ]; drawWheel(); try{ await loadData(); }catch(err){ el.statusLine.textContent = "Network error. Please refresh and try again."; console.error(err); } })(); </script> </body> </html>
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#F6F1E8" />
+  <title>PandaGoldenEar Lucky Draw</title>
+
+  <style>
+    :root{
+      --bg:#F6F1E8;
+      --ink:#1b1b1b;
+      --muted:#7a726a;
+      --line:#E8DDCF;
+      --dash:#D7C6B2;
+      --brand:#9a3b2f;
+      --brand2:#b06a57;
+      --shadow: 0 14px 36px rgba(20,20,20,.08);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:
+        radial-gradient(1000px 520px at 50% -120px, #fff 0%, var(--bg) 55%, #f2e8db 110%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    a{color:inherit;text-decoration:none}
+    a:active{opacity:.85}
+
+    .wrap{max-width:740px;margin:0 auto;padding:18px 14px 28px;}
+
+    .badge-top{display:flex;justify-content:center;margin-top:6px;margin-bottom:10px;}
+    .badge-top .pill{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 16px;border:1px solid var(--line);
+      border-radius:999px;background:#fff8efaa;
+      box-shadow:0 6px 18px rgba(20,20,20,.06);
+      color:#6b4e3b;font-weight:700;letter-spacing:.2px;
+    }
+
+    .titleRow{
+      display:flex;align-items:center;justify-content:center;gap:14px;
+      margin:6px 0 6px;text-align:center;
+      user-select:none;-webkit-user-select:none;touch-action:manipulation;
+    }
+    .fu{
+      width:54px;height:54px;border-radius:16px;
+      background:linear-gradient(180deg,#b55a45 0%,#8f2f25 100%);
+      display:grid;place-items:center;color:#f7d48c;
+      font-weight:900;font-size:28px;
+      box-shadow:0 10px 24px rgba(154,59,47,.22);
+      flex:0 0 auto;
+    }
+    h1{margin:0;line-height:1.05;font-size:40px;letter-spacing:-0.6px;}
+    .subtitle{text-align:center;margin:8px 0 14px;color:var(--muted);font-size:18px;font-weight:600;}
+
+    .follow{
+      border:2px dashed var(--dash);border-radius:var(--radius);
+      padding:14px 14px 12px;background:#fff6ed88;
+      box-shadow:0 10px 28px rgba(20,20,20,.05);
+    }
+    .follow h3{margin:0 0 10px;text-align:center;font-size:22px;letter-spacing:-.2px;color:#6b4e3b;}
+    .follow .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}
+    .chipLink{
+      display:inline-flex;align-items:center;justify-content:center;min-width:140px;
+      padding:12px 16px;border-radius:999px;border:1px solid var(--line);
+      background:#fff;box-shadow:0 8px 18px rgba(20,20,20,.05);
+      font-weight:800;color:#4b3a2f;
+    }
+    .follow .hint{text-align:center;color:#7a726a;font-size:18px;font-weight:650;margin:0;}
+
+    .wheelBlock{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .pointer{
+      width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
+      border-bottom:18px solid #7b3a2f;
+      filter:drop-shadow(0 6px 10px rgba(20,20,20,.14));
+      margin-top:6px;
+    }
+
+    .wheelShell{
+      position:relative;width:min(92vw,520px);aspect-ratio:1/1;border-radius:999px;
+      box-shadow:var(--shadow);
+      background:radial-gradient(circle at 30% 20%, #ffffffcc 0%, #f7efe5 40%, #f1e4d5 100%);
+      border:8px solid #ead9c6;overflow:hidden;
+    }
+    canvas#wheel{width:100%;height:100%;display:block;transform:rotate(0deg);will-change:transform;}
+
+    /* ✅ center button smaller so it won't cover labels */
+    .centerBtn{
+      position:absolute;inset:50% auto auto 50%;
+      transform:translate(-50%,-50%);
+      width:46%; /* was 54% */
+      aspect-ratio:1/1;border-radius:999px;border:10px solid #ffffffbb;
+      background:radial-gradient(circle at 30% 20%, #c9826d 0%, var(--brand2) 30%, var(--brand) 100%);
+      box-shadow:0 18px 44px rgba(154,59,47,.22);
+      display:flex;align-items:center;justify-content:center;flex-direction:column;
+      color:#fff;cursor:pointer;touch-action:manipulation;
+      user-select:none;-webkit-user-select:none;
+    }
+    .centerBtn:active{transform:translate(-50%,-50%) scale(.99)}
+    .centerBtn .big{
+      font-size:40px;line-height:1;font-weight:950;letter-spacing:-.8px;
+      text-shadow:0 6px 16px rgba(0,0,0,.12);margin-bottom:6px;
+    }
+    .centerBtn .small{font-size:14px;opacity:.92;font-weight:700;letter-spacing:.2px;}
+
+    .onePlay{text-align:center;color:#7a726a;font-weight:800;font-size:22px;margin:4px 0 6px;}
+    .statusLine{color:var(--muted);font-weight:700;font-size:18px;margin-top:2px;min-height:22px;}
+
+    .card{
+      width:min(92vw,560px);
+      border:2px solid var(--line);
+      border-radius:var(--radius);
+      background:#fffdf9cc;
+      box-shadow:0 18px 44px rgba(20,20,20,.06);
+      padding:16px 14px 14px;
+      position:relative;overflow:hidden;
+    }
+    .card .topRow{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;}
+    .pill{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 14px;border-radius:999px;border:2px solid var(--line);
+      background:#fff;font-weight:900;letter-spacing:.3px;
+      box-shadow:0 10px 22px rgba(20,20,20,.05);
+      white-space:nowrap;
+    }
+    .pill.win{background:#e7f6ed;border-color:#ccead8;color:#1e6b3b;}
+    .pill.played{background:#fff6ed;border-color:#ead8c3;color:#6b4e3b;}
+
+    .card .label{text-align:center;color:#8b8177;font-weight:900;letter-spacing:7px;margin:6px 0 8px;}
+    .card h2{margin:0;text-align:center;font-size:44px;line-height:1.03;letter-spacing:-.6px;}
+    .card h2.prize{color:var(--brand);}
+    .card .sub{
+      text-align:center;color:#7a726a;font-weight:700;
+      font-size:14px;line-height:1.35;margin-top:10px;
+    }
+    .card .sub strong{color:#5a524b}
+
+    canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40;}
+
+    @media (max-width:420px){
+      h1{font-size:34px}
+      .fu{width:50px;height:50px;border-radius:14px}
+      .follow h3{font-size:20px}
+      .follow .hint{font-size:16px}
+      .centerBtn .big{font-size:38px}
+      .card h2{font-size:38px}
+      .onePlay{font-size:20px}
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="confetti"></canvas>
+
+  <div class="wrap">
+    <div class="badge-top">
+      <div class="pill">🏮 Lantern Festival Special</div>
+    </div>
+
+    <!-- long-press this titleRow 1.2s to reset device -->
+    <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)">
+      <div class="fu">福</div>
+      <div>
+        <h1>PandaGoldenEar<br/>Lucky Draw</h1>
+      </div>
+    </div>
+
+    <div class="subtitle">Tap <b>Spin</b> to reveal your surprise.</div>
+
+    <div class="follow">
+      <h3>💥 Don’t forget to follow us —</h3>
+      <div class="btns">
+        <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
+        <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
+        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
+      </div>
+      <p class="hint">Follow any <b>ONE</b> platform to stay updated 😉</p>
+    </div>
+
+    <div class="wheelBlock">
+      <div class="pointer" aria-hidden="true"></div>
+
+      <div class="wheelShell" id="wheelShell">
+        <canvas id="wheel" width="900" height="900" aria-label="Prize wheel"></canvas>
+
+        <div id="centerBtn" class="centerBtn" role="button" tabindex="0" aria-label="Spin">
+          <div class="big">Spin</div>
+          <div class="small" id="centerSub">tap to spin</div>
+        </div>
+      </div>
+
+      <div class="onePlay">Thanks! One play per device.</div>
+      <div class="statusLine" id="statusLine"></div>
+
+      <div class="card" id="resultCard" style="display:none;">
+        <div class="topRow">
+          <div class="pill win" id="pillLeft" style="display:none;">YOU WON 🎉</div>
+          <div style="flex:1"></div>
+          <div class="pill played" id="pillRight">✅ Played — thanks!</div>
+        </div>
+
+        <div class="label">YOU GOT</div>
+        <h2 id="resultTitle"></h2>
+        <div class="sub" id="resultSub"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * CONFIG (your CSV URLs)
+     ***********************/
+    const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
+    const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
+
+    /***********************
+     * STATE
+     ***********************/
+    const LS_KEY = "pge_lucky_played_v1";
+    let played = localStorage.getItem(LS_KEY) === "1";
+
+    let pool = [];
+    let blessings = [];
+    let segments = [];
+
+    let spinning = false;
+    let rotation = 0;
+    let targetRotation = 0;
+    let startRotation = 0;
+    let spinStartTs = 0;
+    let spinDuration = 3200;
+    let selectedIndex = -1;
+
+    // audio tick optional
+    let audioEnabled = true;
+    let audioReady = false;
+    let audioCtx = null;
+
+    const el = {
+      wheel: document.getElementById("wheel"),
+      centerBtn: document.getElementById("centerBtn"),
+      centerSub: document.getElementById("centerSub"),
+      statusLine: document.getElementById("statusLine"),
+      resultCard: document.getElementById("resultCard"),
+      resultTitle: document.getElementById("resultTitle"),
+      resultSub: document.getElementById("resultSub"),
+      pillLeft: document.getElementById("pillLeft"),
+      titleRow: document.getElementById("titleRow"),
+      confetti: document.getElementById("confetti"),
+    };
+    const ctx = el.wheel.getContext("2d");
+
+    /***********************
+     * CSV parsing
+     ***********************/
+    function parseCSV(text){
+      const rows = [];
+      let row = [], cur = "", inQ = false;
+      for(let i=0;i<text.length;i++){
+        const ch = text[i], next = text[i+1];
+        if(ch === '"'){
+          if(inQ && next === '"'){ cur += '"'; i++; }
+          else inQ = !inQ;
+        } else if(ch === ',' && !inQ){
+          row.push(cur); cur = "";
+        } else if((ch === '\n' || ch === '\r') && !inQ){
+          if(cur.length || row.length){ row.push(cur); rows.push(row); row=[]; cur=""; }
+          if(ch === '\r' && next === '\n') i++;
+        } else cur += ch;
+      }
+      if(cur.length || row.length){ row.push(cur); rows.push(row); }
+      return rows;
+    }
+    function toBool(v){
+      const s = String(v ?? "").trim().toLowerCase();
+      return (s === "true" || s === "1" || s === "yes" || s === "y");
+    }
+    function toNum(v){
+      const n = Number(String(v ?? "").trim());
+      return Number.isFinite(n) ? n : 0;
+    }
+    async function fetchCSV(url){
+      const res = await fetch(url, { cache:"no-store" });
+      if(!res.ok) throw new Error("Failed to fetch CSV");
+      return await res.text();
+    }
+
+    /***********************
+     * Load data
+     ***********************/
+    async function loadData(){
+      const [poolText, blessText] = await Promise.all([
+        fetchCSV(POOL_CSV_URL),
+        fetchCSV(BLESS_CSV_URL),
+      ]);
+
+      const poolRows = parseCSV(poolText);
+      const headers = poolRows[0].map(h => String(h).trim().toLowerCase());
+      const idx = (name) => headers.indexOf(name);
+
+      const iPrize = idx("prize");
+      const iWeight = idx("weight");
+      const iRemaining = idx("remaining");
+      const iActive = idx("active");
+
+      pool = poolRows.slice(1)
+        .map(r => ({
+          prize: (r[iPrize] ?? "").trim(),
+          weight: toNum(r[iWeight]),
+          remaining: (iRemaining >= 0) ? toNum(r[iRemaining]) : 999999,
+          active: (iActive >= 0) ? toBool(r[iActive]) : true
+        }))
+        .filter(x => x.prize);
+
+      const blessRows = parseCSV(blessText);
+      const bHeaders = blessRows[0].map(h => String(h).trim().toLowerCase());
+      const bIdx = bHeaders.indexOf("blessing");
+      const bActive = bHeaders.indexOf("active");
+
+      blessings = blessRows.slice(1)
+        .map(r => ({
+          text: (r[bIdx] ?? "").trim(),
+          active: (bActive >= 0) ? toBool(r[bActive]) : true
+        }))
+        .filter(x => x.text && x.active)
+        .map(x => x.text);
+
+      rebuildSegments();
+      drawWheel();      // draw immediately after data
+      updatePlayedUI();
+    }
+
+    function rebuildSegments(){
+      let filtered = pool.filter(p => p.active && (p.remaining > 0));
+      const hasBlessing = filtered.some(p => p.prize.toLowerCase() === "blessing");
+      if(!hasBlessing){
+        const b = pool.find(p => p.prize.toLowerCase()==="blessing" && p.active);
+        if(b) filtered.push({...b, remaining:999999});
+      }
+      segments = filtered.map(p => ({
+        label: p.prize,
+        weight: Math.max(0, p.weight),
+        isBlessing: p.prize.toLowerCase() === "blessing"
+      }));
+      if(segments.length === 0){
+        segments = [{label:"Blessing", weight:1, isBlessing:true}];
+      }
+    }
+
+    /***********************
+     * Probability (weight-based, from Google Sheet)
+     ***********************/
+    function pickWeightedIndex(){
+      const total = segments.reduce((s,x)=> s + (x.weight||0), 0);
+      if(total <= 0) return Math.floor(Math.random()*segments.length);
+
+      let r = Math.random() * total;
+      for(let i=0;i<segments.length;i++){
+        r -= (segments[i].weight||0);
+        if(r <= 0) return i;
+      }
+      return segments.length - 1;
+    }
+
+    /***********************
+     * Wheel drawing
+     ***********************/
+    const palette = [
+      {a:"#f7d7d1", b:"#f3bfb5"},
+      {a:"#d9f0e6", b:"#bfe6d4"},
+      {a:"#e5ddfb", b:"#cfc2f6"},
+      {a:"#fff0c9", b:"#f7e1a1"},
+      {a:"#e9f1ff", b:"#cfe0ff"},
+    ];
+
+    function wrapText(ctx, text, maxWidth){
+      const t = String(text);
+      if(ctx.measureText(t).width <= maxWidth) return t;
+      let cut = t;
+      while(cut.length > 3 && ctx.measureText(cut + "…").width > maxWidth){
+        cut = cut.slice(0,-1);
+      }
+      return cut + "…";
+    }
+
+    function drawWheel(){
+      const W = el.wheel.width, H = el.wheel.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.save();
+      ctx.translate(W/2,H/2);
+
+      const outerR = W*0.47;
+      ctx.beginPath();
+      ctx.arc(0,0,outerR,0,Math.PI*2);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+
+      const n = segments.length;
+      const slice = (Math.PI*2)/n;
+
+      for(let i=0;i<n;i++){
+        const start = -Math.PI/2 + i*slice;
+        const end = start + slice;
+
+        const c = palette[i % palette.length];
+        const grad = ctx.createRadialGradient(-outerR*0.2, -outerR*0.2, outerR*0.1, 0,0, outerR);
+        grad.addColorStop(0, c.a);
+        grad.addColorStop(1, c.b);
+
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.arc(0,0,outerR,start,end);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(120,90,70,.20)";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // ✅ text: smaller + further out to avoid center button
+        const mid = (start+end)/2;
+        const rText = outerR*0.80;     // was ~0.70
+        ctx.save();
+        ctx.rotate(mid);
+        ctx.translate(rText,0);
+        ctx.rotate(-mid); // keep horizontal
+
+        ctx.font = "800 28px ui-sans-serif, system-ui, -apple-system"; // smaller
+        ctx.fillStyle = "rgba(40,30,25,.72)";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const maxW = outerR*0.42;
+        const label = wrapText(ctx, segments[i].label, maxW);
+        ctx.fillText(label, 0, 0);
+        ctx.restore();
+      }
+
+      // inner ring
+      ctx.beginPath();
+      ctx.arc(0,0,outerR*0.62,0,Math.PI*2);
+      ctx.strokeStyle = "rgba(255,255,255,.65)";
+      ctx.lineWidth = 10;
+      ctx.stroke();
+
+      ctx.restore();
+
+      // apply rotation via CSS transform for smoothness
+      el.wheel.style.transform = `rotate(${rotation}rad)`;
+    }
+
+    /***********************
+     * Spin animation
+     ***********************/
+    function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
+
+    // ✅ Correct angle math so wheel lands on the selected slice center at the pointer (top)
+    function spinToIndex(idx){
+      const n = segments.length;
+      const slice = (Math.PI*2)/n;
+
+      // With our drawing starting at -90deg:
+      // slice i center (wheel coords) = -90deg + i*slice + slice/2
+      // To bring that center to the pointer top (-90deg), wheel rotation should be:
+      // rotationTarget = -(i*slice + slice/2) + extraTurns
+      const desired = -(idx*slice + slice/2);
+
+      const extra = (Math.PI*2) * (3 + Math.floor(Math.random()*2)); // 3-4 turns
+      targetRotation = desired + extra;
+
+      startRotation = rotation;
+      spinStartTs = performance.now();
+      spinning = true;
+
+      el.centerSub.textContent = "spinning…";
+      el.statusLine.textContent = "";
+      lastTickBucket = null;
+      requestAnimationFrame(animate);
+    }
+
+    function animate(){
+      if(!spinning) return;
+      const now = performance.now();
+      const t = Math.min(1, (now - spinStartTs) / spinDuration);
+      const eased = easeOutCubic(t);
+      rotation = startRotation + (targetRotation - startRotation) * eased;
+
+      maybeTick();
+      drawWheel();
+
+      if(t < 1){
+        requestAnimationFrame(animate);
+      } else {
+        spinning = false;
+        el.centerSub.textContent = "tap to spin";
+        onSpinEnd();
+      }
+    }
+
+    /***********************
+     * Result rendering
+     ***********************/
+    function showResult(seg){
+      const isBlessing = seg.isBlessing;
+
+      el.pillLeft.style.display = isBlessing ? "none" : "inline-flex";
+      el.resultCard.style.display = "block";
+      el.resultTitle.classList.toggle("prize", !isBlessing);
+
+      if(isBlessing){
+        el.resultTitle.textContent = "Blessing";
+        const line = blessings.length
+          ? blessings[Math.floor(Math.random()*blessings.length)]
+          : "Good luck is coming your way :)";
+        el.resultSub.innerHTML = `<strong>${escapeHTML(line)}</strong><br/><br/>Thanks for joining — see you at our dumpling food truck!`;
+      } else {
+        el.resultTitle.textContent = seg.label;
+        el.resultSub.innerHTML = `If you win a prize, show this screen to our staff to claim.<br/><br/>Thanks for joining — see you at our dumpling food truck!`;
+      }
+    }
+
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    /***********************
+     * Confetti (lightweight, only for non-blessing)
+     ***********************/
+    let confettiRAF = null;
+    function burstConfetti(){
+      const c = el.confetti;
+      const cctx = c.getContext("2d");
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const w = window.innerWidth, h = window.innerHeight;
+      c.width = Math.floor(w * dpr);
+      c.height = Math.floor(h * dpr);
+      c.style.width = w + "px";
+      c.style.height = h + "px";
+      cctx.setTransform(dpr,0,0,dpr,0,0);
+
+      const colors = ["#f2b5a7","#cfe0ff","#bfe6d4","#f7e1a1","#cfc2f6","#ffffff"];
+      const pieces = [];
+      const N = 110;
+
+      for(let i=0;i<N;i++){
+        pieces.push({
+          x: w*0.5 + (Math.random()-0.5)*40,
+          y: h*0.36 + (Math.random()-0.5)*20,
+          vx: (Math.random()-0.5)*8,
+          vy: - (4 + Math.random()*6),
+          g: 0.22 + Math.random()*0.18,
+          s: 4 + Math.random()*4,
+          r: Math.random()*Math.PI,
+          vr: (Math.random()-0.5)*0.25,
+          col: colors[Math.floor(Math.random()*colors.length)],
+          life: 0,
+          max: 120 + Math.random()*40
+        });
+      }
+
+      let frame = 0;
+      cancelAnimationFrame(confettiRAF);
+
+      function loop(){
+        frame++;
+        cctx.clearRect(0,0,w,h);
+        for(const p of pieces){
+          p.life++;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.g;
+          p.r += p.vr;
+
+          const alpha = Math.max(0, 1 - p.life/p.max);
+          cctx.save();
+          cctx.translate(p.x,p.y);
+          cctx.rotate(p.r);
+          cctx.globalAlpha = alpha;
+          cctx.fillStyle = p.col;
+          cctx.fillRect(-p.s/2, -p.s/2, p.s, p.s*0.66);
+          cctx.restore();
+        }
+        if(frame < 180) confettiRAF = requestAnimationFrame(loop);
+        else cctx.clearRect(0,0,w,h);
+      }
+      loop();
+    }
+
+    /***********************
+     * Audio tick (optional)
+     ***********************/
+    function initAudio(){
+      if(!audioEnabled || audioReady) return;
+      try{
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioReady = true;
+      } catch(e){ audioReady = false; }
+    }
+    function playTick(){
+      if(!audioReady || !audioCtx) return;
+      const t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = "square";
+      o.frequency.setValueAtTime(900, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.06, t + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t); o.stop(t + 0.04);
+    }
+    let lastTickBucket = null;
+    function maybeTick(){
+      if(!audioEnabled || !audioReady) return;
+      const n = segments.length;
+      const two = Math.PI*2;
+      const slice = two / n;
+      const bucket = Math.floor(((rotation % two) + two) % two / slice);
+      if(bucket !== lastTickBucket){
+        lastTickBucket = bucket;
+        playTick();
+      }
+    }
+
+    /***********************
+     * Played / reset
+     ***********************/
+    function updatePlayedUI(){
+      if(played){
+        el.statusLine.textContent = "";
+      } else {
+        el.statusLine.textContent = "";
+        el.resultCard.style.display = "none";
+      }
+    }
+    function setPlayed(v){
+      played = v;
+      localStorage.setItem(LS_KEY, v ? "1" : "0");
+      updatePlayedUI();
+    }
+
+    // Hidden long-press reset on title (1.2s)
+    let lpTimer = null;
+    let lpArmed = false;
+    function armLongPress(){
+      lpArmed = true;
+      clearTimeout(lpTimer);
+      lpTimer = setTimeout(()=>{
+        if(!lpArmed) return;
+        setPlayed(false);
+        spinning = false;
+        rotation = 0;
+        targetRotation = 0;
+        el.wheel.style.transform = "rotate(0rad)";
+        el.centerSub.textContent = "tap to spin";
+      }, 1200);
+    }
+    function cancelLongPress(){
+      lpArmed = false;
+      clearTimeout(lpTimer);
+    }
+
+    /***********************
+     * Spin interaction (responsive + consistent result)
+     ***********************/
+    function canSpin(){ return !spinning && !played; }
+
+    async function doSpin(){
+      if(!canSpin()) return;
+
+      // iOS audio unlock
+      initAudio();
+      if(audioCtx && audioCtx.state === "suspended"){
+        try{ await audioCtx.resume(); }catch(e){}
+      }
+
+      selectedIndex = pickWeightedIndex();
+
+      // snappy like first time
+      spinDuration = 2900 + Math.random()*650;
+
+      spinToIndex(selectedIndex);
+    }
+
+    function onSpinEnd(){
+      // ✅ DO NOT recompute by rotation; use selectedIndex to avoid mismatch
+      const seg = segments[selectedIndex] || segments[0];
+
+      setPlayed(true);
+      showResult(seg);
+
+      if(!seg.isBlessing){
+        burstConfetti();
+      }
+    }
+
+    // pointerdown is most reliable on mobile
+    el.centerBtn.addEventListener("pointerdown", (e)=>{
+      e.preventDefault();
+      doSpin();
+    }, {passive:false});
+
+    // keyboard
+    el.centerBtn.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        doSpin();
+      }
+    });
+
+    // silent ignore after played
+    el.centerBtn.addEventListener("click", ()=>{
+      // no popups, no staff hints
+    });
+
+    // long press reset
+    el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
+    el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
+    el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
+    el.titleRow.addEventListener("pointerleave", cancelLongPress, {passive:true});
+
+    /***********************
+     * Boot
+     ***********************/
+    (async function init(){
+      // placeholder wheel immediately (avoid blank)
+      segments = [
+        {label:"Blessing", weight:1, isBlessing:true},
+        {label:"This is on us", weight:1, isBlessing:false},
+        {label:"50% off for your next order", weight:1, isBlessing:false},
+        {label:"2 more Dumplings", weight:1, isBlessing:false},
+        {label:"One More Drink", weight:1, isBlessing:false},
+      ];
+      drawWheel();
+
+      try{
+        await loadData();
+      }catch(err){
+        el.statusLine.textContent = "Network error. Please refresh and try again.";
+        console.error(err);
+      }
+    })();
+  </script>
+</body>
+</html>
