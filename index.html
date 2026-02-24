@@ -3,755 +3,1035 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#F6F1E8" />
   <title>PandaGoldenEar Lucky Draw</title>
 
   <style>
     :root{
       --bg:#F6F1E8;
+      --card:#FFFFFFCC;
       --ink:#1b1b1b;
-      --muted:#7a726a;
-      --line:#E8DDCF;
-      --dash:#D7C6B2;
-      --brand:#9a3b2f;
-      --brand2:#b06a57;
-      --shadow: 0 14px 36px rgba(20,20,20,.08);
-      --radius: 22px;
+      --muted:#6d6d6d;
+      --line:#e7d8c7;
+      --brand:#a55a4a;
+      --brand2:#7f2d27;
+      --shadow: 0 12px 36px rgba(0,0,0,.10);
+      --radius: 28px;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--ink);
       background:
-        radial-gradient(1000px 520px at 50% -120px, #fff 0%, var(--bg) 55%, #f2e8db 110%);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+        radial-gradient(1200px 600px at 50% -10%, #ffe7cf 0%, #f7efe6 45%, var(--bg) 75%);
+      min-height:100vh;
     }
-    a{color:inherit;text-decoration:none}
-    a:active{opacity:.85}
-
-    .wrap{max-width:740px;margin:0 auto;padding:18px 14px 28px;}
-
-    .badge-top{display:flex;justify-content:center;margin-top:6px;margin-bottom:10px;}
-    .badge-top .pill{
-      display:inline-flex;align-items:center;gap:10px;
-      padding:10px 16px;border:1px solid var(--line);
-      border-radius:999px;background:#fff8efaa;
-      box-shadow:0 6px 18px rgba(20,20,20,.06);
-      color:#6b4e3b;font-weight:700;letter-spacing:.2px;
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 22px 16px 40px;
+    }
+    .shell{
+      background: linear-gradient(180deg, #fff9f0 0%, #fff6ea 55%, #fff 120%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 16px 18px;
     }
 
-    .titleRow{
-      display:flex;align-items:center;justify-content:center;gap:14px;
-      margin:6px 0 6px;text-align:center;
-      user-select:none;-webkit-user-select:none;touch-action:manipulation;
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 16px;
+      border:1px solid var(--line);
+      background: #fff6ea;
+      border-radius: 999px;
+      color:#6a4b2e;
+      font-weight:650;
+      letter-spacing:.2px;
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      margin-top:14px;
+      justify-content:center;
+      text-align:center;
     }
     .fu{
-      width:54px;height:54px;border-radius:16px;
-      background:linear-gradient(180deg,#b55a45 0%,#8f2f25 100%);
-      display:grid;place-items:center;color:#f7d48c;
-      font-weight:900;font-size:28px;
-      box-shadow:0 10px 24px rgba(154,59,47,.22);
+      width:58px;height:58px;border-radius:16px;
+      background: radial-gradient(circle at 30% 25%, #c86d5d, #8d3b31);
+      box-shadow: 0 10px 20px rgba(165,90,74,.25);
+      display:grid; place-items:center;
       flex:0 0 auto;
     }
-    h1{margin:0;line-height:1.05;font-size:40px;letter-spacing:-0.6px;}
-    .subtitle{text-align:center;margin:8px 0 14px;color:var(--muted);font-size:18px;font-weight:600;}
+    .fu span{
+      color:#ffd08a;
+      font-size:30px;
+      font-weight:900;
+      transform: translateY(1px);
+    }
+    h1{
+      margin:0;
+      font-size:44px;
+      line-height:1.02;
+      letter-spacing:-.5px;
+    }
+    .sub{
+      margin: 8px 0 0;
+      font-size:20px;
+      color:var(--muted);
+      font-weight:600;
+    }
 
     .follow{
-      border:2px dashed var(--dash);border-radius:var(--radius);
-      padding:14px 14px 12px;background:#fff6ed88;
-      box-shadow:0 10px 28px rgba(20,20,20,.05);
+      margin: 18px auto 8px;
+      padding: 16px 14px;
+      border-radius: 18px;
+      border: 2px dashed #d8c2a8;
+      background: rgba(255,255,255,.60);
+      max-width: 720px;
+      text-align:center;
     }
-    .follow h3{margin:0 0 10px;text-align:center;font-size:22px;letter-spacing:-.2px;color:#6b4e3b;}
-    .follow .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}
-    .chipLink{
-      display:inline-flex;align-items:center;justify-content:center;min-width:140px;
-      padding:12px 16px;border-radius:999px;border:1px solid var(--line);
-      background:#fff;box-shadow:0 8px 18px rgba(20,20,20,.05);
-      font-weight:800;color:#4b3a2f;
+    .follow .t{
+      font-weight:800;
+      color:#6a4b2e;
+      font-size:22px;
+      margin-bottom:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
     }
-    .follow .hint{text-align:center;color:#7a726a;font-size:18px;font-weight:650;margin:0;}
+    .btnrow{
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .social{
+      text-decoration:none;
+      color:#5b4531;
+      background: rgba(255,255,255,.75);
+      border:1px solid #d9c7b3;
+      border-radius:999px;
+      padding:12px 22px;
+      font-weight:800;
+      min-width: 150px;
+      box-shadow: 0 6px 16px rgba(0,0,0,.06);
+      transition: transform .08s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .social:active{ transform: scale(.98); }
+    .follow .hint{
+      color:#7b6a57;
+      font-size:22px;
+      font-weight:700;
+      margin:0;
+    }
 
-    .wheelBlock{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .wheelWrap{
+      margin: 12px auto 0;
+      max-width: 760px;
+      position:relative;
+      display:grid;
+      place-items:center;
+      padding: 18px 0 8px;
+    }
+
     .pointer{
-      width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
-      border-bottom:18px solid #7b3a2f;
-      filter:drop-shadow(0 6px 10px rgba(20,20,20,.14));
-      margin-top:6px;
+      position:absolute;
+      top: 6px;
+      width:0;height:0;
+      border-left:16px solid transparent;
+      border-right:16px solid transparent;
+      border-bottom:26px solid #7f2d27;
+      filter: drop-shadow(0 6px 6px rgba(0,0,0,.20));
+      z-index: 6;
     }
 
-    .wheelShell{
-      position:relative;width:min(92vw,520px);aspect-ratio:1/1;border-radius:999px;
-      box-shadow:var(--shadow);
-      background:radial-gradient(circle at 30% 20%, #ffffffcc 0%, #f7efe5 40%, #f1e4d5 100%);
-      border:8px solid #ead9c6;overflow:hidden;
+    canvas#wheel{
+      width: min(680px, 92vw);
+      height: min(680px, 92vw);
+      display:block;
+      border-radius: 999px;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,.10));
     }
-    canvas#wheel{width:100%;height:100%;display:block;transform:rotate(0deg);will-change:transform;}
 
-    /* ✅ center button smaller so it won't cover labels */
     .centerBtn{
-      position:absolute;inset:50% auto auto 50%;
-      transform:translate(-50%,-50%);
-      width:46%; /* was 54% */
-      aspect-ratio:1/1;border-radius:999px;border:10px solid #ffffffbb;
-      background:radial-gradient(circle at 30% 20%, #c9826d 0%, var(--brand2) 30%, var(--brand) 100%);
-      box-shadow:0 18px 44px rgba(154,59,47,.22);
-      display:flex;align-items:center;justify-content:center;flex-direction:column;
-      color:#fff;cursor:pointer;touch-action:manipulation;
-      user-select:none;-webkit-user-select:none;
+      position:absolute;
+      width: min(190px, 30vw);
+      height: min(190px, 30vw);
+      border-radius:999px;
+      background: radial-gradient(circle at 30% 25%, #b96a5a, #8d3b31);
+      box-shadow: 0 14px 26px rgba(141,59,49,.25);
+      border: 10px solid rgba(255,255,255,.35);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+      z-index: 7;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
-    .centerBtn:active{transform:translate(-50%,-50%) scale(.99)}
-    .centerBtn .big{
-      font-size:40px;line-height:1;font-weight:950;letter-spacing:-.8px;
-      text-shadow:0 6px 16px rgba(0,0,0,.12);margin-bottom:6px;
+    .centerBtn .big{ font-size: clamp(34px, 5vw, 54px); line-height:1; }
+    .centerBtn .small{ font-size: clamp(14px, 2.2vw, 18px); opacity:.95; font-weight:800; margin-top:6px; }
+    .centerBtn.disabled{ opacity:.70; pointer-events:none; }
+
+    .status{
+      margin-top: 10px;
+      font-size: 26px;
+      font-weight: 800;
+      color:#7b6a57;
+      text-align:center;
+      min-height: 34px;
     }
-    .centerBtn .small{font-size:14px;opacity:.92;font-weight:700;letter-spacing:.2px;}
 
-    .onePlay{text-align:center;color:#7a726a;font-weight:800;font-size:22px;margin:4px 0 6px;}
-    .statusLine{color:var(--muted);font-weight:700;font-size:18px;margin-top:2px;min-height:22px;}
-
-    .card{
-      width:min(92vw,560px);
-      border:2px solid var(--line);
-      border-radius:var(--radius);
-      background:#fffdf9cc;
-      box-shadow:0 18px 44px rgba(20,20,20,.06);
-      padding:16px 14px 14px;
-      position:relative;overflow:hidden;
+    .tinyRow{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      align-items:center;
+      margin-top: 6px;
+      color:#7b6a57;
+      font-weight:700;
     }
-    .card .topRow{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;}
-    .pill{
-      display:inline-flex;align-items:center;gap:10px;
-      padding:10px 14px;border-radius:999px;border:2px solid var(--line);
-      background:#fff;font-weight:900;letter-spacing:.3px;
-      box-shadow:0 10px 22px rgba(20,20,20,.05);
-      white-space:nowrap;
+    .toggle{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid #decab6;
+      background: rgba(255,255,255,.55);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      font-size:14px;
     }
-    .pill.win{background:#e7f6ed;border-color:#ccead8;color:#1e6b3b;}
-    .pill.played{background:#fff6ed;border-color:#ead8c3;color:#6b4e3b;}
+    .toggle input{ width:18px; height:18px; }
 
-    .card .label{text-align:center;color:#8b8177;font-weight:900;letter-spacing:7px;margin:6px 0 8px;}
-    .card h2{margin:0;text-align:center;font-size:44px;line-height:1.03;letter-spacing:-.6px;}
-    .card h2.prize{color:var(--brand);}
-    .card .sub{
-      text-align:center;color:#7a726a;font-weight:700;
-      font-size:14px;line-height:1.35;margin-top:10px;
+    .result{
+      margin: 14px auto 0;
+      max-width: 860px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.68);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 20px rgba(0,0,0,.06);
+      padding: 16px 16px 18px;
+      position:relative;
+      overflow:hidden;
     }
-    .card .sub strong{color:#5a524b}
+    .badgeRow{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom: 8px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid #d8c2a8;
+      background: rgba(255,255,255,.6);
+      color:#6a4b2e;
+      font-weight:900;
+      letter-spacing:.5px;
+      min-width: 220px;
+      justify-content:center;
+    }
+    .badge.win{
+      background: rgba(183, 235, 197, .55);
+      border-color: rgba(183, 235, 197, 1);
+      color:#135d2f;
+      justify-content:flex-start;
+    }
+    .badge.played{
+      background: rgba(255,255,255,.52);
+      justify-content:flex-end;
+    }
 
-    canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40;}
+    .yougot{
+      text-align:center;
+      font-weight:900;
+      color:#7b6a57;
+      letter-spacing:10px;
+      margin: 4px 0 8px;
+      font-size: 18px;
+    }
+    .prizeTitle{
+      text-align:center;
+      font-size: clamp(36px, 7.4vw, 68px);
+      margin: 0;
+      letter-spacing:-.6px;
+      line-height: 1.05;
+      color: var(--brand2);
+      font-weight: 950;
+    }
+    .fineprint{
+      text-align:center;
+      margin: 12px auto 0;
+      color:#7b6a57;
+      font-size: 14px; /* 小 30%~40% */
+      font-weight: 750;
+      max-width: 640px;
+      opacity:.9;
+    }
+    .footerline{
+      text-align:center;
+      margin-top: 10px;
+      color:#7b6a57;
+      font-size: 14px; /* 小 30%~40% */
+      font-weight: 750;
+      opacity:.85;
+    }
 
-    @media (max-width:420px){
-      h1{font-size:34px}
-      .fu{width:50px;height:50px;border-radius:14px}
-      .follow h3{font-size:20px}
-      .follow .hint{font-size:16px}
-      .centerBtn .big{font-size:38px}
-      .card h2{font-size:38px}
-      .onePlay{font-size:20px}
+    /* Confetti canvas (lightweight) */
+    #confetti{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index: 9;
+    }
+
+    @media (max-width: 520px){
+      h1{ font-size: 36px; }
+      .sub{ font-size: 18px; }
+      .social{ min-width: 120px; padding: 10px 18px; }
+      .badge{ min-width: 0; flex:1; }
+      .badgeRow{ gap:8px; }
     }
   </style>
 </head>
 
 <body>
-  <canvas id="confetti"></canvas>
-
   <div class="wrap">
-    <div class="badge-top">
-      <div class="pill">🏮 Lantern Festival Special</div>
-    </div>
-
-    <!-- long-press this titleRow 1.2s to reset device -->
-    <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)">
-      <div class="fu">福</div>
-      <div>
-        <h1>PandaGoldenEar<br/>Lucky Draw</h1>
+    <div class="shell">
+      <div style="display:flex;justify-content:center;">
+        <div class="pill">🏮 Lantern Festival Special</div>
       </div>
-    </div>
 
-    <div class="subtitle">Tap <b>Spin</b> to reveal your surprise.</div>
-
-    <div class="follow">
-      <h3>💥 Don’t forget to follow us —</h3>
-      <div class="btns">
-        <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
-        <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
-        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
+      <div class="header">
+        <div class="fu" aria-hidden="true"><span>福</span></div>
+        <!-- 长按标题 reset（隐藏功能，不给消费者提示） -->
+        <div id="titleArea" style="padding-top:2px;">
+          <h1 id="titleText">PandaGoldenEar<br/>Lucky Draw</h1>
+          <p class="sub">Tap <b>Spin</b> to reveal your surprise.</p>
+        </div>
       </div>
-      <p class="hint">Follow any <b>ONE</b> platform to stay updated 😉</p>
-    </div>
 
-    <div class="wheelBlock">
-      <div class="pointer" aria-hidden="true"></div>
+      <div class="follow">
+        <div class="t">💥 Don’t forget to follow us —</div>
+        <div class="btnrow">
+          <a class="social" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
+          <a class="social" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
+          <a class="social" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
+        </div>
+        <p class="hint">Follow any <b>ONE</b> platform to stay updated 😉</p>
+      </div>
 
-      <div class="wheelShell" id="wheelShell">
-        <canvas id="wheel" width="900" height="900" aria-label="Prize wheel"></canvas>
+      <div class="wheelWrap">
+        <div class="pointer" aria-hidden="true"></div>
+        <canvas id="wheel" width="900" height="900"></canvas>
 
-        <div id="centerBtn" class="centerBtn" role="button" tabindex="0" aria-label="Spin">
+        <div id="spinBtn" class="centerBtn" role="button" aria-label="Spin">
           <div class="big">Spin</div>
-          <div class="small" id="centerSub">tap to spin</div>
+          <div class="small">tap to spin</div>
+        </div>
+
+        <div class="status" id="statusText"></div>
+
+        <div class="tinyRow">
+          <div style="font-size:22px;font-weight:850;">Thanks! One play per device.</div>
+        </div>
+        <div class="tinyRow" style="margin-top:10px;">
+          <label class="toggle" title="Optional sound (iOS requires user interaction)">
+            <input type="checkbox" id="soundToggle">
+            <span>Pointer sound</span>
+          </label>
         </div>
       </div>
 
-      <div class="onePlay">Thanks! One play per device.</div>
-      <div class="statusLine" id="statusLine"></div>
+      <div class="result" id="resultCard" style="display:none;">
+        <canvas id="confetti"></canvas>
 
-      <div class="card" id="resultCard" style="display:none;">
-        <div class="topRow">
-          <div class="pill win" id="pillLeft" style="display:none;">YOU WON 🎉</div>
-          <div style="flex:1"></div>
-          <div class="pill played" id="pillRight">✅ Played — thanks!</div>
+        <div class="badgeRow">
+          <div class="badge win" id="badgeLeft" style="justify-content:flex-start;">YOU WON 🎉</div>
+          <div class="badge played" id="badgeRight" style="justify-content:flex-end;">✅ Played — thanks!</div>
         </div>
 
-        <div class="label">YOU GOT</div>
-        <h2 id="resultTitle"></h2>
-        <div class="sub" id="resultSub"></div>
+        <div class="yougot">YOU GOT</div>
+        <h2 class="prizeTitle" id="prizeTitle">Blessing</h2>
+
+        <div class="fineprint" id="claimText">If you win a prize, show this screen to our staff to claim.</div>
+        <div class="footerline">Thanks for joining — see you at our dumpling food truck!</div>
       </div>
     </div>
   </div>
 
-  <script>
-    /***********************
-     * CONFIG (your CSV URLs)
-     ***********************/
-    const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
-    const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
+<script>
+/**
+ * ✅ NO backend.
+ * Reads two public CSV endpoints (Google Sheets -> Publish to web -> CSV).
+ */
+const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
+const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-    /***********************
-     * STATE
-     ***********************/
-    const LS_KEY = "pge_lucky_played_v1";
-    let played = localStorage.getItem(LS_KEY) === "1";
+// localStorage keys (single-device)
+const LS_PLAYED = "pge_ld_played_v3";
+const LS_DATA   = "pge_ld_data_v3";
+const LS_TS     = "pge_ld_ts_v3";
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 min
 
-    let pool = [];
-    let blessings = [];
-    let segments = [];
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const spinBtn = document.getElementById("spinBtn");
+const resultCard = document.getElementById("resultCard");
+const badgeLeft = document.getElementById("badgeLeft");
+const prizeTitleEl = document.getElementById("prizeTitle");
+const claimTextEl = document.getElementById("claimText");
+const statusText = document.getElementById("statusText");
+const soundToggle = document.getElementById("soundToggle");
 
-    let spinning = false;
-    let rotation = 0;
-    let targetRotation = 0;
-    let startRotation = 0;
-    let spinStartTs = 0;
-    let spinDuration = 3200;
-    let selectedIndex = -1;
+// Confetti
+const confettiCanvas = document.getElementById("confetti");
+const cctx = confettiCanvas.getContext("2d");
 
-    // audio tick optional
-    let audioEnabled = true;
-    let audioReady = false;
-    let audioCtx = null;
+// Wheel state
+let segments = [
+  // fallback immediate draw (will be replaced after CSV fetch)
+  { label: "Blessing", weight: 50 },
+  { label: "This is on us", weight: 10 },
+  { label: "50% off for your next order", weight: 10 },
+  { label: "2 more Dumplings", weight: 15 },
+  { label: "One More Drink", weight: 15 }
+];
+let blessings = [
+  "Warning: good luck may follow you home :)"
+];
 
-    const el = {
-      wheel: document.getElementById("wheel"),
-      centerBtn: document.getElementById("centerBtn"),
-      centerSub: document.getElementById("centerSub"),
-      statusLine: document.getElementById("statusLine"),
-      resultCard: document.getElementById("resultCard"),
-      resultTitle: document.getElementById("resultTitle"),
-      resultSub: document.getElementById("resultSub"),
-      pillLeft: document.getElementById("pillLeft"),
-      titleRow: document.getElementById("titleRow"),
-      confetti: document.getElementById("confetti"),
-    };
-    const ctx = el.wheel.getContext("2d");
+let rotation = 0;           // current wheel rotation (radians)
+let isSpinning = false;
+let pointerAngle = -Math.PI/2; // top
 
-    /***********************
-     * CSV parsing
-     ***********************/
-    function parseCSV(text){
-      const rows = [];
-      let row = [], cur = "", inQ = false;
-      for(let i=0;i<text.length;i++){
-        const ch = text[i], next = text[i+1];
-        if(ch === '"'){
-          if(inQ && next === '"'){ cur += '"'; i++; }
-          else inQ = !inQ;
-        } else if(ch === ',' && !inQ){
-          row.push(cur); cur = "";
-        } else if((ch === '\n' || ch === '\r') && !inQ){
-          if(cur.length || row.length){ row.push(cur); rows.push(row); row=[]; cur=""; }
-          if(ch === '\r' && next === '\n') i++;
-        } else cur += ch;
-      }
-      if(cur.length || row.length){ row.push(cur); rows.push(row); }
-      return rows;
+// Visual palette: 5 distinct soft gradients
+const palette = [
+  ["#f6d4dc", "#fff1f4"], // pink
+  ["#ffe2c7", "#fff4e9"], // peach
+  ["#cfeee0", "#f2fff9"], // mint
+  ["#d9d4ff", "#f4f2ff"], // lavender
+  ["#ffe7a8", "#fff6dc"], // yellow
+];
+
+// -------------------- CSV parsing --------------------
+function parseCSV(text){
+  // Simple CSV parser (handles quoted commas)
+  const rows = [];
+  let i=0, cur="", inQ=false;
+  const pushCell = (row) => { row.push(cur); cur=""; };
+  let row=[];
+  while(i < text.length){
+    const ch = text[i];
+    if(ch === '"'){
+      if(inQ && text[i+1] === '"'){ cur += '"'; i++; }
+      else inQ = !inQ;
+    }else if(ch === ',' && !inQ){
+      pushCell(row);
+    }else if((ch === '\n' || ch === '\r') && !inQ){
+      if(ch === '\r' && text[i+1] === '\n') i++;
+      pushCell(row);
+      // skip empty last row
+      const allEmpty = row.every(v => (v ?? "").trim() === "");
+      if(!allEmpty) rows.push(row);
+      row=[];
+    }else{
+      cur += ch;
     }
-    function toBool(v){
-      const s = String(v ?? "").trim().toLowerCase();
-      return (s === "true" || s === "1" || s === "yes" || s === "y");
-    }
-    function toNum(v){
-      const n = Number(String(v ?? "").trim());
-      return Number.isFinite(n) ? n : 0;
-    }
-    async function fetchCSV(url){
-      const res = await fetch(url, { cache:"no-store" });
-      if(!res.ok) throw new Error("Failed to fetch CSV");
-      return await res.text();
-    }
+    i++;
+  }
+  if(cur.length || row.length){
+    pushCell(row);
+    const allEmpty = row.every(v => (v ?? "").trim() === "");
+    if(!allEmpty) rows.push(row);
+  }
+  return rows;
+}
 
-    /***********************
-     * Load data
-     ***********************/
-    async function loadData(){
-      const [poolText, blessText] = await Promise.all([
-        fetchCSV(POOL_CSV_URL),
-        fetchCSV(BLESS_CSV_URL),
-      ]);
+function normalizeHeader(h){
+  return String(h||"").trim().toLowerCase();
+}
 
-      const poolRows = parseCSV(poolText);
-      const headers = poolRows[0].map(h => String(h).trim().toLowerCase());
-      const idx = (name) => headers.indexOf(name);
+function toNum(x, fallback=0){
+  const n = Number(String(x||"").trim());
+  return Number.isFinite(n) ? n : fallback;
+}
 
-      const iPrize = idx("prize");
-      const iWeight = idx("weight");
-      const iRemaining = idx("remaining");
-      const iActive = idx("active");
+async function fetchText(url){
+  const res = await fetch(url, { cache: "no-store" });
+  if(!res.ok) throw new Error("CSV fetch failed");
+  return await res.text();
+}
 
-      pool = poolRows.slice(1)
-        .map(r => ({
-          prize: (r[iPrize] ?? "").trim(),
-          weight: toNum(r[iWeight]),
-          remaining: (iRemaining >= 0) ? toNum(r[iRemaining]) : 999999,
-          active: (iActive >= 0) ? toBool(r[iActive]) : true
-        }))
-        .filter(x => x.prize);
-
-      const blessRows = parseCSV(blessText);
-      const bHeaders = blessRows[0].map(h => String(h).trim().toLowerCase());
-      const bIdx = bHeaders.indexOf("blessing");
-      const bActive = bHeaders.indexOf("active");
-
-      blessings = blessRows.slice(1)
-        .map(r => ({
-          text: (r[bIdx] ?? "").trim(),
-          active: (bActive >= 0) ? toBool(r[bActive]) : true
-        }))
-        .filter(x => x.text && x.active)
-        .map(x => x.text);
-
-      rebuildSegments();
-      drawWheel();      // draw immediately after data
-      updatePlayedUI();
-    }
-
-    function rebuildSegments(){
-      let filtered = pool.filter(p => p.active && (p.remaining > 0));
-      const hasBlessing = filtered.some(p => p.prize.toLowerCase() === "blessing");
-      if(!hasBlessing){
-        const b = pool.find(p => p.prize.toLowerCase()==="blessing" && p.active);
-        if(b) filtered.push({...b, remaining:999999});
-      }
-      segments = filtered.map(p => ({
-        label: p.prize,
-        weight: Math.max(0, p.weight),
-        isBlessing: p.prize.toLowerCase() === "blessing"
-      }));
-      if(segments.length === 0){
-        segments = [{label:"Blessing", weight:1, isBlessing:true}];
+async function loadData(){
+  // cache first
+  try{
+    const ts = toNum(localStorage.getItem(LS_TS), 0);
+    const cached = localStorage.getItem(LS_DATA);
+    if(cached && (Date.now() - ts) < CACHE_TTL_MS){
+      const parsed = JSON.parse(cached);
+      if(parsed?.segments?.length >= 2){
+        segments = parsed.segments;
+        blessings = parsed.blessings?.length ? parsed.blessings : blessings;
+        return;
       }
     }
+  }catch(e){}
 
-    /***********************
-     * Probability (weight-based, from Google Sheet)
-     ***********************/
-    function pickWeightedIndex(){
-      const total = segments.reduce((s,x)=> s + (x.weight||0), 0);
-      if(total <= 0) return Math.floor(Math.random()*segments.length);
+  // fetch CSVs
+  const [poolTxt, blessTxt] = await Promise.all([fetchText(POOL_CSV_URL), fetchText(BLESS_CSV_URL)]);
+  const poolRows = parseCSV(poolTxt);
+  const blessRows = parseCSV(blessTxt);
 
-      let r = Math.random() * total;
-      for(let i=0;i<segments.length;i++){
-        r -= (segments[i].weight||0);
-        if(r <= 0) return i;
+  // Pool: accept either header or simple list
+  // Expected best: columns like "prize" + "weight" (or "probability")
+  let newSegments = [];
+  if(poolRows.length){
+    const header = poolRows[0].map(normalizeHeader);
+    const hasHeader = header.some(h => ["prize","label","name","weight","probability","prob","chance"].includes(h));
+    if(hasHeader){
+      const idxPrize = header.findIndex(h => ["prize","label","name"].includes(h));
+      const idxWeight = header.findIndex(h => ["weight","probability","prob","chance"].includes(h));
+      for(let r=1;r<poolRows.length;r++){
+        const row = poolRows[r];
+        const label = (row[idxPrize] ?? "").trim();
+        if(!label) continue;
+        const w = toNum(row[idxWeight], 0);
+        if(w <= 0) continue;
+        newSegments.push({ label, weight: w });
       }
-      return segments.length - 1;
-    }
-
-    /***********************
-     * Wheel drawing
-     ***********************/
-    const palette = [
-      {a:"#f7d7d1", b:"#f3bfb5"},
-      {a:"#d9f0e6", b:"#bfe6d4"},
-      {a:"#e5ddfb", b:"#cfc2f6"},
-      {a:"#fff0c9", b:"#f7e1a1"},
-      {a:"#e9f1ff", b:"#cfe0ff"},
-    ];
-
-    function wrapText(ctx, text, maxWidth){
-      const t = String(text);
-      if(ctx.measureText(t).width <= maxWidth) return t;
-      let cut = t;
-      while(cut.length > 3 && ctx.measureText(cut + "…").width > maxWidth){
-        cut = cut.slice(0,-1);
+    }else{
+      // fallback: first column label, second column weight (optional)
+      for(let r=0;r<poolRows.length;r++){
+        const label = (poolRows[r][0] ?? "").trim();
+        if(!label) continue;
+        const w = toNum(poolRows[r][1], 1);
+        newSegments.push({ label, weight: Math.max(0, w) });
       }
-      return cut + "…";
+      newSegments = newSegments.filter(s => s.weight > 0);
     }
+  }
 
-    function drawWheel(){
-      const W = el.wheel.width, H = el.wheel.height;
-      ctx.clearRect(0,0,W,H);
-      ctx.save();
-      ctx.translate(W/2,H/2);
+  if(newSegments.length >= 2){
+    // If more than 5, we keep first 5 (you当前转盘是 5 区)
+    // If less than 5, we keep what we have.
+    segments = newSegments.slice(0, 5);
+  }
 
-      const outerR = W*0.47;
-      ctx.beginPath();
-      ctx.arc(0,0,outerR,0,Math.PI*2);
-      ctx.fillStyle = "#ffffff";
-      ctx.fill();
+  // Blessings: take first column as message, skip header if looks like header
+  let newBless = [];
+  if(blessRows.length){
+    const first = (blessRows[0][0] ?? "").trim().toLowerCase();
+    const looksHeader = ["blessing","message","text"].includes(first);
+    const start = looksHeader ? 1 : 0;
+    for(let r=start;r<blessRows.length;r++){
+      const msg = (blessRows[r][0] ?? "").trim();
+      if(msg) newBless.push(msg);
+    }
+  }
+  if(newBless.length) blessings = newBless;
 
-      const n = segments.length;
-      const slice = (Math.PI*2)/n;
+  // save cache
+  try{
+    localStorage.setItem(LS_DATA, JSON.stringify({ segments, blessings }));
+    localStorage.setItem(LS_TS, String(Date.now()));
+  }catch(e){}
+}
 
-      for(let i=0;i<n;i++){
-        const start = -Math.PI/2 + i*slice;
-        const end = start + slice;
+// -------------------- Weighted choice --------------------
+function pickWeightedIndex(){
+  const total = segments.reduce((a,s)=>a + (s.weight||0), 0);
+  if(total <= 0) return Math.floor(Math.random()*segments.length);
+  let r = Math.random() * total;
+  for(let i=0;i<segments.length;i++){
+    r -= (segments[i].weight||0);
+    if(r <= 0) return i;
+  }
+  return segments.length-1;
+}
 
-        const c = palette[i % palette.length];
-        const grad = ctx.createRadialGradient(-outerR*0.2, -outerR*0.2, outerR*0.1, 0,0, outerR);
-        grad.addColorStop(0, c.a);
-        grad.addColorStop(1, c.b);
+// -------------------- Drawing (arc text) --------------------
+function roundRect(ctx, x, y, w, h, r){
+  const rr = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+rr, y);
+  ctx.arcTo(x+w, y, x+w, y+h, rr);
+  ctx.arcTo(x+w, y+h, x, y+h, rr);
+  ctx.arcTo(x, y+h, x, y, rr);
+  ctx.arcTo(x, y, x+w, y, rr);
+  ctx.closePath();
+}
 
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.arc(0,0,outerR,start,end);
-        ctx.closePath();
-        ctx.fillStyle = grad;
-        ctx.fill();
+function drawTextOnArc(ctx, text, cx, cy, radius, startAngle, endAngle, opts={}){
+  const {
+    font = "700 30px ui-sans-serif",
+    fill = "#4b3a2a",
+    letterSpacing = 1.2,
+    inward = true
+  } = opts;
 
-        ctx.strokeStyle = "rgba(120,90,70,.20)";
-        ctx.lineWidth = 3;
-        ctx.stroke();
+  ctx.save();
+  ctx.font = font;
+  ctx.fillStyle = fill;
+  ctx.textAlign = "center";
+  ctx.textBaseline = inward ? "middle" : "middle";
 
-        // ✅ text: smaller + further out to avoid center button
-        const mid = (start+end)/2;
-        const rText = outerR*0.80;     // was ~0.70
-        ctx.save();
-        ctx.rotate(mid);
-        ctx.translate(rText,0);
-        ctx.rotate(-mid); // keep horizontal
+  // Fit text inside arc length
+  const clean = String(text);
+  const chars = [...clean];
+  const arc = endAngle - startAngle;
+  const arcLen = Math.abs(arc) * radius;
+  const approxChar = ctx.measureText("M").width + letterSpacing;
+  const maxChars = Math.max(1, Math.floor(arcLen / approxChar));
 
-        ctx.font = "800 28px ui-sans-serif, system-ui, -apple-system"; // smaller
-        ctx.fillStyle = "rgba(40,30,25,.72)";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
+  let drawChars = chars;
+  if(chars.length > maxChars){
+    // truncate with …
+    drawChars = chars.slice(0, Math.max(1, maxChars-1));
+    drawChars.push("…");
+  }
 
-        const maxW = outerR*0.42;
-        const label = wrapText(ctx, segments[i].label, maxW);
-        ctx.fillText(label, 0, 0);
-        ctx.restore();
+  // total width
+  const widths = drawChars.map(ch => ctx.measureText(ch).width);
+  const totalW = widths.reduce((a,w)=>a+w,0) + letterSpacing*(drawChars.length-1);
+  const totalAngle = totalW / radius;
+  const mid = (startAngle + endAngle) / 2;
+  let angle = mid - totalAngle/2;
+
+  for(let i=0;i<drawChars.length;i++){
+    const ch = drawChars[i];
+    const w = widths[i];
+    const a = (w/2) / radius;
+    angle += a;
+
+    ctx.save();
+    const x = cx + Math.cos(angle) * radius;
+    const y = cy + Math.sin(angle) * radius;
+
+    ctx.translate(x, y);
+    // rotate tangentially
+    ctx.rotate(angle + (inward ? Math.PI/2 : -Math.PI/2));
+    ctx.fillText(ch, 0, 0);
+    ctx.restore();
+
+    angle += a + (letterSpacing / radius);
+  }
+
+  ctx.restore();
+}
+
+function drawWheel(){
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2;
+  ctx.clearRect(0,0,W,H);
+
+  // Outer soft ring
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx,cy, 430, 0, Math.PI*2);
+  ctx.fillStyle = "rgba(255,255,255,.85)";
+  ctx.fill();
+  ctx.restore();
+
+  // Inner ring shadow
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx,cy, 415, 0, Math.PI*2);
+  ctx.fillStyle = "rgba(255,255,255,.55)";
+  ctx.fill();
+  ctx.restore();
+
+  const n = segments.length;
+  const step = (Math.PI*2)/n;
+
+  // wheel rotation
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(rotation);
+  ctx.translate(-cx,-cy);
+
+  for(let i=0;i<n;i++){
+    const a0 = pointerAngle + i*step;
+    const a1 = a0 + step;
+
+    // Gradient fill per sector
+    const [c1,c2] = palette[i % palette.length];
+    const gx = cx + Math.cos((a0+a1)/2) * 200;
+    const gy = cy + Math.sin((a0+a1)/2) * 200;
+    const grad = ctx.createRadialGradient(gx,gy, 40, cx,cy, 520);
+    grad.addColorStop(0, c2);
+    grad.addColorStop(1, c1);
+
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy, 400, a0, a1);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // sector divider
+    ctx.strokeStyle = "rgba(140,110,80,.18)";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // arc text
+    const label = segments[i].label;
+    const innerR = 270; // where text sits, away from center button
+    drawTextOnArc(
+      ctx,
+      label,
+      cx, cy,
+      innerR,
+      a0 + 0.20, a1 - 0.20,
+      {
+        font: "800 30px ui-sans-serif",
+        fill: "rgba(70,55,40,.85)",
+        letterSpacing: 1.4,
+        inward: true
       }
+    );
+  }
 
-      // inner ring
-      ctx.beginPath();
-      ctx.arc(0,0,outerR*0.62,0,Math.PI*2);
-      ctx.strokeStyle = "rgba(255,255,255,.65)";
-      ctx.lineWidth = 10;
-      ctx.stroke();
+  // inner rings
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx,cy, 300, 0, Math.PI*2);
+  ctx.strokeStyle = "rgba(255,255,255,.55)";
+  ctx.lineWidth = 16;
+  ctx.stroke();
 
-      ctx.restore();
+  ctx.beginPath();
+  ctx.arc(cx,cy, 410, 0, Math.PI*2);
+  ctx.strokeStyle = "rgba(204,170,140,.35)";
+  ctx.lineWidth = 14;
+  ctx.stroke();
+  ctx.restore();
 
-      // apply rotation via CSS transform for smoothness
-      el.wheel.style.transform = `rotate(${rotation}rad)`;
+  ctx.restore();
+
+  // subtle vignette
+  const vign = ctx.createRadialGradient(cx,cy, 240, cx,cy, 470);
+  vign.addColorStop(0, "rgba(255,255,255,0)");
+  vign.addColorStop(1, "rgba(0,0,0,.06)");
+  ctx.beginPath();
+  ctx.arc(cx,cy, 420, 0, Math.PI*2);
+  ctx.fillStyle = vign;
+  ctx.fill();
+}
+
+// -------------------- Spin math (guarantee landing matches prize) --------------------
+function angleNorm(a){
+  const t = (a % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+  return t;
+}
+
+function sectorCenterAngle(index){
+  const step = (Math.PI*2)/segments.length;
+  const a0 = pointerAngle + index*step;
+  return a0 + step/2;
+}
+
+function computeTargetRotationForIndex(index){
+  // We want selected sector center to align with pointerAngle at top.
+  // When wheel rotated by rotation, sector angles shift.
+  // Final rotation should satisfy: (rotation + sectorCenterAngle(index)) ≡ pointerAngle (mod 2π)
+  // => rotation ≡ pointerAngle - sectorCenterAngle(index)
+  const base = pointerAngle - sectorCenterAngle(index);
+  return base;
+}
+
+// -------------------- Sound (optional) --------------------
+let audioCtx = null;
+let audioUnlocked = false;
+function ensureAudio(){
+  if(audioCtx) return;
+  try{
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }catch(e){}
+}
+async function unlockAudio(){
+  if(audioUnlocked) return;
+  ensureAudio();
+  if(!audioCtx) return;
+  try{
+    if(audioCtx.state === "suspended") await audioCtx.resume();
+    audioUnlocked = true;
+  }catch(e){}
+}
+function tickSound(){
+  if(!soundToggle.checked) return;
+  if(!audioCtx || !audioUnlocked) return;
+  const t = audioCtx.currentTime;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = "square";
+  o.frequency.setValueAtTime(1800, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.10, t + 0.002);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.030);
+  o.connect(g).connect(audioCtx.destination);
+  o.start(t);
+  o.stop(t + 0.035);
+}
+
+// -------------------- Confetti (lightweight, only on win non-blessing) --------------------
+function runConfetti(){
+  const rect = resultCard.getBoundingClientRect();
+  confettiCanvas.width  = Math.floor(rect.width * devicePixelRatio);
+  confettiCanvas.height = Math.floor(rect.height * devicePixelRatio);
+  confettiCanvas.style.width = rect.width + "px";
+  confettiCanvas.style.height = rect.height + "px";
+  cctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+
+  const N = 60;
+  const parts = Array.from({length:N}, () => ({
+    x: Math.random()*rect.width,
+    y: -20 - Math.random()*rect.height*0.2,
+    vx: (Math.random()-0.5)*1.2,
+    vy: 2.0 + Math.random()*2.0,
+    r: 2 + Math.random()*3,
+    a: 1,
+    rot: Math.random()*Math.PI,
+    vr: (Math.random()-0.5)*0.2,
+    c: ["#b96a5a","#8d3b31","#ffd08a","#cfeee0","#d9d4ff"][Math.floor(Math.random()*5)]
+  }));
+
+  let start = performance.now();
+  const dur = 1200;
+
+  function frame(now){
+    const t = now - start;
+    cctx.clearRect(0,0,rect.width,rect.height);
+    for(const p of parts){
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+      p.vy += 0.02; // gravity
+      p.a = Math.max(0, 1 - (t/dur));
+      cctx.save();
+      cctx.globalAlpha = p.a;
+      cctx.translate(p.x, p.y);
+      cctx.rotate(p.rot);
+      cctx.fillStyle = p.c;
+      cctx.fillRect(-p.r, -p.r, p.r*2.2, p.r*1.4);
+      cctx.restore();
+    }
+    if(t < dur) requestAnimationFrame(frame);
+    else cctx.clearRect(0,0,rect.width,rect.height);
+  }
+  requestAnimationFrame(frame);
+}
+
+// -------------------- UI helpers --------------------
+function isBlessing(label){
+  return String(label).trim().toLowerCase() === "blessing";
+}
+
+function showResult(prizeLabel){
+  resultCard.style.display = "block";
+
+  const won = !isBlessing(prizeLabel);
+  // left badge: blessing -> show "BLESSING ✨" style, not "YOU WON"
+  if(won){
+    badgeLeft.textContent = "YOU WON 🎉";
+  }else{
+    badgeLeft.textContent = "BLESSING ✨";
+  }
+
+  // Prize title: for blessing show message line; for others show prize label
+  if(isBlessing(prizeLabel)){
+    const msg = blessings[Math.floor(Math.random()*blessings.length)] || "Blessings for you!";
+    prizeTitleEl.textContent = msg;
+    claimTextEl.style.display = "none"; // blessing 不需要“兑奖说明”
+  }else{
+    prizeTitleEl.textContent = prizeLabel;
+    claimTextEl.style.display = "block";
+    // Confetti only on real win
+    runConfetti();
+  }
+}
+
+function setStatus(text){
+  statusText.textContent = text || "";
+}
+
+function markPlayed(){
+  try{ localStorage.setItem(LS_PLAYED, "1"); }catch(e){}
+}
+function hasPlayed(){
+  try{ return localStorage.getItem(LS_PLAYED) === "1"; }catch(e){ return false; }
+}
+function resetDevice(){
+  try{ localStorage.removeItem(LS_PLAYED); }catch(e){}
+  resultCard.style.display = "none";
+  setStatus("");
+  spinBtn.classList.remove("disabled");
+  isSpinning = false;
+}
+
+// -------------------- Long press reset on title (hidden) --------------------
+(function initLongPress(){
+  const titleArea = document.getElementById("titleArea");
+  let timer = null;
+
+  const start = () => {
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      resetDevice();
+      // no consumer-facing message
+    }, 1200);
+  };
+  const cancel = () => {
+    if(timer) clearTimeout(timer);
+    timer = null;
+  };
+
+  titleArea.addEventListener("touchstart", start, {passive:true});
+  titleArea.addEventListener("touchend", cancel);
+  titleArea.addEventListener("touchcancel", cancel);
+
+  titleArea.addEventListener("mousedown", start);
+  window.addEventListener("mouseup", cancel);
+})();
+
+// -------------------- Spin flow --------------------
+async function spin(){
+  // iOS sound unlock requires user gesture
+  await unlockAudio();
+
+  if(isSpinning) return;
+
+  if(hasPlayed()){
+    // IMPORTANT: do NOT reveal staff/reset hint to consumers
+    // Keep it generic
+    alert("Already played on this device.");
+    return;
+  }
+
+  isSpinning = true;
+  spinBtn.classList.add("disabled");
+  resultCard.style.display = "none";
+  setStatus("Spinning…");
+
+  // select prize by weights from sheet
+  const idx = pickWeightedIndex();
+  const prizeLabel = segments[idx].label;
+
+  // compute final rotation to land at selected sector (with a bit of randomness)
+  const base = computeTargetRotationForIndex(idx);
+  const step = (Math.PI*2)/segments.length;
+  const jitter = (Math.random() - 0.5) * (step * 0.22); // within sector
+  const spins = 5 + Math.floor(Math.random()*2); // 5-6 turns
+  const target = base + jitter + spins * Math.PI*2;
+
+  const startRot = rotation;
+  const delta = target - startRot;
+
+  const duration = 1850; // snappy
+  const startTime = performance.now();
+
+  // tick on boundaries (optional)
+  let lastTickSector = null;
+
+  function currentSectorAtPointer(rot){
+    // Determine which sector index is at pointer (top) given rotation
+    const n = segments.length;
+    const step = (Math.PI*2)/n;
+    // We want angle such that: rotation + pointerAngle falls into sector ranges
+    // Equivalent: find k where pointerAngle - rotation in [pointerAngle + k*step, pointerAngle + (k+1)*step)
+    const a = angleNorm(pointerAngle - rot - pointerAngle); // normalized relative to pointerAngle
+    // a in [0, 2π)
+    const k = Math.floor(a / step);
+    // But our sectors start at pointerAngle + i*step, so index = k
+    return (k % n + n) % n;
+  }
+
+  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+  function frame(now){
+    const t = Math.min(1, (now - startTime) / duration);
+    const e = easeOutCubic(t);
+    rotation = startRot + delta * e;
+
+    drawWheel();
+
+    if(soundToggle.checked){
+      const si = currentSectorAtPointer(rotation);
+      if(lastTickSector === null) lastTickSector = si;
+      if(si !== lastTickSector){
+        tickSound();
+        lastTickSector = si;
+      }
     }
 
-    /***********************
-     * Spin animation
-     ***********************/
-    function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
-
-    // ✅ Correct angle math so wheel lands on the selected slice center at the pointer (top)
-    function spinToIndex(idx){
-      const n = segments.length;
-      const slice = (Math.PI*2)/n;
-
-      // With our drawing starting at -90deg:
-      // slice i center (wheel coords) = -90deg + i*slice + slice/2
-      // To bring that center to the pointer top (-90deg), wheel rotation should be:
-      // rotationTarget = -(i*slice + slice/2) + extraTurns
-      const desired = -(idx*slice + slice/2);
-
-      const extra = (Math.PI*2) * (3 + Math.floor(Math.random()*2)); // 3-4 turns
-      targetRotation = desired + extra;
-
-      startRotation = rotation;
-      spinStartTs = performance.now();
-      spinning = true;
-
-      el.centerSub.textContent = "spinning…";
-      el.statusLine.textContent = "";
-      lastTickBucket = null;
-      requestAnimationFrame(animate);
-    }
-
-    function animate(){
-      if(!spinning) return;
-      const now = performance.now();
-      const t = Math.min(1, (now - spinStartTs) / spinDuration);
-      const eased = easeOutCubic(t);
-      rotation = startRotation + (targetRotation - startRotation) * eased;
-
-      maybeTick();
+    if(t < 1){
+      requestAnimationFrame(frame);
+    }else{
+      // snap & show result (guarantee match)
+      rotation = startRot + delta;
       drawWheel();
 
-      if(t < 1){
-        requestAnimationFrame(animate);
-      } else {
-        spinning = false;
-        el.centerSub.textContent = "tap to spin";
-        onSpinEnd();
-      }
+      markPlayed();
+      setStatus("✅ Played — thanks!");
+      showResult(prizeLabel);
+
+      isSpinning = false;
+      spinBtn.classList.remove("disabled");
     }
+  }
 
-    /***********************
-     * Result rendering
-     ***********************/
-    function showResult(seg){
-      const isBlessing = seg.isBlessing;
+  // immediate visual feedback
+  tickSound();
+  requestAnimationFrame(frame);
+}
 
-      el.pillLeft.style.display = isBlessing ? "none" : "inline-flex";
-      el.resultCard.style.display = "block";
-      el.resultTitle.classList.toggle("prize", !isBlessing);
+function onSpinPress(){
+  // Make click super reliable
+  spin();
+}
 
-      if(isBlessing){
-        el.resultTitle.textContent = "Blessing";
-        const line = blessings.length
-          ? blessings[Math.floor(Math.random()*blessings.length)]
-          : "Good luck is coming your way :)";
-        el.resultSub.innerHTML = `<strong>${escapeHTML(line)}</strong><br/><br/>Thanks for joining — see you at our dumpling food truck!`;
-      } else {
-        el.resultTitle.textContent = seg.label;
-        el.resultSub.innerHTML = `If you win a prize, show this screen to our staff to claim.<br/><br/>Thanks for joining — see you at our dumpling food truck!`;
-      }
-    }
+spinBtn.addEventListener("click", onSpinPress);
+spinBtn.addEventListener("touchend", (e) => { e.preventDefault(); onSpinPress(); }, {passive:false});
 
-    function escapeHTML(s){
-      return String(s)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
+// -------------------- Init --------------------
+(async function init(){
+  // draw immediately (no blank 2 seconds)
+  drawWheel();
 
-    /***********************
-     * Confetti (lightweight, only for non-blessing)
-     ***********************/
-    let confettiRAF = null;
-    function burstConfetti(){
-      const c = el.confetti;
-      const cctx = c.getContext("2d");
-      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      const w = window.innerWidth, h = window.innerHeight;
-      c.width = Math.floor(w * dpr);
-      c.height = Math.floor(h * dpr);
-      c.style.width = w + "px";
-      c.style.height = h + "px";
-      cctx.setTransform(dpr,0,0,dpr,0,0);
+  // If already played, keep UI clean (no staff hint)
+  if(hasPlayed()){
+    setStatus("✅ Played — thanks!");
+    // keep result hidden; consumer sees state only
+  }
 
-      const colors = ["#f2b5a7","#cfe0ff","#bfe6d4","#f7e1a1","#cfc2f6","#ffffff"];
-      const pieces = [];
-      const N = 110;
-
-      for(let i=0;i<N;i++){
-        pieces.push({
-          x: w*0.5 + (Math.random()-0.5)*40,
-          y: h*0.36 + (Math.random()-0.5)*20,
-          vx: (Math.random()-0.5)*8,
-          vy: - (4 + Math.random()*6),
-          g: 0.22 + Math.random()*0.18,
-          s: 4 + Math.random()*4,
-          r: Math.random()*Math.PI,
-          vr: (Math.random()-0.5)*0.25,
-          col: colors[Math.floor(Math.random()*colors.length)],
-          life: 0,
-          max: 120 + Math.random()*40
-        });
-      }
-
-      let frame = 0;
-      cancelAnimationFrame(confettiRAF);
-
-      function loop(){
-        frame++;
-        cctx.clearRect(0,0,w,h);
-        for(const p of pieces){
-          p.life++;
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += p.g;
-          p.r += p.vr;
-
-          const alpha = Math.max(0, 1 - p.life/p.max);
-          cctx.save();
-          cctx.translate(p.x,p.y);
-          cctx.rotate(p.r);
-          cctx.globalAlpha = alpha;
-          cctx.fillStyle = p.col;
-          cctx.fillRect(-p.s/2, -p.s/2, p.s, p.s*0.66);
-          cctx.restore();
-        }
-        if(frame < 180) confettiRAF = requestAnimationFrame(loop);
-        else cctx.clearRect(0,0,w,h);
-      }
-      loop();
-    }
-
-    /***********************
-     * Audio tick (optional)
-     ***********************/
-    function initAudio(){
-      if(!audioEnabled || audioReady) return;
-      try{
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        audioReady = true;
-      } catch(e){ audioReady = false; }
-    }
-    function playTick(){
-      if(!audioReady || !audioCtx) return;
-      const t = audioCtx.currentTime;
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = "square";
-      o.frequency.setValueAtTime(900, t);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.06, t + 0.005);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start(t); o.stop(t + 0.04);
-    }
-    let lastTickBucket = null;
-    function maybeTick(){
-      if(!audioEnabled || !audioReady) return;
-      const n = segments.length;
-      const two = Math.PI*2;
-      const slice = two / n;
-      const bucket = Math.floor(((rotation % two) + two) % two / slice);
-      if(bucket !== lastTickBucket){
-        lastTickBucket = bucket;
-        playTick();
-      }
-    }
-
-    /***********************
-     * Played / reset
-     ***********************/
-    function updatePlayedUI(){
-      if(played){
-        el.statusLine.textContent = "";
-      } else {
-        el.statusLine.textContent = "";
-        el.resultCard.style.display = "none";
-      }
-    }
-    function setPlayed(v){
-      played = v;
-      localStorage.setItem(LS_KEY, v ? "1" : "0");
-      updatePlayedUI();
-    }
-
-    // Hidden long-press reset on title (1.2s)
-    let lpTimer = null;
-    let lpArmed = false;
-    function armLongPress(){
-      lpArmed = true;
-      clearTimeout(lpTimer);
-      lpTimer = setTimeout(()=>{
-        if(!lpArmed) return;
-        setPlayed(false);
-        spinning = false;
-        rotation = 0;
-        targetRotation = 0;
-        el.wheel.style.transform = "rotate(0rad)";
-        el.centerSub.textContent = "tap to spin";
-      }, 1200);
-    }
-    function cancelLongPress(){
-      lpArmed = false;
-      clearTimeout(lpTimer);
-    }
-
-    /***********************
-     * Spin interaction (responsive + consistent result)
-     ***********************/
-    function canSpin(){ return !spinning && !played; }
-
-    async function doSpin(){
-      if(!canSpin()) return;
-
-      // iOS audio unlock
-      initAudio();
-      if(audioCtx && audioCtx.state === "suspended"){
-        try{ await audioCtx.resume(); }catch(e){}
-      }
-
-      selectedIndex = pickWeightedIndex();
-
-      // snappy like first time
-      spinDuration = 2900 + Math.random()*650;
-
-      spinToIndex(selectedIndex);
-    }
-
-    function onSpinEnd(){
-      // ✅ DO NOT recompute by rotation; use selectedIndex to avoid mismatch
-      const seg = segments[selectedIndex] || segments[0];
-
-      setPlayed(true);
-      showResult(seg);
-
-      if(!seg.isBlessing){
-        burstConfetti();
-      }
-    }
-
-    // pointerdown is most reliable on mobile
-    el.centerBtn.addEventListener("pointerdown", (e)=>{
-      e.preventDefault();
-      doSpin();
-    }, {passive:false});
-
-    // keyboard
-    el.centerBtn.addEventListener("keydown", (e)=>{
-      if(e.key === "Enter" || e.key === " "){
-        e.preventDefault();
-        doSpin();
-      }
-    });
-
-    // silent ignore after played
-    el.centerBtn.addEventListener("click", ()=>{
-      // no popups, no staff hints
-    });
-
-    // long press reset
-    el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
-    el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
-    el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
-    el.titleRow.addEventListener("pointerleave", cancelLongPress, {passive:true});
-
-    /***********************
-     * Boot
-     ***********************/
-    (async function init(){
-      // placeholder wheel immediately (avoid blank)
-      segments = [
-        {label:"Blessing", weight:1, isBlessing:true},
-        {label:"This is on us", weight:1, isBlessing:false},
-        {label:"50% off for your next order", weight:1, isBlessing:false},
-        {label:"2 more Dumplings", weight:1, isBlessing:false},
-        {label:"One More Drink", weight:1, isBlessing:false},
-      ];
-      drawWheel();
-
-      try{
-        await loadData();
-      }catch(err){
-        el.statusLine.textContent = "Network error. Please refresh and try again.";
-        console.error(err);
-      }
-    })();
-  </script>
+  // load data in background, then redraw
+  try{
+    await loadData();
+    drawWheel();
+  }catch(e){
+    // keep fallback segments; don't block the UX
+    drawWheel();
+  }
+})();
+</script>
 </body>
 </html>
