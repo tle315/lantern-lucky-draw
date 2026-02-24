@@ -26,11 +26,7 @@
         radial-gradient(1200px 600px at 50% -10%, #ffe7cf 0%, #f7efe6 45%, var(--bg) 75%);
       min-height:100vh;
     }
-    .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 22px 16px 40px;
-    }
+    .wrap{ max-width: 980px; margin: 0 auto; padding: 22px 16px 40px; }
     .shell{
       background: linear-gradient(180deg, #fff9f0 0%, #fff6ea 55%, #fff 120%);
       border: 1px solid var(--line);
@@ -40,9 +36,7 @@
     }
 
     .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
+      display:inline-flex; align-items:center; gap:10px;
       padding:10px 16px;
       border:1px solid var(--line);
       background: #fff6ea;
@@ -67,24 +61,9 @@
       display:grid; place-items:center;
       flex:0 0 auto;
     }
-    .fu span{
-      color:#ffd08a;
-      font-size:30px;
-      font-weight:900;
-      transform: translateY(1px);
-    }
-    h1{
-      margin:0;
-      font-size:44px;
-      line-height:1.02;
-      letter-spacing:-.5px;
-    }
-    .sub{
-      margin: 8px 0 0;
-      font-size:20px;
-      color:var(--muted);
-      font-weight:600;
-    }
+    .fu span{ color:#ffd08a; font-size:30px; font-weight:900; transform: translateY(1px); }
+    h1{ margin:0; font-size:44px; line-height:1.02; letter-spacing:-.5px; }
+    .sub{ margin: 8px 0 0; font-size:20px; color:var(--muted); font-weight:600; }
 
     .follow{
       margin: 18px auto 8px;
@@ -105,13 +84,7 @@
       justify-content:center;
       gap:10px;
     }
-    .btnrow{
-      display:flex;
-      gap:14px;
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-bottom:10px;
-    }
+    .btnrow{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:10px; }
     .social{
       text-decoration:none;
       color:#5b4531;
@@ -282,7 +255,7 @@
       text-align:center;
       margin: 12px auto 0;
       color:#7b6a57;
-      font-size: 14px; /* 小 30%~40% */
+      font-size: 14px;
       font-weight: 750;
       max-width: 640px;
       opacity:.9;
@@ -291,12 +264,11 @@
       text-align:center;
       margin-top: 10px;
       color:#7b6a57;
-      font-size: 14px; /* 小 30%~40% */
+      font-size: 14px;
       font-weight: 750;
       opacity:.85;
     }
 
-    /* Confetti canvas (lightweight) */
     #confetti{
       position:absolute;
       inset:0;
@@ -323,7 +295,6 @@
 
       <div class="header">
         <div class="fu" aria-hidden="true"><span>福</span></div>
-        <!-- 长按标题 reset（隐藏功能，不给消费者提示） -->
         <div id="titleArea" style="padding-top:2px;">
           <h1 id="titleText">PandaGoldenEar<br/>Lucky Draw</h1>
           <p class="sub">Tap <b>Spin</b> to reveal your surprise.</p>
@@ -380,18 +351,13 @@
   </div>
 
 <script>
-/**
- * ✅ NO backend.
- * Reads two public CSV endpoints (Google Sheets -> Publish to web -> CSV).
- */
 const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
 const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-// localStorage keys (single-device)
 const LS_PLAYED = "pge_ld_played_v3";
 const LS_DATA   = "pge_ld_data_v3";
 const LS_TS     = "pge_ld_ts_v3";
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 min
+const CACHE_TTL_MS = 10 * 60 * 1000;
 
 const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
@@ -403,39 +369,31 @@ const claimTextEl = document.getElementById("claimText");
 const statusText = document.getElementById("statusText");
 const soundToggle = document.getElementById("soundToggle");
 
-// Confetti
 const confettiCanvas = document.getElementById("confetti");
 const cctx = confettiCanvas.getContext("2d");
 
-// Wheel state
 let segments = [
-  // fallback immediate draw (will be replaced after CSV fetch)
   { label: "Blessing", weight: 50 },
   { label: "This is on us", weight: 10 },
   { label: "50% off for your next order", weight: 10 },
   { label: "2 more Dumplings", weight: 15 },
   { label: "One More Drink", weight: 15 }
 ];
-let blessings = [
-  "Warning: good luck may follow you home :)"
-];
+let blessings = ["Warning: good luck may follow you home :)"];
 
-let rotation = 0;           // current wheel rotation (radians)
+let rotation = 0;
 let isSpinning = false;
-let pointerAngle = -Math.PI/2; // top
+let pointerAngle = -Math.PI/2;
 
-// Visual palette: 5 distinct soft gradients
 const palette = [
-  ["#f6d4dc", "#fff1f4"], // pink
-  ["#ffe2c7", "#fff4e9"], // peach
-  ["#cfeee0", "#f2fff9"], // mint
-  ["#d9d4ff", "#f4f2ff"], // lavender
-  ["#ffe7a8", "#fff6dc"], // yellow
+  ["#f6d4dc", "#fff1f4"],
+  ["#ffe2c7", "#fff4e9"],
+  ["#cfeee0", "#f2fff9"],
+  ["#d9d4ff", "#f4f2ff"],
+  ["#ffe7a8", "#fff6dc"],
 ];
 
-// -------------------- CSV parsing --------------------
 function parseCSV(text){
-  // Simple CSV parser (handles quoted commas)
   const rows = [];
   let i=0, cur="", inQ=false;
   const pushCell = (row) => { row.push(cur); cur=""; };
@@ -450,7 +408,6 @@ function parseCSV(text){
     }else if((ch === '\n' || ch === '\r') && !inQ){
       if(ch === '\r' && text[i+1] === '\n') i++;
       pushCell(row);
-      // skip empty last row
       const allEmpty = row.every(v => (v ?? "").trim() === "");
       if(!allEmpty) rows.push(row);
       row=[];
@@ -466,16 +423,11 @@ function parseCSV(text){
   }
   return rows;
 }
-
-function normalizeHeader(h){
-  return String(h||"").trim().toLowerCase();
-}
-
+function normalizeHeader(h){ return String(h||"").trim().toLowerCase(); }
 function toNum(x, fallback=0){
   const n = Number(String(x||"").trim());
   return Number.isFinite(n) ? n : fallback;
 }
-
 async function fetchText(url){
   const res = await fetch(url, { cache: "no-store" });
   if(!res.ok) throw new Error("CSV fetch failed");
@@ -483,7 +435,6 @@ async function fetchText(url){
 }
 
 async function loadData(){
-  // cache first
   try{
     const ts = toNum(localStorage.getItem(LS_TS), 0);
     const cached = localStorage.getItem(LS_DATA);
@@ -497,13 +448,10 @@ async function loadData(){
     }
   }catch(e){}
 
-  // fetch CSVs
   const [poolTxt, blessTxt] = await Promise.all([fetchText(POOL_CSV_URL), fetchText(BLESS_CSV_URL)]);
   const poolRows = parseCSV(poolTxt);
   const blessRows = parseCSV(blessTxt);
 
-  // Pool: accept either header or simple list
-  // Expected best: columns like "prize" + "weight" (or "probability")
   let newSegments = [];
   if(poolRows.length){
     const header = poolRows[0].map(normalizeHeader);
@@ -520,7 +468,6 @@ async function loadData(){
         newSegments.push({ label, weight: w });
       }
     }else{
-      // fallback: first column label, second column weight (optional)
       for(let r=0;r<poolRows.length;r++){
         const label = (poolRows[r][0] ?? "").trim();
         if(!label) continue;
@@ -530,14 +477,8 @@ async function loadData(){
       newSegments = newSegments.filter(s => s.weight > 0);
     }
   }
+  if(newSegments.length >= 2) segments = newSegments.slice(0, 5);
 
-  if(newSegments.length >= 2){
-    // If more than 5, we keep first 5 (you当前转盘是 5 区)
-    // If less than 5, we keep what we have.
-    segments = newSegments.slice(0, 5);
-  }
-
-  // Blessings: take first column as message, skip header if looks like header
   let newBless = [];
   if(blessRows.length){
     const first = (blessRows[0][0] ?? "").trim().toLowerCase();
@@ -550,14 +491,12 @@ async function loadData(){
   }
   if(newBless.length) blessings = newBless;
 
-  // save cache
   try{
     localStorage.setItem(LS_DATA, JSON.stringify({ segments, blessings }));
     localStorage.setItem(LS_TS, String(Date.now()));
   }catch(e){}
 }
 
-// -------------------- Weighted choice --------------------
 function pickWeightedIndex(){
   const total = segments.reduce((a,s)=>a + (s.weight||0), 0);
   if(total <= 0) return Math.floor(Math.random()*segments.length);
@@ -567,18 +506,6 @@ function pickWeightedIndex(){
     if(r <= 0) return i;
   }
   return segments.length-1;
-}
-
-// -------------------- Drawing (arc text) --------------------
-function roundRect(ctx, x, y, w, h, r){
-  const rr = Math.min(r, w/2, h/2);
-  ctx.beginPath();
-  ctx.moveTo(x+rr, y);
-  ctx.arcTo(x+w, y, x+w, y+h, rr);
-  ctx.arcTo(x+w, y+h, x, y+h, rr);
-  ctx.arcTo(x, y+h, x, y, rr);
-  ctx.arcTo(x, y, x+w, y, rr);
-  ctx.closePath();
 }
 
 function drawTextOnArc(ctx, text, cx, cy, radius, startAngle, endAngle, opts={}){
@@ -593,9 +520,8 @@ function drawTextOnArc(ctx, text, cx, cy, radius, startAngle, endAngle, opts={})
   ctx.font = font;
   ctx.fillStyle = fill;
   ctx.textAlign = "center";
-  ctx.textBaseline = inward ? "middle" : "middle";
+  ctx.textBaseline = "middle";
 
-  // Fit text inside arc length
   const clean = String(text);
   const chars = [...clean];
   const arc = endAngle - startAngle;
@@ -605,12 +531,10 @@ function drawTextOnArc(ctx, text, cx, cy, radius, startAngle, endAngle, opts={})
 
   let drawChars = chars;
   if(chars.length > maxChars){
-    // truncate with …
     drawChars = chars.slice(0, Math.max(1, maxChars-1));
     drawChars.push("…");
   }
 
-  // total width
   const widths = drawChars.map(ch => ctx.measureText(ch).width);
   const totalW = widths.reduce((a,w)=>a+w,0) + letterSpacing*(drawChars.length-1);
   const totalAngle = totalW / radius;
@@ -628,14 +552,12 @@ function drawTextOnArc(ctx, text, cx, cy, radius, startAngle, endAngle, opts={})
     const y = cy + Math.sin(angle) * radius;
 
     ctx.translate(x, y);
-    // rotate tangentially
     ctx.rotate(angle + (inward ? Math.PI/2 : -Math.PI/2));
     ctx.fillText(ch, 0, 0);
     ctx.restore();
 
     angle += a + (letterSpacing / radius);
   }
-
   ctx.restore();
 }
 
@@ -644,7 +566,6 @@ function drawWheel(){
   const cx = W/2, cy = H/2;
   ctx.clearRect(0,0,W,H);
 
-  // Outer soft ring
   ctx.save();
   ctx.beginPath();
   ctx.arc(cx,cy, 430, 0, Math.PI*2);
@@ -652,7 +573,6 @@ function drawWheel(){
   ctx.fill();
   ctx.restore();
 
-  // Inner ring shadow
   ctx.save();
   ctx.beginPath();
   ctx.arc(cx,cy, 415, 0, Math.PI*2);
@@ -663,7 +583,6 @@ function drawWheel(){
   const n = segments.length;
   const step = (Math.PI*2)/n;
 
-  // wheel rotation
   ctx.save();
   ctx.translate(cx,cy);
   ctx.rotate(rotation);
@@ -673,7 +592,6 @@ function drawWheel(){
     const a0 = pointerAngle + i*step;
     const a1 = a0 + step;
 
-    // Gradient fill per sector
     const [c1,c2] = palette[i % palette.length];
     const gx = cx + Math.cos((a0+a1)/2) * 200;
     const gy = cy + Math.sin((a0+a1)/2) * 200;
@@ -688,30 +606,19 @@ function drawWheel(){
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // sector divider
     ctx.strokeStyle = "rgba(140,110,80,.18)";
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // arc text
     const label = segments[i].label;
-    const innerR = 270; // where text sits, away from center button
+    const innerR = 270;
     drawTextOnArc(
-      ctx,
-      label,
-      cx, cy,
-      innerR,
+      ctx, label, cx, cy, innerR,
       a0 + 0.20, a1 - 0.20,
-      {
-        font: "800 30px ui-sans-serif",
-        fill: "rgba(70,55,40,.85)",
-        letterSpacing: 1.4,
-        inward: true
-      }
+      { font: "800 30px ui-sans-serif", fill: "rgba(70,55,40,.85)", letterSpacing: 1.4, inward: true }
     );
   }
 
-  // inner rings
   ctx.save();
   ctx.beginPath();
   ctx.arc(cx,cy, 300, 0, Math.PI*2);
@@ -728,7 +635,6 @@ function drawWheel(){
 
   ctx.restore();
 
-  // subtle vignette
   const vign = ctx.createRadialGradient(cx,cy, 240, cx,cy, 470);
   vign.addColorStop(0, "rgba(255,255,255,0)");
   vign.addColorStop(1, "rgba(0,0,0,.06)");
@@ -738,35 +644,28 @@ function drawWheel(){
   ctx.fill();
 }
 
-// -------------------- Spin math (guarantee landing matches prize) --------------------
+// --- key math helpers ---
 function angleNorm(a){
   const t = (a % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
   return t;
 }
-
 function sectorCenterAngle(index){
   const step = (Math.PI*2)/segments.length;
   const a0 = pointerAngle + index*step;
   return a0 + step/2;
 }
-
-function computeTargetRotationForIndex(index){
-  // We want selected sector center to align with pointerAngle at top.
-  // When wheel rotated by rotation, sector angles shift.
-  // Final rotation should satisfy: (rotation + sectorCenterAngle(index)) ≡ pointerAngle (mod 2π)
-  // => rotation ≡ pointerAngle - sectorCenterAngle(index)
-  const base = pointerAngle - sectorCenterAngle(index);
-  return base;
+function computeDesiredRotationForIndex(index){
+  // rotation ≡ pointerAngle - sectorCenterAngle(index)  (mod 2π)
+  const base = pointerAngle - sectorCenterAngle(index); // = -(i*step + step/2)
+  return angleNorm(base);
 }
 
-// -------------------- Sound (optional) --------------------
+// --- optional sound ---
 let audioCtx = null;
 let audioUnlocked = false;
 function ensureAudio(){
   if(audioCtx) return;
-  try{
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }catch(e){}
+  try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
 }
 async function unlockAudio(){
   if(audioUnlocked) return;
@@ -793,7 +692,7 @@ function tickSound(){
   o.stop(t + 0.035);
 }
 
-// -------------------- Confetti (lightweight, only on win non-blessing) --------------------
+// --- confetti ---
 function runConfetti(){
   const rect = resultCard.getBoundingClientRect();
   confettiCanvas.width  = Math.floor(rect.width * devicePixelRatio);
@@ -825,7 +724,7 @@ function runConfetti(){
       p.x += p.vx;
       p.y += p.vy;
       p.rot += p.vr;
-      p.vy += 0.02; // gravity
+      p.vy += 0.02;
       p.a = Math.max(0, 1 - (t/dur));
       cctx.save();
       cctx.globalAlpha = p.a;
@@ -841,64 +740,52 @@ function runConfetti(){
   requestAnimationFrame(frame);
 }
 
-// -------------------- UI helpers --------------------
+// --- played / reset ---
+function setStatus(text){ statusText.textContent = text || ""; }
+function markPlayed(){ try{ localStorage.setItem(LS_PLAYED, "1"); }catch(e){} }
+function hasPlayed(){ try{ return localStorage.getItem(LS_PLAYED) === "1"; }catch(e){ return false; } }
+
 function isBlessing(label){
   return String(label).trim().toLowerCase() === "blessing";
 }
 
 function showResult(prizeLabel){
   resultCard.style.display = "block";
-
   const won = !isBlessing(prizeLabel);
-  // left badge: blessing -> show "BLESSING ✨" style, not "YOU WON"
-  if(won){
-    badgeLeft.textContent = "YOU WON 🎉";
-  }else{
-    badgeLeft.textContent = "BLESSING ✨";
-  }
 
-  // Prize title: for blessing show message line; for others show prize label
+  badgeLeft.textContent = won ? "YOU WON 🎉" : "BLESSING ✨";
+
   if(isBlessing(prizeLabel)){
     const msg = blessings[Math.floor(Math.random()*blessings.length)] || "Blessings for you!";
     prizeTitleEl.textContent = msg;
-    claimTextEl.style.display = "none"; // blessing 不需要“兑奖说明”
+    claimTextEl.style.display = "none";
   }else{
     prizeTitleEl.textContent = prizeLabel;
     claimTextEl.style.display = "block";
-    // Confetti only on real win
     runConfetti();
   }
 }
 
-function setStatus(text){
-  statusText.textContent = text || "";
-}
-
-function markPlayed(){
-  try{ localStorage.setItem(LS_PLAYED, "1"); }catch(e){}
-}
-function hasPlayed(){
-  try{ return localStorage.getItem(LS_PLAYED) === "1"; }catch(e){ return false; }
-}
+/** ✅ FIX #1: reset also resets rotation so next spin behaves like first time */
 function resetDevice(){
   try{ localStorage.removeItem(LS_PLAYED); }catch(e){}
   resultCard.style.display = "none";
   setStatus("");
   spinBtn.classList.remove("disabled");
   isSpinning = false;
+
+  rotation = 0;       // <-- KEY
+  drawWheel();        // <-- immediate redraw
 }
 
-// -------------------- Long press reset on title (hidden) --------------------
+// hidden long-press reset
 (function initLongPress(){
   const titleArea = document.getElementById("titleArea");
   let timer = null;
 
   const start = () => {
     if(timer) clearTimeout(timer);
-    timer = setTimeout(() => {
-      resetDevice();
-      // no consumer-facing message
-    }, 1200);
+    timer = setTimeout(() => { resetDevice(); }, 1200);
   };
   const cancel = () => {
     if(timer) clearTimeout(timer);
@@ -913,16 +800,12 @@ function resetDevice(){
   window.addEventListener("mouseup", cancel);
 })();
 
-// -------------------- Spin flow --------------------
+// --- spin (fixed) ---
 async function spin(){
-  // iOS sound unlock requires user gesture
   await unlockAudio();
-
   if(isSpinning) return;
 
   if(hasPlayed()){
-    // IMPORTANT: do NOT reveal staff/reset hint to consumers
-    // Keep it generic
     alert("Already played on this device.");
     return;
   }
@@ -932,37 +815,31 @@ async function spin(){
   resultCard.style.display = "none";
   setStatus("Spinning…");
 
-  // select prize by weights from sheet
   const idx = pickWeightedIndex();
   const prizeLabel = segments[idx].label;
 
-  // compute final rotation to land at selected sector (with a bit of randomness)
-  const base = computeTargetRotationForIndex(idx);
-  const step = (Math.PI*2)/segments.length;
-  const jitter = (Math.random() - 0.5) * (step * 0.22); // within sector
-  const spins = 5 + Math.floor(Math.random()*2); // 5-6 turns
-  const target = base + jitter + spins * Math.PI*2;
+  const n = segments.length;
+  const step = (Math.PI*2)/n;
 
+  // ✅ FIX #2: compute target relative to current rotation (mod 2π)
+  const desired = computeDesiredRotationForIndex(idx);  // in [0, 2π)
+  const current = angleNorm(rotation);                  // in [0, 2π)
+  let deltaBase = desired - current;
+  // force forward spinning direction (clockwise) with enough turns
+  while(deltaBase < 0) deltaBase += Math.PI*2;
+
+  const jitter = (Math.random() - 0.5) * (step * 0.18); // small, stays inside sector
+  const spins = 5 + Math.floor(Math.random()*2);        // 5-6 full turns
+  const delta = spins * Math.PI*2 + deltaBase + jitter; // ALWAYS big & consistent
   const startRot = rotation;
-  const delta = target - startRot;
-
-  const duration = 1850; // snappy
+  const duration = 1850;
   const startTime = performance.now();
 
-  // tick on boundaries (optional)
   let lastTickSector = null;
-
   function currentSectorAtPointer(rot){
-    // Determine which sector index is at pointer (top) given rotation
-    const n = segments.length;
-    const step = (Math.PI*2)/n;
-    // We want angle such that: rotation + pointerAngle falls into sector ranges
-    // Equivalent: find k where pointerAngle - rotation in [pointerAngle + k*step, pointerAngle + (k+1)*step)
-    const a = angleNorm(pointerAngle - rot - pointerAngle); // normalized relative to pointerAngle
-    // a in [0, 2π)
-    const k = Math.floor(a / step);
-    // But our sectors start at pointerAngle + i*step, so index = k
-    return (k % n + n) % n;
+    const step = (Math.PI*2)/segments.length;
+    const a = angleNorm(pointerAngle - rot - pointerAngle);
+    return (Math.floor(a / step) % segments.length + segments.length) % segments.length;
   }
 
   const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
@@ -986,7 +863,7 @@ async function spin(){
     if(t < 1){
       requestAnimationFrame(frame);
     }else{
-      // snap & show result (guarantee match)
+      // snap to exact end
       rotation = startRot + delta;
       drawWheel();
 
@@ -999,36 +876,26 @@ async function spin(){
     }
   }
 
-  // immediate visual feedback
   tickSound();
   requestAnimationFrame(frame);
 }
 
-function onSpinPress(){
-  // Make click super reliable
-  spin();
-}
-
+function onSpinPress(){ spin(); }
 spinBtn.addEventListener("click", onSpinPress);
 spinBtn.addEventListener("touchend", (e) => { e.preventDefault(); onSpinPress(); }, {passive:false});
 
-// -------------------- Init --------------------
+// init
 (async function init(){
-  // draw immediately (no blank 2 seconds)
   drawWheel();
 
-  // If already played, keep UI clean (no staff hint)
   if(hasPlayed()){
     setStatus("✅ Played — thanks!");
-    // keep result hidden; consumer sees state only
   }
 
-  // load data in background, then redraw
   try{
     await loadData();
     drawWheel();
   }catch(e){
-    // keep fallback segments; don't block the UX
     drawWheel();
   }
 })();
