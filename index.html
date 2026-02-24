@@ -430,38 +430,23 @@
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        // ✅ arc/tangent label (沿圆弧方向排版，自动翻转保持可读)
-      const mid = (start + end) / 2;
+        // ✅ text: smaller + further out to avoid center button
+const mid = (start+end)/2;
+const rText = outerR*0.80;     // was ~0.70
+ctx.save();
+ctx.rotate(mid);
+ctx.translate(rText,0);
+ctx.rotate(-mid); // keep horizontal
 
-        // 文字更靠外圈，避免被中心按钮挡住
-      const rText = outerR * 0.86;
+ctx.font = "800 28px ui-sans-serif, system-ui, -apple-system"; // smaller
+ctx.fillStyle = "rgba(40,30,25,.72)";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
 
-        ctx.save();
-        ctx.rotate(mid);
-
-       // 把文字放到圆周上方（负y方向）
-        ctx.translate(0, -rText);
-
-      // 切线方向：旋转 90deg，让文字沿圆弧方向走
-        ctx.rotate(Math.PI / 2);
-
-      // 下半圈翻转（保持正着读）
-      const norm = ((mid % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-      const onBottom = norm > Math.PI / 2 && norm < Math.PI * 1.5;
-      if (onBottom) ctx.rotate(Math.PI);
-
-        ctx.font = "800 24px ui-sans-serif, system-ui, -apple-system";
-        ctx.fillStyle = "rgba(40,30,25,.78)";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-      // 宽度按“扇区弧长”估算，避免过长溢出
-      const arcLen = slice * rText;
-      const maxW = Math.max(90, Math.min(260, arcLen * 0.90));
-      const label = wrapText(ctx, segments[i].label, maxW);
-
-        ctx.fillText(label, 0, 0);
-        ctx.restore();
+const maxW = outerR*0.42;
+const label = wrapText(ctx, segments[i].label, maxW);
+ctx.fillText(label, 0, 0);
+ctx.restore();
 
       // inner ring
       ctx.beginPath();
