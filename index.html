@@ -77,11 +77,17 @@
 
     .wheelBlock{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
     .pointer{
-      width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
+      width:0;height:0;
+      border-left:14px solid transparent;
+      border-right:14px solid transparent;
       border-bottom:18px solid #7b3a2f;
-      filter:drop-shadow(0 6px 10px rgba(20,20,20,.14));
       margin-top:6px;
-    }
+
+      /* 更精致的浮起感：两层阴影 */
+      filter:
+        drop-shadow(0 2px 1px rgba(255,255,255,.35))
+        drop-shadow(0 8px 14px rgba(20,20,20,.18));
+    }    
 
     .wheelShell{
       position:relative;width:min(92vw,520px);aspect-ratio:1/1;border-radius:999px;
