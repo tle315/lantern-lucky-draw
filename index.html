@@ -74,11 +74,9 @@
       border-radius:999px;border:1px solid var(--line);
       background:#fff;box-shadow:0 8px 18px rgba(20,20,20,.05);
       font-weight:800;color:#4b3a2f;
-      font-size:15px; /* smaller */
+      font-size:15px;
     }
-    .chipLink .ico{
-      width:18px;height:18px;display:inline-block;flex:0 0 auto;
-    }
+    .chipLink .ico{width:18px;height:18px;display:inline-block;flex:0 0 auto;}
     .follow .hint{text-align:center;color:#7a726a;font-size:18px;font-weight:650;margin:0;}
 
     .wheelBlock{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
@@ -110,10 +108,10 @@
       height:100%;
       display:block;
       transform:rotate(0deg);
+      transform-origin:50% 50%;
       will-change:transform;
     }
 
-    /* center spin button (only one center element) */
     .centerBtn{
       position:absolute;left:50%;top:50%;
       transform:translate(-50%,-50%);
@@ -158,7 +156,7 @@
 
     .card .label{text-align:center;color:#8b8177;font-weight:900;letter-spacing:7px;margin:6px 0 8px;}
     .card h2{margin:0;text-align:center;font-size:44px;line-height:1.03;letter-spacing:-.6px;}
-    .card h2.prize{color:#8f2f25;} /* deep red */
+    .card h2.prize{color:#8f2f25;}
     .card .sub{
       text-align:center;color:#7a726a;font-weight:700;
       font-size:14px;line-height:1.35;margin-top:10px;
@@ -188,12 +186,9 @@
       <div class="pill">🏮 Lantern Festival Special 🏮</div>
     </div>
 
-    <!-- long-press this titleRow 1.2s to reset device -->
     <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)">
       <div class="fu">福</div>
-      <div>
-        <h1>PandaGoldenEar <br/>Lucky Draw</h1>
-      </div>
+      <div><h1>PandaGoldenEar <br/>Lucky Draw</h1></div>
     </div>
 
     <div class="subtitle">Tap <b>Spin</b> to reveal your surprise.</div>
@@ -201,15 +196,9 @@
     <div class="follow">
       <h3>💥 Don’t forget to follow us —</h3>
       <div class="btns">
-        <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">
-          <span class="ico">📷</span> Instagram
-        </a>
-        <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">
-          <span class="ico">📘</span> Facebook
-        </a>
-        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">
-          <span class="ico">🎵</span> TikTok
-        </a>
+        <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener"><span class="ico">📷</span> Instagram</a>
+        <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener"><span class="ico">📘</span> Facebook</a>
+        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener"><span class="ico">🎵</span> TikTok</a>
       </div>
       <p class="hint">Follow any <b>ONE</b> platform to stay updated 🐼🥟😉</p>
     </div>
@@ -235,7 +224,6 @@
           <div style="flex:1"></div>
           <div class="pill played" id="pillRight">✅ Played — thanks!</div>
         </div>
-
         <div class="label">YOU GOT</div>
         <h2 id="resultTitle"></h2>
         <div class="sub" id="resultSub"></div>
@@ -249,6 +237,10 @@
      ***********************/
     const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
     const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
+
+    // ✅ 如果你想“用 remaining 自动推导权重”，打开这个开关（默认 false）
+    // 例如 remaining=25 就会更容易抽到（适合你按每天200配额的思路）
+    const USE_REMAINING_AS_WEIGHT = false;
 
     /***********************
      * STATE
@@ -268,7 +260,7 @@
     let spinDuration = 3200;
     let selectedIndex = -1;
 
-    // audio tick optional
+    // audio
     let audioEnabled = true;
     let audioReady = false;
     let audioCtx = null;
@@ -370,16 +362,20 @@
 
     function rebuildSegments(){
       let filtered = pool.filter(p => p.active && (p.remaining > 0));
+
+      // ensure Blessing exists
       const hasBlessing = filtered.some(p => p.prize.toLowerCase() === "blessing");
       if(!hasBlessing){
         const b = pool.find(p => p.prize.toLowerCase()==="blessing" && p.active);
         if(b) filtered.push({...b, remaining:999999});
       }
-      segments = filtered.map(p => ({
-        label: p.prize,
-        weight: Math.max(0, p.weight),
-        isBlessing: p.prize.toLowerCase() === "blessing"
-      }));
+
+      segments = filtered.map(p => {
+        const isBlessing = p.prize.toLowerCase() === "blessing";
+        const w = USE_REMAINING_AS_WEIGHT ? Math.max(0, p.remaining) : Math.max(0, p.weight);
+        return { label: p.prize, weight: w, isBlessing };
+      });
+
       if(segments.length === 0){
         segments = [{label:"Blessing", weight:1, isBlessing:true}];
       }
@@ -401,7 +397,7 @@
     }
 
     /***********************
-     * Wheel drawing (mobile-safe, symmetric)
+     * Wheel drawing (bigger labels + symmetric)
      ***********************/
     const palette = [
       {a:"#f7d7d1", b:"#f3bfb5"},
@@ -450,12 +446,9 @@
     }
 
     function resizeCanvasToShell(){
-      // key to "perfect circle" on mobile:
-      // set canvas pixel size based on CSS size + devicePixelRatio.
       const rect = el.wheelShell.getBoundingClientRect();
-      const size = Math.floor(Math.min(rect.width, rect.height));
+      const size = Math.floor(Math.min(rect.width, rect.height)); // integer px
       const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-
       const px = Math.floor(size * dpr);
 
       if(el.wheel.width !== px || el.wheel.height !== px){
@@ -463,11 +456,10 @@
         el.wheel.height = px;
       }
       ctx.setTransform(1,0,0,1,0,0);
-      return { sizePx: px, dpr };
+      return { sizePx:px, dpr };
     }
 
     function drawOuterRim(cx, cy, r){
-      // subtle premium rim (outer only)
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI*2);
@@ -482,15 +474,13 @@
     }
 
     function drawWheel(){
-      const { sizePx } = resizeCanvasToShell();
+      resizeCanvasToShell();
       const W = el.wheel.width, H = el.wheel.height;
-
       ctx.clearRect(0,0,W,H);
 
       const cx = W/2, cy = H/2;
       const outerR = W * 0.47;
 
-      // base circle
       ctx.beginPath();
       ctx.arc(cx, cy, outerR, 0, Math.PI*2);
       ctx.fillStyle = "#ffffff";
@@ -499,7 +489,6 @@
       const n = segments.length;
       const slice = (Math.PI*2)/n;
 
-      // sectors
       for(let i=0;i<n;i++){
         const start = -Math.PI/2 + i*slice;
         const end = start + slice;
@@ -516,63 +505,56 @@
         ctx.fillStyle = grad;
         ctx.fill();
 
-        // separator
-        ctx.strokeStyle = "rgba(120,90,70,.20)";
+        ctx.strokeStyle = "rgba(110,85,65,.18)";
         ctx.lineWidth = 3;
         ctx.stroke();
       }
 
-      // labels (outer ring tangent, 2-line)
+      // labels: bigger + slightly closer to rim
       for(let i=0;i<n;i++){
         const start = -Math.PI/2 + i*slice;
         const end = start + slice;
         const mid = (start + end) / 2;
 
-        const rText = outerR * 0.90;
+        const rText = outerR * 0.92;
 
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(mid);
         ctx.translate(rText, 0);
 
-        // tangent direction
         ctx.rotate(Math.PI / 2);
 
-        // flip on bottom half
         const norm = ((mid % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
         const onBottom = norm > Math.PI/2 && norm < Math.PI*1.5;
         if(onBottom) ctx.rotate(Math.PI);
 
-        const fontPx = clamp(outerR * 0.052, 12, 18);
-        ctx.font = `800 ${fontPx}px ui-sans-serif, system-ui, -apple-system`;
-        ctx.fillStyle = "rgba(40,30,25,.75)";
+        const fontPx = clamp(outerR * 0.060, 13, 22); // ✅ bigger than before
+        ctx.font = `850 ${fontPx}px ui-sans-serif, system-ui, -apple-system`;
+        ctx.fillStyle = "rgba(35,28,24,.78)";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
         const arcLen = slice * rText;
-        const maxW = clamp(arcLen * 0.86, 90, 260);
+        const maxW = clamp(arcLen * 0.88, 110, 320);
 
         const lines = splitToTwoLines(ctx, segments[i].label, maxW);
         if(lines.length === 1){
           ctx.fillText(lines[0], 0, 0);
         } else {
-          const lh = fontPx * 1.15;
+          const lh = fontPx * 1.10;
           ctx.fillText(lines[0], 0, -lh/2);
           ctx.fillText(lines[1], 0,  lh/2);
         }
         ctx.restore();
       }
 
-      // outer rim only (no inner ring)
       drawOuterRim(cx, cy, outerR);
 
-      // apply rotation via CSS
       el.wheel.style.transform = `rotate(${rotation}rad)`;
     }
 
-    window.addEventListener("resize", () => {
-      drawWheel();
-    });
+    window.addEventListener("resize", drawWheel);
 
     /***********************
      * Spin animation
@@ -583,11 +565,8 @@
       const n = segments.length;
       const slice = (Math.PI*2)/n;
 
-      // land the center of slice at pointer (top)
       const desired = -(idx*slice + slice/2);
-
-      // ✅ 5–7 turns
-      const turns = 5 + Math.floor(Math.random()*3); // 5,6,7
+      const turns = 5 + Math.floor(Math.random()*3);
       const extra = (Math.PI*2) * turns;
 
       targetRotation = desired + extra;
@@ -599,6 +578,8 @@
       el.centerSub.textContent = "spinning…";
       el.statusLine.textContent = "";
       lastTickBucket = null;
+
+      playWhoosh();
       requestAnimationFrame(animate);
     }
 
@@ -629,7 +610,7 @@
 
       el.pillLeft.style.display = isBlessing ? "none" : "inline-flex";
       el.resultCard.style.display = "block";
-      el.resultTitle.classList.toggle("prize", !isBlessing); // deep red for prize
+      el.resultTitle.classList.toggle("prize", !isBlessing);
 
       if(isBlessing){
         el.resultTitle.textContent = "Blessing";
@@ -653,7 +634,7 @@
     }
 
     /***********************
-     * Confetti (only for non-blessing)
+     * Confetti
      ***********************/
     let confettiRAF = null;
     function burstConfetti(){
@@ -716,7 +697,7 @@
     }
 
     /***********************
-     * Audio tick (optional)
+     * Audio (whoosh + tick + ding)
      ***********************/
     function initAudio(){
       if(!audioEnabled || audioReady) return;
@@ -725,26 +706,46 @@
         audioReady = true;
       } catch(e){ audioReady = false; }
     }
-    function playTick(){
+
+    function playTone({type="sine", f=440, t=0.06, gain=0.05, sweep=null}){
       if(!audioReady || !audioCtx) return;
-      const t = audioCtx.currentTime;
+      const now = audioCtx.currentTime;
       const o = audioCtx.createOscillator();
       const g = audioCtx.createGain();
-      o.type = "square";
-      o.frequency.setValueAtTime(900, t);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.06, t + 0.005);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+      o.type = type;
+      o.frequency.setValueAtTime(f, now);
+      if(sweep){
+        o.frequency.exponentialRampToValueAtTime(sweep.to, now + sweep.dur);
+      }
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(gain, now + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + t);
       o.connect(g); g.connect(audioCtx.destination);
-      o.start(t); o.stop(t + 0.04);
+      o.start(now); o.stop(now + t + 0.02);
     }
+
+    function playWhoosh(){
+      playTone({type:"sawtooth", f:220, t:0.18, gain:0.028, sweep:{to:1200, dur:0.18}});
+    }
+    function playTick(){
+      playTone({type:"square", f:900, t:0.035, gain:0.040});
+    }
+    function playDing(isPrize){
+      if(isPrize){
+        playTone({type:"sine", f:880, t:0.08, gain:0.06});
+        setTimeout(()=>playTone({type:"sine", f:1320, t:0.09, gain:0.05}), 55);
+      }else{
+        playTone({type:"triangle", f:660, t:0.07, gain:0.035});
+      }
+    }
+
     let lastTickBucket = null;
     function maybeTick(){
       if(!audioEnabled || !audioReady) return;
       const n = segments.length;
       const two = Math.PI*2;
       const slice = two / n;
-      const bucket = Math.floor(((rotation % two) + two) % two / slice);
+      const bucket = Math.floor((((rotation % two) + two) % two) / slice);
       if(bucket !== lastTickBucket){
         lastTickBucket = bucket;
         playTick();
@@ -768,7 +769,6 @@
       updatePlayedUI();
     }
 
-    // Hidden long-press reset on title (1.2s)
     let lpTimer = null;
     let lpArmed = false;
     function armLongPress(){
@@ -804,10 +804,7 @@
       }
 
       selectedIndex = pickWeightedIndex();
-
-      // a bit longer for 5-7 turns
       spinDuration = 3600 + Math.random()*700;
-
       spinToIndex(selectedIndex);
     }
 
@@ -815,7 +812,11 @@
       const seg = segments[selectedIndex] || segments[0];
       setPlayed(true);
       showResult(seg);
-      if(!seg.isBlessing) burstConfetti();
+
+      const isPrize = !seg.isBlessing;
+      playDing(isPrize);
+
+      if(isPrize) burstConfetti();
     }
 
     el.centerBtn.addEventListener("pointerdown", (e)=>{
@@ -830,7 +831,6 @@
       }
     });
 
-    // long press reset
     el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
     el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
     el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
@@ -840,7 +840,6 @@
      * Boot
      ***********************/
     (async function init(){
-      // placeholder wheel immediately
       segments = [
         {label:"Blessing", weight:1, isBlessing:true},
         {label:"This is on us", weight:1, isBlessing:false},
