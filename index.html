@@ -1,1324 +1,764 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#F6F1E8" />
   <title>PandaGoldenEar Lucky Draw</title>
 
   <style>
     :root{
-      --bg:#f6efe7;
-      --card:#fff;
-      --line:#e8dccf;
-      --ink:#1f1f1f;
-      --muted:#6f6a64;
-      --brand:#b46b52;
-      --brand2:#7a3b2d;
-      --green:#1f6b3a;
       --bg:#F6F1E8;
-      --card:#ffffffcc;
-      --ink:#1c1c1c;
-      --muted:#6b6b6b;
-      --line:#e4d8cb;
-      --shadow:0 18px 40px rgba(28,28,28,.10);
-      --radius:26px;
+      --ink:#1b1b1b;
+      --muted:#7a726a;
+      --line:#E8DDCF;
+      --dash:#D7C6B2;
       --brand:#9a3b2f;
-      --brand2:#caa35a;
-      --btn:#b16d56;
-      --btn2:#8f4d3e;
-      --ok:#2f7a4a;
+      --brand2:#b06a57;
+      --shadow: 0 14px 36px rgba(20,20,20,.08);
+      --radius: 22px;
     }
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:radial-gradient(1200px 600px at 50% -10%, #fff8f0 0%, var(--bg) 60%, #f3e8dd 120%);
-      font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       color:var(--ink);
       background:
-        radial-gradient(1200px 600px at 50% -10%, #fff7ef 0%, var(--bg) 52%, #f3eadf 100%);
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
+        radial-gradient(1000px 520px at 50% -120px, #fff 0%, var(--bg) 55%, #f2e8db 110%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
-    .wrap{ max-width:520px; margin:0 auto; padding:18px 16px 28px; }
+    a{color:inherit;text-decoration:none}
+    a:active{opacity:.85}
 
-    .badgeTop{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:10px 16px;
-      border-radius:999px;
-    .wrap{
-      width:min(980px, 100%);
-      padding: 18px 14px 34px;
+    .wrap{max-width:740px;margin:0 auto;padding:18px 14px 28px;}
+
+    .badge-top{display:flex;justify-content:center;margin-top:6px;margin-bottom:10px;}
+    .badge-top .pill{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 16px;border:1px solid var(--line);
+      border-radius:999px;background:#fff8efaa;
+      box-shadow:0 6px 18px rgba(20,20,20,.06);
+      color:#6b4e3b;font-weight:700;letter-spacing:.2px;
     }
-    .shell{
-      background: linear-gradient(180deg, #ffffffc7 0%, #ffffff9a 100%);
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.55);
-      font-weight:900;
-      color:#6b5248;
-      border-radius: 32px;
-      box-shadow: var(--shadow);
-      padding: 18px 16px 22px;
-      position:relative;
-      overflow:hidden;
-    }
-    .topTag{
-      width:fit-content;
-      margin:0 auto 14px;
-      background:#f3e6d8;
-      border:1px solid #ead7c3;
-      border-radius: 999px;
-      padding: 8px 14px;
-      color:#6a4a2a;
-      font-weight:700;
-      letter-spacing:.2px;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .header{
-      display:flex; align-items:center; justify-content:center;
-      gap:12px;
-    .brandRow{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      justify-content:center;
-      margin-top: 6px;
-      user-select:none;
+
+    .titleRow{
+      display:flex;align-items:center;justify-content:center;gap:14px;
+      margin:6px 0 6px;text-align:center;
+      user-select:none;-webkit-user-select:none;touch-action:manipulation;
     }
     .fu{
-      width:46px; height:46px; border-radius:14px;
-      display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(145deg, #b95544, #8f3a2d);
-      color:#ffd36a;
-      font-weight:1000;
-      box-shadow:0 10px 22px rgba(0,0,0,.12);
-      width:56px;height:56px;
-      border-radius:16px;
-      background: radial-gradient(circle at 30% 25%, #c85b4a 0%, #9a3b2f 65%, #7e2f26 100%);
-      display:grid;
-      place-items:center;
-      box-shadow: 0 12px 22px rgba(154,59,47,.20);
-      border:1px solid rgba(255,255,255,.30);
+      width:54px;height:54px;border-radius:16px;
+      background:linear-gradient(180deg,#b55a45 0%,#8f2f25 100%);
+      display:grid;place-items:center;color:#f7d48c;
+      font-weight:900;font-size:28px;
+      box-shadow:0 10px 24px rgba(154,59,47,.22);
       flex:0 0 auto;
     }
-    .fu span{
-      font-size:28px;
-      font-weight:900;
-      color:#f6d08a;
-      text-shadow: 0 2px 0 rgba(0,0,0,.08);
-    }
-    h1{
-      margin:0;
-      font-size:30px;
-      line-height:1.05;
-      font-weight:1000;
-      letter-spacing:-.3px;
-      cursor:pointer; /* long press for reset */
-      font-size: clamp(30px, 5vw, 44px);
-      line-height: 1.02;
-      letter-spacing: -0.6px;
-      font-weight: 900;
-      text-align:left;
-    }
-    .sub{
-      text-align:center;
-      margin:10px 0 14px;
-      margin: 10px 0 14px;
-      color:var(--muted);
-      font-weight:700;
-      font-weight:600;
-    }
+    h1{margin:0;line-height:1.05;font-size:40px;letter-spacing:-0.6px;}
+    .subtitle{text-align:center;margin:8px 0 14px;color:var(--muted);font-size:18px;font-weight:600;}
 
     .follow{
-      margin:12px 0 14px;
-      border:1px dashed rgba(190,160,135,.7);
-      border-radius:18px;
-      padding:14px 12px;
-      background:rgba(255,255,255,.35);
-      margin: 10px auto 16px;
-      max-width: 820px;
-      border: 2px dashed #e0cbb7;
-      background: #fff7ef8c;
-      border-radius: 22px;
-      padding: 14px 14px 12px;
-      text-align:center;
+      border:2px dashed var(--dash);border-radius:var(--radius);
+      padding:14px 14px 12px;background:#fff6ed88;
+      box-shadow:0 10px 28px rgba(20,20,20,.05);
     }
-    .followTitle{
-      font-weight:1000;
-      color:#6b5248;
-      margin-bottom:10px;
-    .follow .title{
-      font-weight:900;
-      color:#4f3c2f;
-      font-size: 20px;
-      margin-bottom: 10px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      align-items:center;
+    .follow h3{margin:0 0 10px;text-align:center;font-size:22px;letter-spacing:-.2px;color:#6b4e3b;}
+    .follow .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}
+    .chipLink{
+      display:inline-flex;align-items:center;justify-content:center;min-width:140px;
+      padding:12px 16px;border-radius:999px;border:1px solid var(--line);
+      background:#fff;box-shadow:0 8px 18px rgba(20,20,20,.05);
+      font-weight:800;color:#4b3a2f;
     }
-    .pillRow{
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom: 8px;
-    }
-    .btns{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-    .pill{
-      padding:10px 16px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#fff;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding: 10px 18px;
-      border-radius: 999px;
-      border: 1px solid #decab7;
-      background: #ffffffc2;
-      text-decoration:none;
-      color:#5b463d;
-      font-weight:900;
-      color:#3a2c22;
-      font-weight: 800;
-      min-width: 128px;
-      box-shadow: 0 8px 18px rgba(0,0,0,.06);
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    .pill:active{ transform: scale(.98); box-shadow: 0 6px 12px rgba(0,0,0,.08); }
-    .follow .hint{
-      color:#7a6a60;
-      font-weight:700;
-      font-size: 18px;
-    }
+    .follow .hint{text-align:center;color:#7a726a;font-size:18px;font-weight:650;margin:0;}
 
-    .wheelWrap{
-      margin-top:12px;
-    .pointer{
-      width:0;height:0;
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-bottom: 22px solid #7f3c2f;
-      margin: 8px auto 8px;
-      filter: drop-shadow(0 8px 10px rgba(0,0,0,.10));
-    }
-
-    .wheelZone{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-    }
+    .wheelBlock{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
     .pointer{
       width:0;height:0;
       border-left:14px solid transparent;
       border-right:14px solid transparent;
-      border-bottom:20px solid var(--brand2);
-      margin-bottom:-6px;
-      filter:drop-shadow(0 10px 14px rgba(0,0,0,.16));
-    }
-    canvas{
-      background:transparent;
-      border-radius:50%;
-      box-shadow:0 14px 34px rgba(0,0,0,.12);
-      touch-action:manipulation;
-    }
-    .hint{
+      border-bottom:18px solid #7b3a2f;
       margin-top:6px;
-      color:#7a6f67;
-    .wheelWrap{
-      position:relative;
-      width:min(420px, 88vw);
-      aspect-ratio: 1 / 1;
-      border-radius: 999px;
-      background: radial-gradient(circle at 50% 40%, #ffffff 0%, #f5e8da 58%, #ead8c7 100%);
-      box-shadow: 0 20px 45px rgba(0,0,0,.12);
-      border: 1px solid #e3d3c3;
-      overflow:hidden;
-    }
-    canvas{ width:100%; height:100%; display:block; }
 
+      /* 更精致的浮起感：两层阴影 */
+      filter:
+        drop-shadow(0 2px 1px rgba(255,255,255,.35))
+        drop-shadow(0 8px 14px rgba(20,20,20,.18));
+    }    
+
+    .wheelShell{
+      position:relative;width:min(92vw,520px);aspect-ratio:1/1;border-radius:999px;
+      box-shadow:var(--shadow);
+      background:radial-gradient(circle at 30% 20%, #ffffffcc 0%, #f7efe5 40%, #f1e4d5 100%);
+      border:8px solid #ead9c6;overflow:hidden;
+    }
+    canvas#wheel{width:100%;height:100%;display:block;transform:rotate(0deg);will-change:transform;}
+
+    /* ✅ center button smaller so it won't cover labels */
     .centerBtn{
-      position:absolute;
-      inset:0;
-      display:grid;
-      place-items:center;
-      pointer-events:none;
+      position:absolute;inset:50% auto auto 50%;
+      transform:translate(-50%,-50%);
+      width:46%; /* was 54% */
+      aspect-ratio:1/1;border-radius:999px;border:10px solid #ffffffbb;
+      background:radial-gradient(circle at 30% 20%, #c9826d 0%, var(--brand2) 30%, var(--brand) 100%);
+      box-shadow:0 18px 44px rgba(154,59,47,.22);
+      display:flex;align-items:center;justify-content:center;flex-direction:column;
+      color:#fff;cursor:pointer;touch-action:manipulation;
+      user-select:none;-webkit-user-select:none;
     }
-    .btnCore{
-      pointer-events:auto;
-      width: 44%;
-      aspect-ratio: 1 / 1;
-      border-radius: 999px;
-      background: radial-gradient(circle at 35% 30%, #c38b78 0%, var(--btn) 55%, var(--btn2) 100%);
-      border: 1px solid rgba(255,255,255,.35);
-      box-shadow: 0 18px 30px rgba(154,59,47,.18);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      gap:6px;
-      cursor:pointer;
-      user-select:none;
-      touch-action: manipulation;
+    .centerBtn:active{transform:translate(-50%,-50%) scale(.99)}
+    .centerBtn .big{
+      font-size:40px;line-height:1;font-weight:950;letter-spacing:-.8px;
+      text-shadow:0 6px 16px rgba(0,0,0,.12);margin-bottom:6px;
     }
-    .btnCore:active{ transform: scale(.985); }
-    .btnCore .spinTxt{
-      font-size: clamp(24px, 6.3vw, 40px);
-      font-weight: 900;
-      color:#fff;
-      text-shadow: 0 2px 0 rgba(0,0,0,.10);
-      letter-spacing: .2px;
-      line-height:1;
-    }
-    .btnCore .small{
-      font-size: 14px;
-      color: rgba(255,255,255,.90);
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
-    .btnCore.disabled{
-      filter: grayscale(.2) saturate(.7);
-      opacity:.75;
-      cursor: default;
-    }
+    .centerBtn .small{font-size:14px;opacity:.92;font-weight:700;letter-spacing:.2px;}
 
-    .onePlay{
-      margin-top: 6px;
-      color:#7a6a60;
-      font-weight:800;
-      font-size: 20px;
-      text-align:center;
-    }
-    .hint.loading{ opacity:.85; }
+    .onePlay{text-align:center;color:#7a726a;font-weight:800;font-size:22px;margin:4px 0 6px;}
+    .statusLine{color:var(--muted);font-weight:700;font-size:18px;margin-top:2px;min-height:22px;}
 
-    .result{
-      margin-top:16px;
-    .resultCard{
-      margin: 14px auto 0;
-      max-width: 820px;
-      background: #ffffffc8;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.80);
-      border-radius:22px;
-      padding:16px;
-      display:none;
-      border-radius: 26px;
-      box-shadow: 0 14px 30px rgba(0,0,0,.08);
-      padding: 16px 16px 14px;
-      text-align:center;
-      position:relative;
-      overflow:hidden;
+    .card{
+      width:min(92vw,560px);
+      border:2px solid var(--line);
+      border-radius:var(--radius);
+      background:#fffdf9cc;
+      box-shadow:0 18px 44px rgba(20,20,20,.06);
+      padding:16px 14px 14px;
+      position:relative;overflow:hidden;
     }
-    .pillSmall{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 12px;
-    .chips{
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom: 8px;
+    .card .topRow{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px;}
+    .pill{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 14px;border-radius:999px;border:2px solid var(--line);
+      background:#fff;font-weight:900;letter-spacing:.3px;
+      box-shadow:0 10px 22px rgba(20,20,20,.05);
+      white-space:nowrap;
     }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      padding: 10px 16px;
-      border:1px solid #e6d4c5;
-      background:#fff;
-      font-weight:1000;
-      color:#7a3b2d;
-    }
-    .claimBar{
-      margin:12px 0 10px;
-      padding:12px 14px;
-      border-radius:16px;
-      background:rgba(117,214,149,.22);
-      border:1px solid rgba(117,214,149,.55);
-      color:var(--green);
-      font-weight:1000;
-    }
-    .yougot{
-      margin-top:10px;
-      font-weight:900;
-      color:#8a857f;
-      letter-spacing:.35em;
-      text-align:center;
-      font-size:12px;
-      color:#5b3b2a;
-    }
-    .chip.prize{ background: #e9f5ee; border-color:#cfe7da; color:#1d5c36; }
-    .chip.done{ background: #f4efe8; color:#6b5a4a; }
+    .pill.win{background:#e7f6ed;border-color:#ccead8;color:#1e6b3b;}
+    .pill.played{background:#fff6ed;border-color:#ead8c3;color:#6b4e3b;}
 
-    .youGot{
-      letter-spacing: .45em;
-      font-weight: 900;
-      color:#887a70;
-      margin: 8px 0 6px;
+    .card .label{text-align:center;color:#8b8177;font-weight:900;letter-spacing:7px;margin:6px 0 8px;}
+    .card h2{margin:0;text-align:center;font-size:44px;line-height:1.03;letter-spacing:-.6px;}
+    .card h2.prize{color:#8f2f25;}
+    .card .sub{
+      text-align:center;color:#7a726a;font-weight:700;
+      font-size:14px;line-height:1.35;margin-top:10px;
     }
-    .big{
-      margin-top:8px;
-      font-size:34px;
-      line-height:1.12;
-      font-weight:1000;
-      color:#111;
-      font-size: clamp(28px, 6.4vw, 52px);
-      font-weight: 1000;
-      letter-spacing: -0.6px;
-      line-height: 1.06;
-      margin: 6px 0 10px;
-    }
-    .claim{
-      color:#7a6a60;
-      font-weight:800;
-      font-size:18px;
-      margin-top: 4px;
-    }
-    .footer{
-      margin-top: 14px;
-      text-align:center;
-      color:#7a6a60;
-      font-weight:800;
-      font-size: 20px;
-    }
-    .big.bless{ font-size:30px; }
-    .foot{
-      margin-top:12px;
-      color:#8a857f;
-      font-weight:700;
+    .card .sub strong{color:#5a524b}
 
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: rgba(28,28,28,.78);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 14px;
-      font-weight: 800;
-      box-shadow: 0 14px 30px rgba(0,0,0,.20);
-      max-width: min(560px, 92vw);
-      text-align:center;
-      display:none;
-      z-index: 50;
-    }
-    .result:before{
-      content:"";
+    canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40;}
 
-    .spark{
-      position:absolute;
-      inset:-40px;
-      inset:-40% -20%;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255,196,0,.16) 0 4px, transparent 5px),
-        radial-gradient(circle at 70% 30%, rgba(180,107,82,.14) 0 4px, transparent 5px),
-        radial-gradient(circle at 40% 80%, rgba(117,214,149,.14) 0 4px, transparent 5px);
-        radial-gradient(circle at 10% 35%, rgba(202,163,90,.20) 0 6px, transparent 7px),
-        radial-gradient(circle at 75% 25%, rgba(154,59,47,.16) 0 5px, transparent 6px),
-        radial-gradient(circle at 50% 70%, rgba(47,122,74,.14) 0 6px, transparent 7px),
-        radial-gradient(circle at 30% 85%, rgba(177,109,86,.14) 0 5px, transparent 6px);
-      filter: blur(.2px);
-      pointer-events:none;
-      opacity: .55;
-      animation: floaty 6s ease-in-out infinite;
-    }
-    @keyframes floaty{
-      0%{ transform: translate3d(0,0,0) rotate(0deg); }
-      50%{ transform: translate3d(0,-10px,0) rotate(1.2deg); }
-      100%{ transform: translate3d(0,0,0) rotate(0deg); }
+    @media (max-width:420px){
+      h1{font-size:34px}
+      .fu{width:50px;height:50px;border-radius:14px}
+      .follow h3{font-size:20px}
+      .follow .hint{font-size:16px}
+      .centerBtn .big{font-size:38px}
+      .card h2{font-size:38px}
+      .onePlay{font-size:20px}
     }
   </style>
 </head>
 
 <body>
+  <canvas id="confetti"></canvas>
+
   <div class="wrap">
-    <div style="text-align:center;">
-      <div class="badgeTop">🏮 Lantern Festival Special</div>
+    <div class="badge-top">
+      <div class="pill">🏮 Lantern Festival Special 🏮</div>
     </div>
-    <div class="shell">
-      <div class="spark"></div>
 
-      <div class="topTag">🏮 <span>Lantern Festival Special</span></div>
-
-    <div class="header" id="titleArea">
+    <!-- long-press this titleRow 1.2s to reset device -->
+    <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)">
       <div class="fu">福</div>
-      <div style="text-align:left;">
-        <h1>PandaGoldenEar<br/>Lucky Draw</h1>
-      <!-- Long-press this title to reset (hidden staff action) -->
-      <div class="brandRow" id="titleHoldArea" aria-label="Title (long press to reset)">
-        <div class="fu"><span>福</span></div>
-        <div>
-          <h1 id="mainTitle">PandaGoldenEar<br/>Lucky Draw</h1>
-        </div>
+      <div>
+        <h1>PandaGoldenEar Dumplings<br/>Lucky Draw</h1>
       </div>
     </div>
 
-    <div class="sub">Tap Spin to reveal your surprise.</div>
-      <div class="sub">Tap <b>Spin</b> to reveal your surprise.</div>
+    <div class="subtitle">Tap <b>Spin</b> to reveal your surprise.</div>
 
     <div class="follow">
-      <div class="followTitle">💥 Don’t forget to follow us —</div>
+      <h3>💥 Don’t forget to follow us —</h3>
       <div class="btns">
-        <a class="pill" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
-        <a class="pill" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
-        <a class="pill" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
-      <div class="follow">
-        <div class="title">💥 <span>Don’t forget to follow us —</span></div>
-        <div class="pillRow">
-          <a class="pill" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
-          <a class="pill" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
-          <a class="pill" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
-        </div>
-        <div class="hint">Follow any <b>ONE</b> platform to stay updated 😉</div>
+        <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
+        <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
+        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
       </div>
-      <div class="sub" style="margin:10px 0 0;">Follow any ONE platform to stay updated 😉</div>
+      <p class="hint">Follow any <b>ONE</b> platform to stay updated 🐼🥟😉</p>
     </div>
 
-    <div class="wheelWrap">
-      <div class="pointer"></div>
-      <canvas id="wheel" width="360" height="360"></canvas>
-      <div class="hint" id="hint">Thanks! One play per device.</div>
-    </div>
+    <div class="wheelBlock">
+      <div class="pointer" aria-hidden="true"></div>
 
-    <div class="result" id="result">
-      <div id="topPill" class="pillSmall">BLESSING ✨</div>
-      <div id="claimBar" class="claimBar" style="display:none;">🎁 Show this screen to claim</div>
-      <div class="yougot" id="yougot">YOU GOT</div>
-      <div class="big" id="bigText"></div>
-      <div class="foot" id="foot">Thanks for joining — see you at our dumpling food truck!</div>
-      <div class="wheelZone">
-        <div class="wheelWrap" id="wheelWrap">
-          <canvas id="wheel" width="900" height="900"></canvas>
-          <div class="centerBtn">
-            <div class="btnCore disabled" id="spinBtn" role="button" aria-label="Spin button" tabindex="0">
-              <div class="spinTxt">Spin</div>
-              <div class="small" id="spinHint">loading…</div>
-            </div>
-          </div>
+      <div class="wheelShell" id="wheelShell">
+        <canvas id="wheel" width="900" height="900" aria-label="Prize wheel"></canvas>
+
+        <div id="centerBtn" class="centerBtn" role="button" tabindex="0" aria-label="Spin">
+          <div class="big">Spin</div>
+          <div class="small" id="centerSub">tap to spin</div>
+        </div>
+      </div>
+
+      <div class="onePlay">Thanks! One play per device.</div>
+      <div class="statusLine" id="statusLine"></div>
+
+      <div class="card" id="resultCard" style="display:none;">
+        <div class="topRow">
+          <div class="pill win" id="pillLeft" style="display:none;">YOU WON 🎉</div>
+          <div style="flex:1"></div>
+          <div class="pill played" id="pillRight">✅ Played — thanks!</div>
         </div>
 
-        <div class="onePlay">Thanks! One play per device.</div>
-
-        <div class="resultCard" id="resultCard" style="display:none;">
-          <div class="chips">
-            <div class="chip" id="chipLeft">BLESSING ✨</div>
-            <div class="chip done" id="chipRight">✅ Played — thanks!</div>
-          </div>
-
-          <div class="youGot">YOU GOT</div>
-          <div class="big" id="resultBig">—</div>
-          <div class="claim" id="resultClaim"></div>
-          <div class="footer">Thanks for joining — see you at our dumpling food truck!</div>
-        </div>
+        <div class="label">YOU GOT</div>
+        <h2 id="resultTitle"></h2>
+        <div class="sub" id="resultSub"></div>
       </div>
     </div>
   </div>
 
-<script>
-  // ====== CONFIG ======
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoi_LO4oJPoqJprBMeuXy-68Mml6hca27bwN7BuLGb7bd97vrA4AOw-BZe3LnGMyOX/exec";
-  const SPIN_LOCK_KEY = "pge_has_spun";
+  <script>
+    /***********************
+     * CONFIG (your CSV URLs)
+     ***********************/
+    const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
+    const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-  // ====== STATE ======
-  const canvas = document.getElementById("wheel");
-  const ctx = canvas.getContext("2d");
-  const hint = document.getElementById("hint");
-  <div class="toast" id="toast"></div>
+    /***********************
+     * STATE
+     ***********************/
+    const LS_KEY = "pge_lucky_played_v1";
+    let played = localStorage.getItem(LS_KEY) === "1";
 
-  const W = canvas.width, H = canvas.height;
-  const cx = W/2, cy = H/2;
-  const radius = W/2 - 12;
+    let pool = [];
+    let blessings = [];
+    let segments = [];
 
-  let segments = []; // {label,type}
-  let currentRotation = -Math.PI/2;
-  let spinning = false;
+    let spinning = false;
+    let rotation = 0;
+    let targetRotation = 0;
+    let startRotation = 0;
+    let spinStartTs = 0;
+    let spinDuration = 3200;
+    let selectedIndex = -1;
 
-  // premium pastel palette (5 slices)
-  const PALETTE = ["#FFF8F0", "#EAF7F1", "#F1EEFF", "#FFEFE6", "#FFF6D8"];
+    // audio tick optional
+    let audioEnabled = true;
+    let audioReady = false;
+    let audioCtx = null;
 
-  // ====== label mapping (short labels on wheel) ======
-  const LABEL_MAP = {
-    "50% off for your next order": "50% OFF",
-    "2 more Dumplings": "2 Dumplings",
-    "One More Drink": "1 Drink",
-    "This is on us": "FREE",
-    "Blessing": "Blessing"
-  };
-  function displayLabel(label){
-    const key = String(label || "");
-    return LABEL_MAP[key] || key;
-<script>
-/* =========================
-   Config (your CSV links)
-========================= */
-const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
-const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
+    const el = {
+      wheel: document.getElementById("wheel"),
+      centerBtn: document.getElementById("centerBtn"),
+      centerSub: document.getElementById("centerSub"),
+      statusLine: document.getElementById("statusLine"),
+      resultCard: document.getElementById("resultCard"),
+      resultTitle: document.getElementById("resultTitle"),
+      resultSub: document.getElementById("resultSub"),
+      pillLeft: document.getElementById("pillLeft"),
+      titleRow: document.getElementById("titleRow"),
+      confetti: document.getElementById("confetti"),
+    };
+    const ctx = el.wheel.getContext("2d");
 
-/* =========================
-   State
-========================= */
-const LS_KEY = "pge_lucky_draw_played_v2"; // bump to new version
-let cache = {
-  ready:false,
-  pool:[],
-  blessings:[],
-  labels:[],  // segment labels (prize names)
-  weights:[], // weights for drawing choice
-  types:[],   // type per segment
-};
-
-let ui = {
-  wheel: document.getElementById("wheel"),
-  ctx: document.getElementById("wheel").getContext("2d"),
-  spinBtn: document.getElementById("spinBtn"),
-  spinHint: document.getElementById("spinHint"),
-  resultCard: document.getElementById("resultCard"),
-  resultBig: document.getElementById("resultBig"),
-  resultClaim: document.getElementById("resultClaim"),
-  chipLeft: document.getElementById("chipLeft"),
-  chipRight: document.getElementById("chipRight"),
-  toast: document.getElementById("toast"),
-  titleHoldArea: document.getElementById("titleHoldArea"),
-};
-
-let spinning = false;
-let currentAngle = 0; // radians
-let rafId = null;
-
-const SEG_COLORS = [
-  "#F6E4D6", // warm cream
-  "#E6F0EA", // mint
-  "#E8E3F4", // lavender
-  "#F3EACF", // honey
-  "#F7DDE0", // blush
-];
-
-/* =========================
-   Utilities
-========================= */
-function showToast(msg, ms=1600){
-  ui.toast.textContent = msg;
-  ui.toast.style.display = "block";
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(()=> ui.toast.style.display="none", ms);
-}
-
-async function fetchCSV(url){
-  const res = await fetch(url, { cache:"no-store" });
-  if(!res.ok) throw new Error("Network error");
-  return await res.text();
-}
-
-// CSV parser (handles quotes)
-function parseCSV(text){
-  const rows = [];
-  let row = [], cur = "", inQ = false;
-
-  for(let i=0;i<text.length;i++){
-    const c = text[i], n = text[i+1];
-
-    if(c === '"'){
-      if(inQ && n === '"'){ cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if(!inQ && c === ','){
-      row.push(cur); cur="";
-    } else if(!inQ && (c === '\n' || c === '\r')){
-      if(c === '\r' && n === '\n') i++;
-      row.push(cur);
-      rows.push(row);
-      row=[]; cur="";
-    } else {
-      cur += c;
+    /***********************
+     * CSV parsing
+     ***********************/
+    function parseCSV(text){
+      const rows = [];
+      let row = [], cur = "", inQ = false;
+      for(let i=0;i<text.length;i++){
+        const ch = text[i], next = text[i+1];
+        if(ch === '"'){
+          if(inQ && next === '"'){ cur += '"'; i++; }
+          else inQ = !inQ;
+        } else if(ch === ',' && !inQ){
+          row.push(cur); cur = "";
+        } else if((ch === '\n' || ch === '\r') && !inQ){
+          if(cur.length || row.length){ row.push(cur); rows.push(row); row=[]; cur=""; }
+          if(ch === '\r' && next === '\n') i++;
+        } else cur += ch;
+      }
+      if(cur.length || row.length){ row.push(cur); rows.push(row); }
+      return rows;
     }
-  }
+    function toBool(v){
+      const s = String(v ?? "").trim().toLowerCase();
+      return (s === "true" || s === "1" || s === "yes" || s === "y");
+    }
+    function toNum(v){
+      const n = Number(String(v ?? "").trim());
+      return Number.isFinite(n) ? n : 0;
+    }
+    async function fetchCSV(url){
+      const res = await fetch(url, { cache:"no-store" });
+      if(!res.ok) throw new Error("Failed to fetch CSV");
+      return await res.text();
+    }
 
-  // ====== helpers ======
-  async function fetchData(){
-    const res = await fetch(SCRIPT_URL, {cache:"no-store"});
-    return await res.json();
-  if(cur.length || row.length){
-    row.push(cur); rows.push(row);
-  }
+    /***********************
+     * Load data
+     ***********************/
+    async function loadData(){
+      const [poolText, blessText] = await Promise.all([
+        fetchCSV(POOL_CSV_URL),
+        fetchCSV(BLESS_CSV_URL),
+      ]);
 
-  // ====== DRAW (horizontal labels + auto-fit, never overflow) ======
-  function drawWheel(rot, press=false){
-    ctx.clearRect(0,0,W,H);
+      const poolRows = parseCSV(poolText);
+      const headers = poolRows[0].map(h => String(h).trim().toLowerCase());
+      const idx = (name) => headers.indexOf(name);
 
-    const n = Math.max(segments.length, 1);
-    const arc = (Math.PI*2)/n;
+      const iPrize = idx("prize");
+      const iWeight = idx("weight");
+      const iRemaining = idx("remaining");
+      const iActive = idx("active");
 
-    for(let i=0;i<n;i++){
-      const start = rot + i*arc;
-      const end = start + arc;
+      pool = poolRows.slice(1)
+        .map(r => ({
+          prize: (r[iPrize] ?? "").trim(),
+          weight: toNum(r[iWeight]),
+          remaining: (iRemaining >= 0) ? toNum(r[iRemaining]) : 999999,
+          active: (iActive >= 0) ? toBool(r[iActive]) : true
+        }))
+        .filter(x => x.prize);
 
-      // slice
+      const blessRows = parseCSV(blessText);
+      const bHeaders = blessRows[0].map(h => String(h).trim().toLowerCase());
+      const bIdx = bHeaders.indexOf("blessing");
+      const bActive = bHeaders.indexOf("active");
+
+      blessings = blessRows.slice(1)
+        .map(r => ({
+          text: (r[bIdx] ?? "").trim(),
+          active: (bActive >= 0) ? toBool(r[bActive]) : true
+        }))
+        .filter(x => x.text && x.active)
+        .map(x => x.text);
+
+      rebuildSegments();
+      drawWheel();      // draw immediately after data
+      updatePlayedUI();
+    }
+
+    function rebuildSegments(){
+      let filtered = pool.filter(p => p.active && (p.remaining > 0));
+      const hasBlessing = filtered.some(p => p.prize.toLowerCase() === "blessing");
+      if(!hasBlessing){
+        const b = pool.find(p => p.prize.toLowerCase()==="blessing" && p.active);
+        if(b) filtered.push({...b, remaining:999999});
+      }
+      segments = filtered.map(p => ({
+        label: p.prize,
+        weight: Math.max(0, p.weight),
+        isBlessing: p.prize.toLowerCase() === "blessing"
+      }));
+      if(segments.length === 0){
+        segments = [{label:"Blessing", weight:1, isBlessing:true}];
+      }
+    }
+
+    /***********************
+     * Probability (weight-based, from Google Sheet)
+     ***********************/
+    function pickWeightedIndex(){
+      const total = segments.reduce((s,x)=> s + (x.weight||0), 0);
+      if(total <= 0) return Math.floor(Math.random()*segments.length);
+
+      let r = Math.random() * total;
+      for(let i=0;i<segments.length;i++){
+        r -= (segments[i].weight||0);
+        if(r <= 0) return i;
+      }
+      return segments.length - 1;
+    }
+
+    /***********************
+     * Wheel drawing
+     ***********************/
+    const palette = [
+      {a:"#f7d7d1", b:"#f3bfb5"},
+      {a:"#d9f0e6", b:"#bfe6d4"},
+      {a:"#e5ddfb", b:"#cfc2f6"},
+      {a:"#fff0c9", b:"#f7e1a1"},
+      {a:"#e9f1ff", b:"#cfe0ff"},
+    ];
+
+    function wrapText(ctx, text, maxWidth){
+      const t = String(text);
+      if(ctx.measureText(t).width <= maxWidth) return t;
+      let cut = t;
+      while(cut.length > 3 && ctx.measureText(cut + "…").width > maxWidth){
+        cut = cut.slice(0,-1);
+      }
+      return cut + "…";
+    }
+
+    function drawWheel(){
+      const W = el.wheel.width, H = el.wheel.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.save();
+      ctx.translate(W/2,H/2);
+
+      const outerR = W*0.47;
       ctx.beginPath();
-      ctx.moveTo(cx,cy);
-      ctx.arc(cx,cy,radius,start,end);
-      ctx.closePath();
-      ctx.fillStyle = PALETTE[i % PALETTE.length];
+      ctx.arc(0,0,outerR,0,Math.PI*2);
+      ctx.fillStyle = "#ffffff";
       ctx.fill();
 
-      ctx.strokeStyle = "rgba(232,220,207,.95)";
-      ctx.lineWidth = 1;
+      const n = segments.length;
+      const slice = (Math.PI*2)/n;
+
+      for(let i=0;i<n;i++){
+        const start = -Math.PI/2 + i*slice;
+        const end = start + slice;
+
+        const c = palette[i % palette.length];
+        const grad = ctx.createRadialGradient(-outerR*0.2, -outerR*0.2, outerR*0.1, 0,0, outerR);
+        grad.addColorStop(0, c.a);
+        grad.addColorStop(1, c.b);
+
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+        ctx.arc(0,0,outerR,start,end);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(120,90,70,.20)";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // ✅ text: smaller + further out to avoid center button
+        const mid = (start+end)/2;
+        const rText = outerR*0.80;     // was ~0.70
+        ctx.save();
+        ctx.rotate(mid);
+        ctx.translate(rText,0);
+        ctx.rotate(-mid); // keep horizontal
+
+        ctx.font = "800 28px ui-sans-serif, system-ui, -apple-system"; // smaller
+        ctx.fillStyle = "rgba(40,30,25,.72)";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        const maxW = outerR*0.42;
+        const label = wrapText(ctx, segments[i].label, maxW);
+        ctx.fillText(label, 0, 0);
+        ctx.restore();
+      }
+
+      // inner ring
+      ctx.beginPath();
+      ctx.arc(0,0,outerR*0.62,0,Math.PI*2);
+      ctx.strokeStyle = "rgba(255,255,255,.65)";
+      ctx.lineWidth = 10;
       ctx.stroke();
 
-      // label
-      const mid = start + arc/2;
-      const tx = cx + Math.cos(mid) * (radius * 0.78);
-      const ty = cy + Math.sin(mid) * (radius * 0.78);
-
-      const raw = segments[i]?.label || "";
-      const text = displayLabel(raw);
-
-      const maxWidth = radius * 0.58;
-      let fontSize = 12;
-
-      ctx.save();
-      ctx.translate(tx, ty);
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = "#6b5248";
-
-      ctx.font = `900 ${fontSize}px system-ui`;
-      const w = ctx.measureText(text).width;
-      if (w > maxWidth) {
-        fontSize = Math.max(9, Math.floor(fontSize * (maxWidth / w)));
-        ctx.font = `900 ${fontSize}px system-ui`;
-      }
-      ctx.fillText(text, 0, 0);
       ctx.restore();
-  while(rows.length && rows[rows.length-1].every(x => String(x).trim()==="")) rows.pop();
-  return rows;
-}
 
-function rowsToObjects(rows){
-  const header = rows[0].map(h=>String(h).trim());
-  const out = [];
-  for(let i=1;i<rows.length;i++){
-    const obj = {};
-    for(let j=0;j<header.length;j++){
-      obj[header[j]] = rows[i][j] ?? "";
+      // apply rotation via CSS transform for smoothness
+      el.wheel.style.transform = `rotate(${rotation}rad)`;
     }
-    if(Object.values(obj).every(v => String(v).trim()==="")) continue;
-    out.push(obj);
-  }
-  return out;
-}
 
-function pickWeightedIndex(weights){
-  let total = 0;
-  for(const w of weights){ total += w; }
-  if(total <= 0) return 0;
-  let r = Math.random() * total;
-  for(let i=0;i<weights.length;i++){
-    r -= weights[i];
-    if(r <= 0) return i;
-  }
-  return weights.length - 1;
-}
+    /***********************
+     * Spin animation
+     ***********************/
+    function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
 
-function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-
-function shortLabel(s){
-  s = String(s || "").trim();
-  // keep it tidy on wheel
-  if(s.length > 22) return s.slice(0, 20) + "…";
-  return s;
-}
-
-function isPlayed(){
-  return localStorage.getItem(LS_KEY) === "1";
-}
-function setPlayed(v){
-  localStorage.setItem(LS_KEY, v ? "1" : "0");
-}
-
-/* =========================
-   Drawing (canvas wheel)
-========================= */
-function drawWheel(labels){
-  const ctx = ui.ctx;
-  const W = ui.wheel.width, H = ui.wheel.height;
-  const cx = W/2, cy = H/2;
-
-    // outer double ring for premium look
-    ctx.beginPath();
-    ctx.arc(cx,cy,radius+2,0,Math.PI*2);
-    ctx.strokeStyle="rgba(190,160,135,.45)";
-    ctx.lineWidth=8;
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.arc(cx,cy,radius-6,0,Math.PI*2);
-    ctx.strokeStyle="rgba(255,255,255,.85)";
-    ctx.lineWidth=3;
-    ctx.stroke();
-
-    // inner glow ring
-    ctx.beginPath();
-    ctx.arc(cx,cy,radius*0.62,0,Math.PI*2);
-    ctx.fillStyle="rgba(255,255,255,.42)";
-    ctx.fill();
-  ctx.clearRect(0,0,W,H);
-
-    // center button (pressed feedback)
-    ctx.beginPath();
-    ctx.arc(cx,cy,72,0,Math.PI*2);
-    ctx.fillStyle = press ? "rgba(180,107,82,.42)" : "rgba(180,107,82,.30)";
-    ctx.fill();
-  // base shadow ring
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx, cy, W*0.46, 0, Math.PI*2);
-  ctx.fillStyle = "rgba(0,0,0,.03)";
-  ctx.fill();
-  ctx.restore();
-
-    ctx.beginPath();
-    ctx.arc(cx,cy,54,0,Math.PI*2);
-    ctx.fillStyle = press ? "rgba(180,107,82,.70)" : "rgba(180,107,82,.55)";
-    ctx.fill();
-  const N = labels.length;
-  const outerR = W * 0.46;
-  const innerR = W * 0.18;
-
-    ctx.fillStyle="#fff";
-    ctx.font="1000 24px system-ui";
-    ctx.textAlign="center";
-    ctx.fillText(spinning ? "..." : "Spin", cx, cy+8);
-  // rotate wheel by currentAngle
-  ctx.save();
-  ctx.translate(cx, cy);
-  ctx.rotate(currentAngle);
-  ctx.translate(-cx, -cy);
-
-    ctx.fillStyle="rgba(255,255,255,.88)";
-    ctx.font="900 12px system-ui";
-    ctx.fillText(spinning ? "loading" : "tap to spin", cx, cy+30);
-  }
-  for(let i=0;i<N;i++){
-    const start = (i * 2*Math.PI / N) - Math.PI/2;
-    const end   = ((i+1) * 2*Math.PI / N) - Math.PI/2;
-
-  // ====== RESULT UI ======
-  const resultBox = document.getElementById("result");
-  const topPill = document.getElementById("topPill");
-  const claimBar = document.getElementById("claimBar");
-  const bigText = document.getElementById("bigText");
-  const yougot = document.getElementById("yougot");
-
-  function showBlessing(text){
-    resultBox.style.display="block";
-    topPill.textContent = "BLESSING ✨";
-    claimBar.style.display="none";
-    yougot.textContent = "YOU GOT";
-    bigText.classList.add("bless");
-    bigText.textContent = text || "Good luck!";
-  }
-    // segment
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, outerR, start, end);
-    ctx.closePath();
-
-  function showPrize(prize){
-    resultBox.style.display="block";
-    topPill.textContent = "YOU WON 🎉";
-    claimBar.style.display="block";
-    yougot.textContent = "YOU GOT";
-    bigText.classList.remove("bless");
-    bigText.textContent = prize;
-  }
-    ctx.fillStyle = SEG_COLORS[i % SEG_COLORS.length];
-    ctx.fill();
-
-  // ====== SPIN math ======
-  function indexOfPrize(name){
-    const s = String(name||"").toLowerCase();
-    const i = segments.findIndex(x => String(x.label).toLowerCase() === s);
-    return i>=0 ? i : 0;
-  }
-    ctx.strokeStyle = "rgba(120,90,70,.16)";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-  function microNudge(){
-    return new Promise(resolve=>{
-      const startRot = currentRotation;
-      const endRot = currentRotation - Math.PI/5;
-      const duration = 220;
-      const t0 = performance.now();
-      const ease = t => 1 - Math.pow(1-t,2);
-
-      function anim(now){
-        const t = Math.min(1, (now - t0)/duration);
-        const k = ease(t);
-        currentRotation = startRot + (endRot - startRot)*k;
-        drawWheel(currentRotation);
-        if(t<1) requestAnimationFrame(anim);
-        else resolve();
-    // label (smaller, outward, not blocking center)
-    const mid = (start + end) / 2;
-    const text = shortLabel(labels[i]);
-
-    const tx = cx + Math.cos(mid) * (outerR * 0.78);
-    const ty = cy + Math.sin(mid) * (outerR * 0.78);
-
-    ctx.save();
-    ctx.translate(tx, ty);
-
-    // slightly align with arc but keep readable (avoid vertical)
-    let rot = mid;
-    // normalize angle to [-pi, pi]
-    while(rot > Math.PI) rot -= 2*Math.PI;
-    while(rot < -Math.PI) rot += 2*Math.PI;
-
-    // If too vertical, flatten it
-    if(Math.abs(rot) > 1.2) rot = rot > 0 ? 1.2 : -1.2;
-
-    ctx.rotate(rot);
-
-    ctx.font = "800 30px ui-sans-serif, system-ui";
-    ctx.fillStyle = "rgba(55,40,30,.78)";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
-    // wrap into 2 lines max
-    const maxW = outerR * 0.55;
-    const words = text.split(" ");
-    const lines = [];
-    let line = "";
-    for(const w of words){
-      const test = (line ? line + " " : "") + w;
-      if(ctx.measureText(test).width <= maxW){
-        line = test;
-      } else {
-        if(line) lines.push(line);
-        line = w;
-        if(lines.length >= 1) break;
-      }
-      requestAnimationFrame(anim);
-    });
-  }
-    }
-    if(line && lines.length < 2) lines.push(line);
-
-  function spinToIndex(landIndex){
-    return new Promise(resolve=>{
+    // ✅ Correct angle math so wheel lands on the selected slice center at the pointer (top)
+    function spinToIndex(idx){
       const n = segments.length;
-      const arc = (Math.PI*2)/n;
+      const slice = (Math.PI*2)/n;
 
-      // pointer at top (-pi/2), rotate slice center to it
-      const target = -Math.PI/2 - (landIndex*arc + arc/2);
+      // With our drawing starting at -90deg:
+      // slice i center (wheel coords) = -90deg + i*slice + slice/2
+      // To bring that center to the pointer top (-90deg), wheel rotation should be:
+      // rotationTarget = -(i*slice + slice/2) + extraTurns
+      const desired = -(idx*slice + slice/2);
 
-      // add multiple spins
-      const spins = 6 * Math.PI*2;
-      const startRot = currentRotation;
-      const endRot = target - spins;
+      const extra = (Math.PI*2) * (3 + Math.floor(Math.random()*2)); // 3-4 turns
+      targetRotation = desired + extra;
 
-      const duration = 3200;
-      const t0 = performance.now();
-      const ease = t => 1 - Math.pow(1-t,3);
+      startRotation = rotation;
+      spinStartTs = performance.now();
+      spinning = true;
 
-      function anim(now){
-        const t = Math.min(1, (now - t0)/duration);
-        const k = ease(t);
-        currentRotation = startRot + (endRot - startRot)*k;
-        drawWheel(currentRotation);
-        if(t<1) requestAnimationFrame(anim);
-        else resolve();
-      }
-      requestAnimationFrame(anim);
-    });
-    const lh = 34;
-    const offset = (lines.length-1) * lh * 0.5;
-    for(let li=0;li<lines.length;li++){
-      ctx.fillText(lines[li], 0, (li*lh) - offset);
-    }
-    ctx.restore();
-  }
-
-  // ====== MAIN spin handler ======
-  async function handleSpin(){
-    if(spinning) return;
-
-    // if already played: consumer-friendly, no staff hint
-    if(localStorage.getItem(SPIN_LOCK_KEY)==="1"){
-      hint.textContent = "✅ Played — thanks!";
-      drawWheel(currentRotation, true);
-      setTimeout(()=>drawWheel(currentRotation,false),120);
-      return;
+      el.centerSub.textContent = "spinning…";
+      el.statusLine.textContent = "";
+      lastTickBucket = null;
+      requestAnimationFrame(animate);
     }
 
-    spinning = true;
-    hint.classList.add("loading");
-    hint.textContent = "Spinning…";
-    drawWheel(currentRotation, true);
+    function animate(){
+      if(!spinning) return;
+      const now = performance.now();
+      const t = Math.min(1, (now - spinStartTs) / spinDuration);
+      const eased = easeOutCubic(t);
+      rotation = startRotation + (targetRotation - startRotation) * eased;
 
-    // ALWAYS give instant feedback first
-    await microNudge();
+      maybeTick();
+      drawWheel();
 
-    try{
-      const data = await fetchData();
-      if(!data.ok){
-        hint.classList.remove("loading");
-        hint.textContent = "Network error. Please try again.";
+      if(t < 1){
+        requestAnimationFrame(animate);
+      } else {
         spinning = false;
-        drawWheel(currentRotation,false);
-        return;
+        el.centerSub.textContent = "tap to spin";
+        onSpinEnd();
       }
-  // inner ring
-  ctx.beginPath();
-  ctx.arc(cx, cy, innerR, 0, Math.PI*2);
-  ctx.fillStyle = "rgba(255,255,255,.45)";
-  ctx.fill();
-  ctx.strokeStyle = "rgba(120,90,70,.18)";
-  ctx.lineWidth = 3;
-  ctx.stroke();
-
-  ctx.restore();
-
-  // outer highlight ring
-  ctx.beginPath();
-  ctx.arc(cx, cy, outerR, 0, Math.PI*2);
-  ctx.strokeStyle = "rgba(255,255,255,.55)";
-  ctx.lineWidth = 10;
-  ctx.stroke();
-}
-
-/* =========================
-   Load data (prefetch + cache)
-========================= */
-async function loadData(){
-  try{
-    const [poolText, blessText] = await Promise.all([
-      fetchCSV(POOL_CSV_URL),
-      fetchCSV(BLESS_CSV_URL),
-    ]);
-
-    const pool = rowsToObjects(parseCSV(poolText))
-      .filter(x => String(x.active ?? "TRUE").toUpperCase() !== "FALSE");
-
-    const blessings = rowsToObjects(parseCSV(blessText))
-      .filter(x => String(x.active ?? "TRUE").toUpperCase() !== "FALSE");
-
-    const labels = [];
-    const weights = [];
-    const types = [];
-
-    for(const r of pool){
-      const label = String(r.prize ?? "").trim();
-      if(!label) continue;
-
-      const w = Number(r.weight ?? 0);
-      labels.push(label);
-      weights.push(isFinite(w) && w > 0 ? w : 0);
-      types.push(String(r.type ?? "prize").trim().toLowerCase());
     }
 
-      // update segments from server (real config)
-      if(Array.isArray(data.prizes) && data.prizes.length){
-        segments = data.prizes;
+    /***********************
+     * Result rendering
+     ***********************/
+    function showResult(seg){
+      const isBlessing = seg.isBlessing;
+
+      el.pillLeft.style.display = isBlessing ? "none" : "inline-flex";
+      el.resultCard.style.display = "block";
+      el.resultTitle.classList.toggle("prize", !isBlessing);
+
+      if(isBlessing){
+        el.resultTitle.textContent = "Blessing";
+        const line = blessings.length
+          ? blessings[Math.floor(Math.random()*blessings.length)]
+          : "Good luck is coming your way :)";
+        el.resultSub.innerHTML = `<strong>${escapeHTML(line)}</strong><br/><br/>Thanks for joining — see you at our dumpling food truck!`;
+      } else {
+        el.resultTitle.textContent = seg.label;
+        el.resultSub.innerHTML = `If you win a prize, show this screen to our staff to claim.<br/><br/>Thanks for joining — see you at our dumpling food truck!`;
       }
-      drawWheel(currentRotation);
-    // Fallback if sheet empty
-    if(labels.length === 0){
-      labels.push("Blessing");
-      weights.push(1);
-      types.push("blessing");
     }
 
-      const idx = indexOfPrize(data.prize);
-      await spinToIndex(idx);
-    cache.pool = pool;
-    cache.blessings = blessings;
-    cache.labels = labels;
-    cache.weights = weights;
-    cache.types = types;
-    cache.ready = true;
-
-      localStorage.setItem(SPIN_LOCK_KEY,"1");
-      hint.classList.remove("loading");
-      hint.textContent = "✅ Played — thanks!";
-    // Enable spin immediately when ready
-    ui.spinBtn.classList.remove("disabled");
-    ui.spinHint.textContent = "tap to spin";
-
-      if(String(data.type).toLowerCase()==="blessing"){
-        showBlessing(data.blessingText || "Good luck!");
-      }else{
-        showPrize(data.prize);
-      }
-    }catch(err){
-      hint.classList.remove("loading");
-      hint.textContent = "Network error. Please try again.";
-      alert("Network error: " + err);
-    }finally{
-    // redraw with real labels
-    drawWheel(cache.labels);
-
-  }catch(e){
-    ui.spinHint.textContent = "offline";
-    showToast("Network issue. Please refresh.", 2200);
-  }
-}
-
-/* =========================
-   Spin logic (guaranteed spin)
-========================= */
-function computeStopAngleForIndex(index){
-  const N = cache.labels.length;
-  const seg = 2*Math.PI / N;
-
-  // pointer is at top (-pi/2). Our segment 0 starts at top due to draw offset.
-  // We want chosen segment center to land at top.
-  const targetCenter = (index + 0.5) * seg;
-  // because we rotate canvas by currentAngle, we need currentAngle such that:
-  // currentAngle + targetCenter = 0 (top), but we included -pi/2 in drawing start.
-  // With our draw math, "top" corresponds to angle 0 in our rotated coordinate.
-  // Thus: currentAngle = -targetCenter
-  return -targetCenter;
-}
-
-function animateToAngle(targetAngle){
-  // fast + premium easing
-  const start = currentAngle;
-  let delta = targetAngle - start;
-
-  // normalize delta to shortest but then add multiple spins
-  while(delta < 0) delta += 2*Math.PI;
-  delta += 2*Math.PI * (4 + Math.floor(Math.random()*2)); // 4~5 full spins
-
-  const duration = 1600 + Math.floor(Math.random()*250); // ~1.6-1.85s
-  const t0 = performance.now();
-
-  function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
-
-  function tick(now){
-    const t = clamp((now - t0)/duration, 0, 1);
-    const eased = easeOutCubic(t);
-    currentAngle = start + delta * eased;
-    drawWheel(cache.labels);
-
-    if(t < 1){
-      rafId = requestAnimationFrame(tick);
-    }else{
-      // normalize angle
-      currentAngle = ((currentAngle % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
-      drawWheel(cache.labels);
-      spinning = false;
-      drawWheel(currentRotation,false);
-      ui.spinHint.textContent = "tap to spin";
-      ui.spinBtn.classList.remove("disabled");
+    function escapeHTML(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
-  }
-  rafId = requestAnimationFrame(tick);
-}
 
-function showResult({type, prize, blessingText}){
-  ui.resultCard.style.display = "block";
-  ui.chipRight.textContent = "✅ Played — thanks!";
+    /***********************
+     * Confetti (lightweight, only for non-blessing)
+     ***********************/
+    let confettiRAF = null;
+    function burstConfetti(){
+      const c = el.confetti;
+      const cctx = c.getContext("2d");
+      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const w = window.innerWidth, h = window.innerHeight;
+      c.width = Math.floor(w * dpr);
+      c.height = Math.floor(h * dpr);
+      c.style.width = w + "px";
+      c.style.height = h + "px";
+      cctx.setTransform(dpr,0,0,dpr,0,0);
 
-  if(type === "blessing"){
-    ui.chipLeft.textContent = "BLESSING ✨";
-    ui.chipLeft.className = "chip";
-    ui.resultBig.textContent = blessingText || "Good luck is coming your way :)";
-    ui.resultClaim.textContent = ""; // no claim text for blessing
-  }else{
-    ui.chipLeft.textContent = "PRIZE 🎁";
-    ui.chipLeft.className = "chip prize";
-    ui.resultBig.textContent = prize;
-    ui.resultClaim.textContent = "If you win a prize, show this screen to our staff to claim.";
-  }
-}
+      const colors = ["#f2b5a7","#cfe0ff","#bfe6d4","#f7e1a1","#cfc2f6","#ffffff"];
+      const pieces = [];
+      const N = 110;
 
-  // ====== click/touch hitbox for center button ======
-  canvas.addEventListener("touchstart",(e)=>{
-    if(!e.touches || !e.touches[0]) return;
-    const rect = canvas.getBoundingClientRect();
-    const t = e.touches[0];
-    const x = (t.clientX - rect.left) * (canvas.width / rect.width) - cx;
-    const y = (t.clientY - rect.top)  * (canvas.height / rect.height) - cy;
-    if(Math.sqrt(x*x+y*y) <= 78) {
-      e.preventDefault();
-      handleSpin();
-    }
-  }, {passive:false});
-
-  canvas.addEventListener("click",(e)=>{
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * (canvas.width / rect.width) - cx;
-    const y = (e.clientY - rect.top)  * (canvas.height / rect.height) - cy;
-    if(Math.sqrt(x*x+y*y) <= 78) handleSpin();
-  });
-
-  // ====== Hidden reset (single device) ======
-  async function resetDevice(){
-    const ok = confirm("Reset this device?");
-    if(!ok) return;
-
-    localStorage.removeItem(SPIN_LOCK_KEY);
-
-    // reset UI state
-    resultBox.style.display = "none";
-    hint.classList.remove("loading");
-    hint.textContent = "Thanks! One play per device.";
-    spinning = false;
-function pickBlessingText(){
-  const items = cache.blessings;
-  if(!items || items.length === 0) return "Good luck is coming your way :)";
-
-    // IMPORTANT: preload prizes so next spin feels like first spin (no 2s wait)
-    try{
-      const data = await fetchData();
-      if(data.ok && Array.isArray(data.prizes) && data.prizes.length){
-        segments = data.prizes;
+      for(let i=0;i<N;i++){
+        pieces.push({
+          x: w*0.5 + (Math.random()-0.5)*40,
+          y: h*0.36 + (Math.random()-0.5)*20,
+          vx: (Math.random()-0.5)*8,
+          vy: - (4 + Math.random()*6),
+          g: 0.22 + Math.random()*0.18,
+          s: 4 + Math.random()*4,
+          r: Math.random()*Math.PI,
+          vr: (Math.random()-0.5)*0.25,
+          col: colors[Math.floor(Math.random()*colors.length)],
+          life: 0,
+          max: 120 + Math.random()*40
+        });
       }
-    }catch(e){}
-  const ws = items.map(x=>{
-    const w = Number(x.weight ?? 1);
-    return isFinite(w) && w > 0 ? w : 1;
-  });
-  const idx = pickWeightedIndex(ws);
-  const t = String(items[idx].blessing ?? "").trim();
-  return t || "Good luck is coming your way :)";
-}
 
-function spinOnce(){
-  if(spinning) return;
+      let frame = 0;
+      cancelAnimationFrame(confettiRAF);
 
-  // If already played: do NOT expose staff hint
-  if(isPlayed()){
-    showToast("Already played on this device.", 1400);
-    return;
-  }
+      function loop(){
+        frame++;
+        cctx.clearRect(0,0,w,h);
+        for(const p of pieces){
+          p.life++;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.g;
+          p.r += p.vr;
 
-    drawWheel(currentRotation,false);
-    alert("Reset done ✅");
-  if(!cache.ready){
-    showToast("Loading… try again in a moment.", 1400);
-    return;
-  }
-
-  // long-press title area 1.5s
-  // lock
-  spinning = true;
-  ui.spinBtn.classList.add("disabled");
-  ui.spinHint.textContent = "spinning…";
-
-  // Decide outcome immediately (no network)
-  const chosenIndex = pickWeightedIndex(cache.weights);
-  const chosenType = cache.types[chosenIndex] || "prize";
-  const chosenPrize = cache.labels[chosenIndex] || "Prize";
-
-  const blessingText = (chosenType === "blessing") ? pickBlessingText() : "";
-
-  // Start animation immediately (guaranteed spin feel)
-  const stopAngle = computeStopAngleForIndex(chosenIndex);
-  animateToAngle(stopAngle);
-
-  // Mark played & show result slightly before animation ends feels good
-  setTimeout(()=>{
-    setPlayed(true);
-    showResult({ type: chosenType, prize: chosenPrize, blessingText });
-  }, 1150);
-}
-
-/* =========================
-   Reset via long-press title (hidden)
-========================= */
-function setupLongPressReset(){
-  let pressTimer = null;
-  const titleArea = document.getElementById("titleArea");
-  function startPress(){ pressTimer = setTimeout(resetDevice, 1500); }
-  function endPress(){ if(pressTimer) clearTimeout(pressTimer); pressTimer=null; }
-
-  titleArea.addEventListener("touchstart", startPress, {passive:true});
-  titleArea.addEventListener("touchend", endPress);
-  titleArea.addEventListener("touchcancel", endPress);
-  titleArea.addEventListener("mousedown", startPress);
-  titleArea.addEventListener("mouseup", endPress);
-  titleArea.addEventListener("mouseleave", endPress);
-
-  // ====== INIT: draw immediately (no blank wheel), then refresh from API ======
-  (function init(){
-    // immediate default wheel (prevents 2s blank on slow network)
-    segments = [
-      {label:"Blessing", type:"blessing"},
-      {label:"This is on us", type:"prize"},
-      {label:"50% off for your next order", type:"prize"},
-      {label:"2 more Dumplings", type:"prize"},
-      {label:"One More Drink", type:"prize"}
-    ];
-    drawWheel(currentRotation,false);
-
-    // background refresh to real config
-    (async ()=>{
-      try{
-        const data = await fetchData();
-        if(data.ok && Array.isArray(data.prizes) && data.prizes.length){
-          segments = data.prizes;
-          drawWheel(currentRotation,false);
+          const alpha = Math.max(0, 1 - p.life/p.max);
+          cctx.save();
+          cctx.translate(p.x,p.y);
+          cctx.rotate(p.r);
+          cctx.globalAlpha = alpha;
+          cctx.fillStyle = p.col;
+          cctx.fillRect(-p.s/2, -p.s/2, p.s, p.s*0.66);
+          cctx.restore();
         }
-      }catch(e){}
+        if(frame < 180) confettiRAF = requestAnimationFrame(loop);
+        else cctx.clearRect(0,0,w,h);
+      }
+      loop();
+    }
+
+    /***********************
+     * Audio tick (optional)
+     ***********************/
+    function initAudio(){
+      if(!audioEnabled || audioReady) return;
+      try{
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioReady = true;
+      } catch(e){ audioReady = false; }
+    }
+    function playTick(){
+      if(!audioReady || !audioCtx) return;
+      const t = audioCtx.currentTime;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type = "square";
+      o.frequency.setValueAtTime(900, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.06, t + 0.005);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(t); o.stop(t + 0.04);
+    }
+    let lastTickBucket = null;
+    function maybeTick(){
+      if(!audioEnabled || !audioReady) return;
+      const n = segments.length;
+      const two = Math.PI*2;
+      const slice = two / n;
+      const bucket = Math.floor(((rotation % two) + two) % two / slice);
+      if(bucket !== lastTickBucket){
+        lastTickBucket = bucket;
+        playTick();
+      }
+    }
+
+    /***********************
+     * Played / reset
+     ***********************/
+    function updatePlayedUI(){
+      if(played){
+        el.statusLine.textContent = "";
+      } else {
+        el.statusLine.textContent = "";
+        el.resultCard.style.display = "none";
+      }
+    }
+    function setPlayed(v){
+      played = v;
+      localStorage.setItem(LS_KEY, v ? "1" : "0");
+      updatePlayedUI();
+    }
+
+    // Hidden long-press reset on title (1.2s)
+    let lpTimer = null;
+    let lpArmed = false;
+    function armLongPress(){
+      lpArmed = true;
+      clearTimeout(lpTimer);
+      lpTimer = setTimeout(()=>{
+        if(!lpArmed) return;
+        setPlayed(false);
+        spinning = false;
+        rotation = 0;
+        targetRotation = 0;
+        el.wheel.style.transform = "rotate(0rad)";
+        el.centerSub.textContent = "tap to spin";
+      }, 1200);
+    }
+    function cancelLongPress(){
+      lpArmed = false;
+      clearTimeout(lpTimer);
+    }
+
+    /***********************
+     * Spin interaction (responsive + consistent result)
+     ***********************/
+    function canSpin(){ return !spinning && !played; }
+
+    async function doSpin(){
+      if(!canSpin()) return;
+
+      // iOS audio unlock
+      initAudio();
+      if(audioCtx && audioCtx.state === "suspended"){
+        try{ await audioCtx.resume(); }catch(e){}
+      }
+
+      selectedIndex = pickWeightedIndex();
+
+      // snappy like first time
+      spinDuration = 2900 + Math.random()*650;
+
+      spinToIndex(selectedIndex);
+    }
+
+    function onSpinEnd(){
+      // ✅ DO NOT recompute by rotation; use selectedIndex to avoid mismatch
+      const seg = segments[selectedIndex] || segments[0];
+
+      setPlayed(true);
+      showResult(seg);
+
+      if(!seg.isBlessing){
+        burstConfetti();
+      }
+    }
+
+    // pointerdown is most reliable on mobile
+    el.centerBtn.addEventListener("pointerdown", (e)=>{
+      e.preventDefault();
+      doSpin();
+    }, {passive:false});
+
+    // keyboard
+    el.centerBtn.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        doSpin();
+      }
+    });
+
+    // silent ignore after played
+    el.centerBtn.addEventListener("click", ()=>{
+      // no popups, no staff hints
+    });
+
+    // long press reset
+    el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
+    el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
+    el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
+    el.titleRow.addEventListener("pointerleave", cancelLongPress, {passive:true});
+
+    /***********************
+     * Boot
+     ***********************/
+    (async function init(){
+      // placeholder wheel immediately (avoid blank)
+      segments = [
+        {label:"Blessing", weight:1, isBlessing:true},
+        {label:"This is on us", weight:1, isBlessing:false},
+        {label:"50% off for your next order", weight:1, isBlessing:false},
+        {label:"2 more Dumplings", weight:1, isBlessing:false},
+        {label:"One More Drink", weight:1, isBlessing:false},
+      ];
+      drawWheel();
+
+      try{
+        await loadData();
+      }catch(err){
+        el.statusLine.textContent = "Network error. Please refresh and try again.";
+        console.error(err);
+      }
     })();
-  })();
-  let pressed = false;
-
-  const start = (e)=>{
-    if(pressed) return;
-    pressed = true;
-    pressTimer = setTimeout(()=>{
-      // reset local only
-      setPlayed(false);
-      ui.resultCard.style.display = "none";
-      showToast("Reset on this device ✅", 1200);
-
-      // ensure wheel is instantly ready again (no slow loading)
-      ui.spinHint.textContent = cache.ready ? "tap to spin" : "loading…";
-      ui.spinBtn.classList.toggle("disabled", !cache.ready);
-      spinning = false;
-    }, 1200);
-  };
-
-  const cancel = ()=>{
-    pressed = false;
-    if(pressTimer){ clearTimeout(pressTimer); pressTimer = null; }
-  };
-
-  ui.titleHoldArea.addEventListener("touchstart", start, {passive:true});
-  ui.titleHoldArea.addEventListener("touchend", cancel, {passive:true});
-  ui.titleHoldArea.addEventListener("touchcancel", cancel, {passive:true});
-
-  ui.titleHoldArea.addEventListener("mousedown", start);
-  ui.titleHoldArea.addEventListener("mouseup", cancel);
-  ui.titleHoldArea.addEventListener("mouseleave", cancel);
-}
-setupLongPressReset();
-
-/* =========================
-   Boot
-========================= */
-// Draw instant placeholder wheel (no 2s blank)
-const placeholder = ["Blessing","This is on us","50% off next","2 more Dumplings","One more Drink"];
-drawWheel(placeholder);
-
-// Prefetch data ASAP (parallel) — once loaded enable spin
-loadData();
-
-// Spin events (button only, no extra button)
-ui.spinBtn.addEventListener("click", (e)=>{ e.preventDefault(); spinOnce(); });
-ui.spinBtn.addEventListener("keydown", (e)=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); spinOnce(); }});
-</script>
+  </script>
 </body>
 </html>
