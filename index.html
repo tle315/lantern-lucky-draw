@@ -66,41 +66,68 @@
     }
     .follow h3{margin:0 0 10px;text-align:center;font-size:22px;letter-spacing:-.2px;color:#6b4e3b;}
     .follow .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:10px;}
+
     .chipLink{
-      display:inline-flex;align-items:center;justify-content:center;min-width:140px;
-      padding:12px 16px;border-radius:999px;border:1px solid var(--line);
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:10px 14px;border-radius:999px;border:1px solid var(--line);
       background:#fff;box-shadow:0 8px 18px rgba(20,20,20,.05);
-      font-weight:800;color:#4b3a2f;
+      font-weight:850;color:#4b3a2f;
+      font-size:16px;
+      min-width:128px;
+      gap:8px;
     }
+    .chipLink .ico{
+      display:inline-flex;
+      width:22px;height:22px;
+      align-items:center;justify-content:center;
+      border-radius:6px;
+      background:#f6efe6;
+      border:1px solid var(--line);
+      font-weight:900;
+      font-size:14px;
+      line-height:1;
+      flex:0 0 auto;
+    }
+
     .follow .hint{text-align:center;color:#7a726a;font-size:18px;font-weight:650;margin:0;}
 
     .wheelBlock{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+
     .pointer{
       width:0;height:0;
       border-left:14px solid transparent;
       border-right:14px solid transparent;
       border-bottom:18px solid #7b3a2f;
       margin-top:6px;
-
-      /* 更精致的浮起感：两层阴影 */
       filter:
         drop-shadow(0 2px 1px rgba(255,255,255,.35))
         drop-shadow(0 8px 14px rgba(20,20,20,.18));
-    }    
+    }
 
     .wheelShell{
-      position:relative;width:min(92vw,520px);aspect-ratio:1/1;border-radius:999px;
+      position:relative;
+      width:min(92vw,520px);
+      aspect-ratio:1/1;
+      border-radius:999px;
       box-shadow:var(--shadow);
       background:radial-gradient(circle at 30% 20%, #ffffffcc 0%, #f7efe5 40%, #f1e4d5 100%);
-      border:8px solid #ead9c6;overflow:hidden;
+      border:8px solid #ead9c6;
+      overflow:hidden;
     }
-    canvas#wheel{width:100%;height:100%;display:block;transform:rotate(0deg);will-change:transform;}
 
-    /* ✅ center button smaller so it won't cover labels */
+    /* 关键：canvas 不要写死 width/height，用 JS 按 DPR 设定 */
+    canvas#wheel{
+      width:100%;
+      height:100%;
+      display:block;
+      transform:rotate(0deg);
+      will-change:transform;
+    }
+
     .centerBtn{
       position:absolute;inset:50% auto auto 50%;
       transform:translate(-50%,-50%);
-      width:46%; /* was 54% */
+      width:46%;
       aspect-ratio:1/1;border-radius:999px;border:10px solid #ffffffbb;
       background:radial-gradient(circle at 30% 20%, #c9826d 0%, var(--brand2) 30%, var(--brand) 100%);
       box-shadow:0 18px 44px rgba(154,59,47,.22);
@@ -140,6 +167,7 @@
 
     .card .label{text-align:center;color:#8b8177;font-weight:900;letter-spacing:7px;margin:6px 0 8px;}
     .card h2{margin:0;text-align:center;font-size:44px;line-height:1.03;letter-spacing:-.6px;}
+    /* 中奖（非 blessing）的深红 */
     .card h2.prize{color:#8f2f25;}
     .card .sub{
       text-align:center;color:#7a726a;font-weight:700;
@@ -154,6 +182,7 @@
       .fu{width:50px;height:50px;border-radius:14px}
       .follow h3{font-size:20px}
       .follow .hint{font-size:16px}
+      .chipLink{font-size:15px;min-width:120px}
       .centerBtn .big{font-size:38px}
       .card h2{font-size:38px}
       .onePlay{font-size:20px}
@@ -182,9 +211,15 @@
     <div class="follow">
       <h3>💥 Don’t forget to follow us —</h3>
       <div class="btns">
-        <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
-        <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
-        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
+        <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">
+          <span class="ico">📷</span>Instagram
+        </a>
+        <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">
+          <span class="ico">f</span>Facebook
+        </a>
+        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">
+          <span class="ico">♪</span>TikTok
+        </a>
       </div>
       <p class="hint">Follow any <b>ONE</b> platform to stay updated 🐼🥟😉</p>
     </div>
@@ -193,6 +228,7 @@
       <div class="pointer" aria-hidden="true"></div>
 
       <div class="wheelShell" id="wheelShell">
+        <!-- 关键：不要写死 width/height -->
         <canvas id="wheel" aria-label="Prize wheel"></canvas>
 
         <div id="centerBtn" class="centerBtn" role="button" tabindex="0" aria-label="Spin">
@@ -240,7 +276,7 @@
     let targetRotation = 0;
     let startRotation = 0;
     let spinStartTs = 0;
-    let spinDuration = 3200;
+    let spinDuration = 3600;
     let selectedIndex = -1;
 
     // audio tick optional
@@ -338,7 +374,7 @@
         .map(x => x.text);
 
       rebuildSegments();
-      drawWheel();      // draw immediately after data
+      drawWheel();
       updatePlayedUI();
     }
 
@@ -375,7 +411,7 @@
     }
 
     /***********************
-     * Wheel drawing
+     * Wheel drawing (mobile-stable DPR)
      ***********************/
     const palette = [
       {a:"#f7d7d1", b:"#f3bfb5"},
@@ -395,13 +431,36 @@
       return cut + "…";
     }
 
+    function resizeCanvasToDisplaySize(canvas, ctx){
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+
+      const cssW = Math.max(1, Math.round(rect.width));
+      const cssH = Math.max(1, Math.round(rect.height));
+
+      const pxW = Math.round(cssW * dpr);
+      const pxH = Math.round(cssH * dpr);
+
+      if(canvas.width !== pxW || canvas.height !== pxH){
+        canvas.width = pxW;
+        canvas.height = pxH;
+      }
+
+      // 使用 CSS 像素绘制（避免“圆不对称”）
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { W: cssW, H: cssH, dpr };
+    }
+
     function drawWheel(){
-      const W = el.wheel.width, H = el.wheel.height;
+      const { W, H } = resizeCanvasToDisplaySize(el.wheel, ctx);
+
       ctx.clearRect(0,0,W,H);
       ctx.save();
       ctx.translate(W/2,H/2);
 
-      const outerR = W*0.47;
+      const outerR = Math.min(W,H) * 0.47;
+
+      // base
       ctx.beginPath();
       ctx.arc(0,0,outerR,0,Math.PI*2);
       ctx.fillStyle = "#ffffff";
@@ -427,23 +486,25 @@
         ctx.fill();
 
         ctx.strokeStyle = "rgba(120,90,70,.20)";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2.6;
         ctx.stroke();
 
-        // ✅ text: smaller + further out to avoid center button
+        // labels: 往外挪 + 字体随轮子缩放（避免被中心按钮挡）
         const mid = (start+end)/2;
-        const rText = outerR*0.80;     // was ~0.70
+        const rText = outerR*0.86;
+
         ctx.save();
         ctx.rotate(mid);
         ctx.translate(rText,0);
-        ctx.rotate(-mid); // keep horizontal
+        ctx.rotate(-mid);
 
-        ctx.font = "800 28px ui-sans-serif, system-ui, -apple-system"; // smaller
+        const fontPx = Math.max(14, Math.min(20, outerR * 0.055));
+        ctx.font = `800 ${fontPx}px ui-sans-serif, system-ui, -apple-system`;
         ctx.fillStyle = "rgba(40,30,25,.72)";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
-        const maxW = outerR*0.42;
+        const maxW = outerR*0.40;
         const label = wrapText(ctx, segments[i].label, maxW);
         ctx.fillText(label, 0, 0);
         ctx.restore();
@@ -453,12 +514,12 @@
       ctx.beginPath();
       ctx.arc(0,0,outerR*0.62,0,Math.PI*2);
       ctx.strokeStyle = "rgba(255,255,255,.65)";
-      ctx.lineWidth = 10;
+      ctx.lineWidth = 9;
       ctx.stroke();
 
       ctx.restore();
 
-      // apply rotation via CSS transform for smoothness
+      // rotate via CSS (smooth)
       el.wheel.style.transform = `rotate(${rotation}rad)`;
     }
 
@@ -467,18 +528,17 @@
      ***********************/
     function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
 
-    // ✅ Correct angle math so wheel lands on the selected slice center at the pointer (top)
     function spinToIndex(idx){
       const n = segments.length;
       const slice = (Math.PI*2)/n;
 
-      // With our drawing starting at -90deg:
-      // slice i center (wheel coords) = -90deg + i*slice + slice/2
-      // To bring that center to the pointer top (-90deg), wheel rotation should be:
-      // rotationTarget = -(i*slice + slice/2) + extraTurns
+      // 把 idx 的“扇形中心”对齐到 12 点指针
       const desired = -(idx*slice + slice/2);
 
-      const extra = (Math.PI*2) * (3 + Math.floor(Math.random()*2)); // 3-4 turns
+      // ✅ 5–7 圈更真实（以前 1 圈太假）
+      const turns = 5 + Math.floor(Math.random()*3); // 5,6,7
+      const extra = (Math.PI*2) * turns;
+
       targetRotation = desired + extra;
 
       startRotation = rotation;
@@ -525,10 +585,12 @@
         const line = blessings.length
           ? blessings[Math.floor(Math.random()*blessings.length)]
           : "Good luck is coming your way :)";
-        el.resultSub.innerHTML = `<strong>${escapeHTML(line)}</strong><br/><br/>Thanks for joining — see you at our dumpling food truck!`;
+        el.resultSub.innerHTML =
+          `<strong>${escapeHTML(line)}</strong><br/><br/>Thanks for joining — see you at our dumpling food truck!`;
       } else {
         el.resultTitle.textContent = seg.label;
-        el.resultSub.innerHTML = `If you win a prize, show this screen to our staff to claim.<br/><br/>Thanks for joining — see you at our dumpling food truck!`;
+        el.resultSub.innerHTML =
+          `If you win a prize, show this screen to our staff to claim.<br/><br/>Thanks for joining — see you at our dumpling food truck!`;
       }
     }
 
@@ -671,6 +733,7 @@
         targetRotation = 0;
         el.wheel.style.transform = "rotate(0rad)";
         el.centerSub.textContent = "tap to spin";
+        drawWheel();
       }, 1200);
     }
     function cancelLongPress(){
@@ -679,14 +742,13 @@
     }
 
     /***********************
-     * Spin interaction (responsive + consistent result)
+     * Spin interaction
      ***********************/
     function canSpin(){ return !spinning && !played; }
 
     async function doSpin(){
       if(!canSpin()) return;
 
-      // iOS audio unlock
       initAudio();
       if(audioCtx && audioCtx.state === "suspended"){
         try{ await audioCtx.resume(); }catch(e){}
@@ -694,14 +756,13 @@
 
       selectedIndex = pickWeightedIndex();
 
-      // snappy like first time
-      spinDuration = 2900 + Math.random()*650;
+      // 稍微拉长一点更像“真实”
+      spinDuration = 3200 + Math.random()*900;
 
       spinToIndex(selectedIndex);
     }
 
     function onSpinEnd(){
-      // ✅ DO NOT recompute by rotation; use selectedIndex to avoid mismatch
       const seg = segments[selectedIndex] || segments[0];
 
       setPlayed(true);
@@ -712,13 +773,11 @@
       }
     }
 
-    // pointerdown is most reliable on mobile
     el.centerBtn.addEventListener("pointerdown", (e)=>{
       e.preventDefault();
       doSpin();
     }, {passive:false});
 
-    // keyboard
     el.centerBtn.addEventListener("keydown", (e)=>{
       if(e.key === "Enter" || e.key === " "){
         e.preventDefault();
@@ -726,22 +785,23 @@
       }
     });
 
-    // silent ignore after played
-    el.centerBtn.addEventListener("click", ()=>{
-      // no popups, no staff hints
-    });
-
-    // long press reset
     el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
     el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
     el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
     el.titleRow.addEventListener("pointerleave", cancelLongPress, {passive:true});
 
+    // ✅ 手机端稳：横竖屏/地址栏变化后重绘，圆不会“歪”
+    let resizeTimer = null;
+    window.addEventListener("resize", ()=>{
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=>drawWheel(), 80);
+    }, {passive:true});
+
     /***********************
      * Boot
      ***********************/
     (async function init(){
-      // placeholder wheel immediately (avoid blank)
+      // placeholder wheel (avoid blank)
       segments = [
         {label:"Blessing", weight:1, isBlessing:true},
         {label:"This is on us", weight:1, isBlessing:false},
