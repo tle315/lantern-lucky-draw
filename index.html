@@ -1,904 +1,194 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>PandaGoldenEar Lucky Draw</title>
+/**
+ * Draw the wheel (5 sectors) with nicer gradients + outer-ring labels.
+ * - labels placed on outer ring so they never get blocked by center Spin button
+ * - supports any number of sectors (not only 5)
+ *
+ * Usage:
+ *   const canvas = document.getElementById("wheel");
+ *   const ctx = canvas.getContext("2d");
+ *   drawWheel(ctx, canvas, sectors);
+ *
+ * sectors example:
+ *   [{ label:"Blessing" }, { label:"This is on us" }, ...]
+ */
+function drawWheel(ctx, canvas, sectors) {
+  if (!ctx || !canvas) return;
+  if (!Array.isArray(sectors) || sectors.length === 0) return;
 
-  <style>
-    :root{
-      --bg:#F6F1E8;
-      --card:#FFFFFFCC;
-      --ink:#1b1b1b;
-      --muted:#6d6d6d;
-      --line:#e7d8c7;
-      --brand:#a55a4a;
-      --brand2:#7f2d27;
-      --shadow: 0 12px 36px rgba(0,0,0,.10);
-      --radius: 28px;
+  // --- HiDPI crisp ---
+  const cssSize = canvas.clientWidth || 420;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(cssSize * dpr);
+  canvas.height = Math.floor(cssSize * dpr);
+  canvas.style.width = cssSize + "px";
+  canvas.style.height = cssSize + "px";
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const w = cssSize;
+  const h = cssSize;
+  const cx = w / 2;
+  const cy = h / 2;
+  const radius = Math.min(w, h) / 2;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // --- Style tuning (you can tweak) ---
+  const OUTER_R = radius * 0.98;
+  const INNER_CLEAR_R = radius * 0.38; // keeps center clean for Spin button
+  const LABEL_R = radius * 0.78;       // label ring radius (outer)
+  const LABEL_FONT = "600 18px ui-serif, Georgia, 'Times New Roman', serif";
+  const LABEL_COLOR = "rgba(60,48,40,0.9)";
+  const BORDER_COLOR = "rgba(120, 100, 85, 0.25)";
+
+  // 5 “base” colors (cycled if more than 5 sectors)
+  const baseColors = [
+    { a: "#F6E7A9", b: "#FDF4D5" }, // warm yellow
+    { a: "#F6C9D3", b: "#FCE6EC" }, // soft pink
+    { a: "#D7E7FF", b: "#EEF5FF" }, // soft blue
+    { a: "#D6F2E7", b: "#EFFFF8" }, // mint
+    { a: "#F6DFC5", b: "#FFF1E3" }, // peach
+  ];
+
+  // --- geometry ---
+  const n = sectors.length;
+  const arc = (Math.PI * 2) / n;
+
+  // Rotate so sector #0 is centered at top under pointer
+  // (Pointer at 12 o'clock. Mid of first sector at top)
+  const startOffset = -Math.PI / 2 - arc / 2;
+
+  // --- helpers ---
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  function shortenTextToFit(text, maxPx) {
+    // conservative shortening by measuring
+    const t = String(text || "").trim();
+    if (!t) return "";
+    if (ctx.measureText(t).width <= maxPx) return t;
+    const ell = "…";
+    let lo = 0, hi = t.length;
+    while (lo < hi) {
+      const mid = Math.ceil((lo + hi) / 2);
+      const s = t.slice(0, mid) + ell;
+      if (ctx.measureText(s).width <= maxPx) lo = mid;
+      else hi = mid - 1;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 50% -10%, #ffe7cf 0%, #f7efe6 45%, var(--bg) 75%);
-      min-height:100vh;
-    }
-    .wrap{ max-width: 980px; margin: 0 auto; padding: 22px 16px 40px; }
-    .shell{
-      background: linear-gradient(180deg, #fff9f0 0%, #fff6ea 55%, #fff 120%);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px 16px 18px;
-    }
-
-    .pill{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:10px 16px;
-      border:1px solid var(--line);
-      background: #fff6ea;
-      border-radius: 999px;
-      color:#6a4b2e;
-      font-weight:650;
-      letter-spacing:.2px;
-    }
-
-    .header{
-      display:flex;
-      align-items:flex-start;
-      gap:14px;
-      margin-top:14px;
-      justify-content:center;
-      text-align:center;
-    }
-    .fu{
-      width:58px;height:58px;border-radius:16px;
-      background: radial-gradient(circle at 30% 25%, #c86d5d, #8d3b31);
-      box-shadow: 0 10px 20px rgba(165,90,74,.25);
-      display:grid; place-items:center;
-      flex:0 0 auto;
-    }
-    .fu span{ color:#ffd08a; font-size:30px; font-weight:900; transform: translateY(1px); }
-    h1{ margin:0; font-size:44px; line-height:1.02; letter-spacing:-.5px; }
-    .sub{ margin: 8px 0 0; font-size:20px; color:var(--muted); font-weight:600; }
-
-    .follow{
-      margin: 18px auto 8px;
-      padding: 16px 14px;
-      border-radius: 18px;
-      border: 2px dashed #d8c2a8;
-      background: rgba(255,255,255,.60);
-      max-width: 720px;
-      text-align:center;
-    }
-    .follow .t{
-      font-weight:800;
-      color:#6a4b2e;
-      font-size:22px;
-      margin-bottom:10px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-    .btnrow{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:10px; }
-    .social{
-      text-decoration:none;
-      color:#5b4531;
-      background: rgba(255,255,255,.75);
-      border:1px solid #d9c7b3;
-      border-radius:999px;
-      padding:12px 22px;
-      font-weight:800;
-      min-width: 150px;
-      box-shadow: 0 6px 16px rgba(0,0,0,.06);
-      transition: transform .08s ease;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .social:active{ transform: scale(.98); }
-    .follow .hint{
-      color:#7b6a57;
-      font-size:22px;
-      font-weight:700;
-      margin:0;
-    }
-
-    .wheelWrap{
-      margin: 12px auto 0;
-      max-width: 760px;
-      position:relative;
-      display:grid;
-      place-items:center;
-      padding: 18px 0 8px;
-    }
-
-    .pointer{
-      position:absolute;
-      top: 6px;
-      width:0;height:0;
-      border-left:16px solid transparent;
-      border-right:16px solid transparent;
-      border-bottom:26px solid #7f2d27;
-      filter: drop-shadow(0 6px 6px rgba(0,0,0,.20));
-      z-index: 6;
-    }
-
-    canvas#wheel{
-      width: min(680px, 92vw);
-      height: min(680px, 92vw);
-      display:block;
-      border-radius: 999px;
-      filter: drop-shadow(0 18px 24px rgba(0,0,0,.10));
-    }
-
-    .centerBtn{
-      position:absolute;
-      width: min(190px, 30vw);
-      height: min(190px, 30vw);
-      border-radius:999px;
-      background: radial-gradient(circle at 30% 25%, #b96a5a, #8d3b31);
-      box-shadow: 0 14px 26px rgba(141,59,49,.25);
-      border: 10px solid rgba(255,255,255,.35);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-      font-weight:900;
-      cursor:pointer;
-      z-index: 7;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-    .centerBtn .big{ font-size: clamp(34px, 5vw, 54px); line-height:1; }
-    .centerBtn .small{ font-size: clamp(14px, 2.2vw, 18px); opacity:.95; font-weight:800; margin-top:6px; }
-    .centerBtn.disabled{ opacity:.70; pointer-events:none; }
-
-    .status{
-      margin-top: 10px;
-      font-size: 26px;
-      font-weight: 800;
-      color:#7b6a57;
-      text-align:center;
-      min-height: 34px;
-    }
-
-    .tinyRow{
-      display:flex;
-      justify-content:center;
-      gap:12px;
-      align-items:center;
-      margin-top: 6px;
-      color:#7b6a57;
-      font-weight:700;
-    }
-    .toggle{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid #decab6;
-      background: rgba(255,255,255,.55);
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      font-size:14px;
-    }
-    .toggle input{ width:18px; height:18px; }
-
-    .result{
-      margin: 14px auto 0;
-      max-width: 860px;
-      border-radius: 22px;
-      background: rgba(255,255,255,.68);
-      border: 1px solid var(--line);
-      box-shadow: 0 10px 20px rgba(0,0,0,.06);
-      padding: 16px 16px 18px;
-      position:relative;
-      overflow:hidden;
-    }
-    .badgeRow{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom: 8px;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      border: 1px solid #d8c2a8;
-      background: rgba(255,255,255,.6);
-      color:#6a4b2e;
-      font-weight:900;
-      letter-spacing:.5px;
-      min-width: 220px;
-      justify-content:center;
-    }
-    .badge.win{
-      background: rgba(183, 235, 197, .55);
-      border-color: rgba(183, 235, 197, 1);
-      color:#135d2f;
-      justify-content:flex-start;
-    }
-    .badge.played{
-      background: rgba(255,255,255,.52);
-      justify-content:flex-end;
-    }
-
-    .yougot{
-      text-align:center;
-      font-weight:900;
-      color:#7b6a57;
-      letter-spacing:10px;
-      margin: 4px 0 8px;
-      font-size: 18px;
-    }
-    .prizeTitle{
-      text-align:center;
-      font-size: clamp(36px, 7.4vw, 68px);
-      margin: 0;
-      letter-spacing:-.6px;
-      line-height: 1.05;
-      color: var(--brand2);
-      font-weight: 950;
-    }
-    .fineprint{
-      text-align:center;
-      margin: 12px auto 0;
-      color:#7b6a57;
-      font-size: 14px;
-      font-weight: 750;
-      max-width: 640px;
-      opacity:.9;
-    }
-    .footerline{
-      text-align:center;
-      margin-top: 10px;
-      color:#7b6a57;
-      font-size: 14px;
-      font-weight: 750;
-      opacity:.85;
-    }
-
-    #confetti{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      z-index: 9;
-    }
-
-    @media (max-width: 520px){
-      h1{ font-size: 36px; }
-      .sub{ font-size: 18px; }
-      .social{ min-width: 120px; padding: 10px 18px; }
-      .badge{ min-width: 0; flex:1; }
-      .badgeRow{ gap:8px; }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="wrap">
-    <div class="shell">
-      <div style="display:flex;justify-content:center;">
-        <div class="pill">🏮 Lantern Festival Special</div>
-      </div>
-
-      <div class="header">
-        <div class="fu" aria-hidden="true"><span>福</span></div>
-        <div id="titleArea" style="padding-top:2px;">
-          <h1 id="titleText">PandaGoldenEar<br/>Lucky Draw</h1>
-          <p class="sub">Tap <b>Spin</b> to reveal your surprise.</p>
-        </div>
-      </div>
-
-      <div class="follow">
-        <div class="t">💥 Don’t forget to follow us —</div>
-        <div class="btnrow">
-          <a class="social" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener">Instagram</a>
-          <a class="social" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener">Facebook</a>
-          <a class="social" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener">TikTok</a>
-        </div>
-        <p class="hint">Follow any <b>ONE</b> platform to stay updated 😉</p>
-      </div>
-
-      <div class="wheelWrap">
-        <div class="pointer" aria-hidden="true"></div>
-        <canvas id="wheel" width="900" height="900"></canvas>
-
-        <div id="spinBtn" class="centerBtn" role="button" aria-label="Spin">
-          <div class="big">Spin</div>
-          <div class="small">tap to spin</div>
-        </div>
-
-        <div class="status" id="statusText"></div>
-
-        <div class="tinyRow">
-          <div style="font-size:22px;font-weight:850;">Thanks! One play per device.</div>
-        </div>
-        <div class="tinyRow" style="margin-top:10px;">
-          <label class="toggle" title="Optional sound (iOS requires user interaction)">
-            <input type="checkbox" id="soundToggle">
-            <span>Pointer sound</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="result" id="resultCard" style="display:none;">
-        <canvas id="confetti"></canvas>
-
-        <div class="badgeRow">
-          <div class="badge win" id="badgeLeft" style="justify-content:flex-start;">YOU WON 🎉</div>
-          <div class="badge played" id="badgeRight" style="justify-content:flex-end;">✅ Played — thanks!</div>
-        </div>
-
-        <div class="yougot">YOU GOT</div>
-        <h2 class="prizeTitle" id="prizeTitle">Blessing</h2>
-
-        <div class="fineprint" id="claimText">If you win a prize, show this screen to our staff to claim.</div>
-        <div class="footerline">Thanks for joining — see you at our dumpling food truck!</div>
-      </div>
-    </div>
-  </div>
-
-<script>
-const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
-const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
-
-const LS_PLAYED = "pge_ld_played_v3";
-const LS_DATA   = "pge_ld_data_v3";
-const LS_TS     = "pge_ld_ts_v3";
-const CACHE_TTL_MS = 10 * 60 * 1000;
-
-const canvas = document.getElementById("wheel");
-const ctx = canvas.getContext("2d");
-const spinBtn = document.getElementById("spinBtn");
-const resultCard = document.getElementById("resultCard");
-const badgeLeft = document.getElementById("badgeLeft");
-const prizeTitleEl = document.getElementById("prizeTitle");
-const claimTextEl = document.getElementById("claimText");
-const statusText = document.getElementById("statusText");
-const soundToggle = document.getElementById("soundToggle");
-
-const confettiCanvas = document.getElementById("confetti");
-const cctx = confettiCanvas.getContext("2d");
-
-let segments = [
-  { label: "Blessing", weight: 50 },
-  { label: "This is on us", weight: 10 },
-  { label: "50% off for your next order", weight: 10 },
-  { label: "2 more Dumplings", weight: 15 },
-  { label: "One More Drink", weight: 15 }
-];
-let blessings = ["Warning: good luck may follow you home :)"];
-
-let rotation = 0;
-let isSpinning = false;
-let pointerAngle = -Math.PI/2;
-
-const palette = [
-  ["#f6d4dc", "#fff1f4"],
-  ["#ffe2c7", "#fff4e9"],
-  ["#cfeee0", "#f2fff9"],
-  ["#d9d4ff", "#f4f2ff"],
-  ["#ffe7a8", "#fff6dc"],
-];
-
-function parseCSV(text){
-  const rows = [];
-  let i=0, cur="", inQ=false;
-  const pushCell = (row) => { row.push(cur); cur=""; };
-  let row=[];
-  while(i < text.length){
-    const ch = text[i];
-    if(ch === '"'){
-      if(inQ && text[i+1] === '"'){ cur += '"'; i++; }
-      else inQ = !inQ;
-    }else if(ch === ',' && !inQ){
-      pushCell(row);
-    }else if((ch === '\n' || ch === '\r') && !inQ){
-      if(ch === '\r' && text[i+1] === '\n') i++;
-      pushCell(row);
-      const allEmpty = row.every(v => (v ?? "").trim() === "");
-      if(!allEmpty) rows.push(row);
-      row=[];
-    }else{
-      cur += ch;
-    }
-    i++;
-  }
-  if(cur.length || row.length){
-    pushCell(row);
-    const allEmpty = row.every(v => (v ?? "").trim() === "");
-    if(!allEmpty) rows.push(row);
-  }
-  return rows;
-}
-function normalizeHeader(h){ return String(h||"").trim().toLowerCase(); }
-function toNum(x, fallback=0){
-  const n = Number(String(x||"").trim());
-  return Number.isFinite(n) ? n : fallback;
-}
-async function fetchText(url){
-  const res = await fetch(url, { cache: "no-store" });
-  if(!res.ok) throw new Error("CSV fetch failed");
-  return await res.text();
-}
-
-async function loadData(){
-  try{
-    const ts = toNum(localStorage.getItem(LS_TS), 0);
-    const cached = localStorage.getItem(LS_DATA);
-    if(cached && (Date.now() - ts) < CACHE_TTL_MS){
-      const parsed = JSON.parse(cached);
-      if(parsed?.segments?.length >= 2){
-        segments = parsed.segments;
-        blessings = parsed.blessings?.length ? parsed.blessings : blessings;
-        return;
-      }
-    }
-  }catch(e){}
-
-  const [poolTxt, blessTxt] = await Promise.all([fetchText(POOL_CSV_URL), fetchText(BLESS_CSV_URL)]);
-  const poolRows = parseCSV(poolTxt);
-  const blessRows = parseCSV(blessTxt);
-
-  let newSegments = [];
-  if(poolRows.length){
-    const header = poolRows[0].map(normalizeHeader);
-    const hasHeader = header.some(h => ["prize","label","name","weight","probability","prob","chance"].includes(h));
-    if(hasHeader){
-      const idxPrize = header.findIndex(h => ["prize","label","name"].includes(h));
-      const idxWeight = header.findIndex(h => ["weight","probability","prob","chance"].includes(h));
-      for(let r=1;r<poolRows.length;r++){
-        const row = poolRows[r];
-        const label = (row[idxPrize] ?? "").trim();
-        if(!label) continue;
-        const w = toNum(row[idxWeight], 0);
-        if(w <= 0) continue;
-        newSegments.push({ label, weight: w });
-      }
-    }else{
-      for(let r=0;r<poolRows.length;r++){
-        const label = (poolRows[r][0] ?? "").trim();
-        if(!label) continue;
-        const w = toNum(poolRows[r][1], 1);
-        newSegments.push({ label, weight: Math.max(0, w) });
-      }
-      newSegments = newSegments.filter(s => s.weight > 0);
-    }
-  }
-  if(newSegments.length >= 2) segments = newSegments.slice(0, 5);
-
-  let newBless = [];
-  if(blessRows.length){
-    const first = (blessRows[0][0] ?? "").trim().toLowerCase();
-    const looksHeader = ["blessing","message","text"].includes(first);
-    const start = looksHeader ? 1 : 0;
-    for(let r=start;r<blessRows.length;r++){
-      const msg = (blessRows[r][0] ?? "").trim();
-      if(msg) newBless.push(msg);
-    }
-  }
-  if(newBless.length) blessings = newBless;
-
-  try{
-    localStorage.setItem(LS_DATA, JSON.stringify({ segments, blessings }));
-    localStorage.setItem(LS_TS, String(Date.now()));
-  }catch(e){}
-}
-
-function pickWeightedIndex(){
-  const total = segments.reduce((a,s)=>a + (s.weight||0), 0);
-  if(total <= 0) return Math.floor(Math.random()*segments.length);
-  let r = Math.random() * total;
-  for(let i=0;i<segments.length;i++){
-    r -= (segments[i].weight||0);
-    if(r <= 0) return i;
-  }
-  return segments.length-1;
-}
-
-function drawTextOnArc(ctx, text, cx, cy, radius, startAngle, endAngle, opts={}){
-  const {
-    font = "700 30px ui-sans-serif",
-    fill = "#4b3a2a",
-    letterSpacing = 1.2,
-    inward = true
-  } = opts;
-
-  ctx.save();
-  ctx.font = font;
-  ctx.fillStyle = fill;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-
-  const clean = String(text);
-  const chars = [...clean];
-  const arc = endAngle - startAngle;
-  const arcLen = Math.abs(arc) * radius;
-  const approxChar = ctx.measureText("M").width + letterSpacing;
-  const maxChars = Math.max(1, Math.floor(arcLen / approxChar));
-
-  let drawChars = chars;
-  if(chars.length > maxChars){
-    drawChars = chars.slice(0, Math.max(1, maxChars-1));
-    drawChars.push("…");
+    return t.slice(0, lo) + ell;
   }
 
-  const widths = drawChars.map(ch => ctx.measureText(ch).width);
-  const totalW = widths.reduce((a,w)=>a+w,0) + letterSpacing*(drawChars.length-1);
-  const totalAngle = totalW / radius;
-  const mid = (startAngle + endAngle) / 2;
-  let angle = mid - totalAngle/2;
-
-  for(let i=0;i<drawChars.length;i++){
-    const ch = drawChars[i];
-    const w = widths[i];
-    const a = (w/2) / radius;
-    angle += a;
-
+  function drawOuterBevel() {
+    // subtle outer rim (premium feel)
     ctx.save();
-    const x = cx + Math.cos(angle) * radius;
-    const y = cy + Math.sin(angle) * radius;
-
-    ctx.translate(x, y);
-    ctx.rotate(angle + (inward ? Math.PI/2 : -Math.PI/2));
-    ctx.fillText(ch, 0, 0);
-    ctx.restore();
-
-    angle += a + (letterSpacing / radius);
-  }
-  ctx.restore();
-}
-
-function drawWheel(){
-  const W = canvas.width, H = canvas.height;
-  const cx = W/2, cy = H/2;
-  ctx.clearRect(0,0,W,H);
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx,cy, 430, 0, Math.PI*2);
-  ctx.fillStyle = "rgba(255,255,255,.85)";
-  ctx.fill();
-  ctx.restore();
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx,cy, 415, 0, Math.PI*2);
-  ctx.fillStyle = "rgba(255,255,255,.55)";
-  ctx.fill();
-  ctx.restore();
-
-  const n = segments.length;
-  const step = (Math.PI*2)/n;
-
-  ctx.save();
-  ctx.translate(cx,cy);
-  ctx.rotate(rotation);
-  ctx.translate(-cx,-cy);
-
-  for(let i=0;i<n;i++){
-    const a0 = pointerAngle + i*step;
-    const a1 = a0 + step;
-
-    const [c1,c2] = palette[i % palette.length];
-    const gx = cx + Math.cos((a0+a1)/2) * 200;
-    const gy = cy + Math.sin((a0+a1)/2) * 200;
-    const grad = ctx.createRadialGradient(gx,gy, 40, cx,cy, 520);
-    grad.addColorStop(0, c2);
-    grad.addColorStop(1, c1);
-
     ctx.beginPath();
-    ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy, 400, a0, a1);
+    ctx.arc(cx, cy, OUTER_R, 0, Math.PI * 2);
     ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.fill();
 
-    ctx.strokeStyle = "rgba(140,110,80,.18)";
-    ctx.lineWidth = 3;
+    const rimGrad = ctx.createRadialGradient(cx, cy, OUTER_R * 0.72, cx, cy, OUTER_R);
+    rimGrad.addColorStop(0, "rgba(255,255,255,0.35)");
+    rimGrad.addColorStop(0.7, "rgba(255,255,255,0.10)");
+    rimGrad.addColorStop(1, "rgba(110,90,70,0.20)");
+    ctx.strokeStyle = rimGrad;
+    ctx.lineWidth = radius * 0.035;
     ctx.stroke();
 
-    const label = segments[i].label;
-    const innerR = 270;
-    drawTextOnArc(
-      ctx, label, cx, cy, innerR,
-      a0 + 0.20, a1 - 0.20,
-      { font: "800 30px ui-sans-serif", fill: "rgba(70,55,40,.85)", letterSpacing: 1.4, inward: true }
-    );
+    // inner thin rim line
+    ctx.beginPath();
+    ctx.arc(cx, cy, OUTER_R * 0.93, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(120,100,85,0.18)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
   }
 
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(cx,cy, 300, 0, Math.PI*2);
-  ctx.strokeStyle = "rgba(255,255,255,.55)";
-  ctx.lineWidth = 16;
-  ctx.stroke();
+  function fillSector(startAngle, endAngle, colorA, colorB) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, OUTER_R, startAngle, endAngle);
+    ctx.closePath();
 
-  ctx.beginPath();
-  ctx.arc(cx,cy, 410, 0, Math.PI*2);
-  ctx.strokeStyle = "rgba(204,170,140,.35)";
-  ctx.lineWidth = 14;
-  ctx.stroke();
-  ctx.restore();
+    // sector gradient: radial + slightly directional
+    const g = ctx.createRadialGradient(cx, cy, OUTER_R * 0.2, cx, cy, OUTER_R);
+    g.addColorStop(0, colorB);
+    g.addColorStop(1, colorA);
 
-  ctx.restore();
+    ctx.fillStyle = g;
+    ctx.fill();
 
-  const vign = ctx.createRadialGradient(cx,cy, 240, cx,cy, 470);
-  vign.addColorStop(0, "rgba(255,255,255,0)");
-  vign.addColorStop(1, "rgba(0,0,0,.06)");
-  ctx.beginPath();
-  ctx.arc(cx,cy, 420, 0, Math.PI*2);
-  ctx.fillStyle = vign;
-  ctx.fill();
-}
-
-// --- key math helpers ---
-function angleNorm(a){
-  const t = (a % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
-  return t;
-}
-function sectorCenterAngle(index){
-  const step = (Math.PI*2)/segments.length;
-  const a0 = pointerAngle + index*step;
-  return a0 + step/2;
-}
-function computeDesiredRotationForIndex(index){
-  // rotation ≡ pointerAngle - sectorCenterAngle(index)  (mod 2π)
-  const base = pointerAngle - sectorCenterAngle(index); // = -(i*step + step/2)
-  return angleNorm(base);
-}
-
-// --- optional sound ---
-let audioCtx = null;
-let audioUnlocked = false;
-function ensureAudio(){
-  if(audioCtx) return;
-  try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
-}
-async function unlockAudio(){
-  if(audioUnlocked) return;
-  ensureAudio();
-  if(!audioCtx) return;
-  try{
-    if(audioCtx.state === "suspended") await audioCtx.resume();
-    audioUnlocked = true;
-  }catch(e){}
-}
-function tickSound(){
-  if(!soundToggle.checked) return;
-  if(!audioCtx || !audioUnlocked) return;
-  const t = audioCtx.currentTime;
-  const o = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  o.type = "square";
-  o.frequency.setValueAtTime(1800, t);
-  g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(0.10, t + 0.002);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.030);
-  o.connect(g).connect(audioCtx.destination);
-  o.start(t);
-  o.stop(t + 0.035);
-}
-
-// --- confetti ---
-function runConfetti(){
-  const rect = resultCard.getBoundingClientRect();
-  confettiCanvas.width  = Math.floor(rect.width * devicePixelRatio);
-  confettiCanvas.height = Math.floor(rect.height * devicePixelRatio);
-  confettiCanvas.style.width = rect.width + "px";
-  confettiCanvas.style.height = rect.height + "px";
-  cctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-
-  const N = 60;
-  const parts = Array.from({length:N}, () => ({
-    x: Math.random()*rect.width,
-    y: -20 - Math.random()*rect.height*0.2,
-    vx: (Math.random()-0.5)*1.2,
-    vy: 2.0 + Math.random()*2.0,
-    r: 2 + Math.random()*3,
-    a: 1,
-    rot: Math.random()*Math.PI,
-    vr: (Math.random()-0.5)*0.2,
-    c: ["#b96a5a","#8d3b31","#ffd08a","#cfeee0","#d9d4ff"][Math.floor(Math.random()*5)]
-  }));
-
-  let start = performance.now();
-  const dur = 1200;
-
-  function frame(now){
-    const t = now - start;
-    cctx.clearRect(0,0,rect.width,rect.height);
-    for(const p of parts){
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rot += p.vr;
-      p.vy += 0.02;
-      p.a = Math.max(0, 1 - (t/dur));
-      cctx.save();
-      cctx.globalAlpha = p.a;
-      cctx.translate(p.x, p.y);
-      cctx.rotate(p.rot);
-      cctx.fillStyle = p.c;
-      cctx.fillRect(-p.r, -p.r, p.r*2.2, p.r*1.4);
-      cctx.restore();
-    }
-    if(t < dur) requestAnimationFrame(frame);
-    else cctx.clearRect(0,0,rect.width,rect.height);
-  }
-  requestAnimationFrame(frame);
-}
-
-// --- played / reset ---
-function setStatus(text){ statusText.textContent = text || ""; }
-function markPlayed(){ try{ localStorage.setItem(LS_PLAYED, "1"); }catch(e){} }
-function hasPlayed(){ try{ return localStorage.getItem(LS_PLAYED) === "1"; }catch(e){ return false; } }
-
-function isBlessing(label){
-  return String(label).trim().toLowerCase() === "blessing";
-}
-
-function showResult(prizeLabel){
-  resultCard.style.display = "block";
-  const won = !isBlessing(prizeLabel);
-
-  badgeLeft.textContent = won ? "YOU WON 🎉" : "BLESSING ✨";
-
-  if(isBlessing(prizeLabel)){
-    const msg = blessings[Math.floor(Math.random()*blessings.length)] || "Blessings for you!";
-    prizeTitleEl.textContent = msg;
-    claimTextEl.style.display = "none";
-  }else{
-    prizeTitleEl.textContent = prizeLabel;
-    claimTextEl.style.display = "block";
-    runConfetti();
-  }
-}
-
-/** ✅ FIX #1: reset also resets rotation so next spin behaves like first time */
-function resetDevice(){
-  try{ localStorage.removeItem(LS_PLAYED); }catch(e){}
-  resultCard.style.display = "none";
-  setStatus("");
-  spinBtn.classList.remove("disabled");
-  isSpinning = false;
-
-  rotation = 0;       // <-- KEY
-  drawWheel();        // <-- immediate redraw
-}
-
-// hidden long-press reset
-(function initLongPress(){
-  const titleArea = document.getElementById("titleArea");
-  let timer = null;
-
-  const start = () => {
-    if(timer) clearTimeout(timer);
-    timer = setTimeout(() => { resetDevice(); }, 1200);
-  };
-  const cancel = () => {
-    if(timer) clearTimeout(timer);
-    timer = null;
-  };
-
-  titleArea.addEventListener("touchstart", start, {passive:true});
-  titleArea.addEventListener("touchend", cancel);
-  titleArea.addEventListener("touchcancel", cancel);
-
-  titleArea.addEventListener("mousedown", start);
-  window.addEventListener("mouseup", cancel);
-})();
-
-// --- spin (fixed) ---
-async function spin(){
-  await unlockAudio();
-  if(isSpinning) return;
-
-  if(hasPlayed()){
-    alert("Already played on this device.");
-    return;
+    // separator line
+    ctx.strokeStyle = BORDER_COLOR;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
   }
 
-  isSpinning = true;
-  spinBtn.classList.add("disabled");
-  resultCard.style.display = "none";
-  setStatus("Spinning…");
+  function drawLabelOnOuterRing(startAngle, endAngle, text) {
+    const mid = (startAngle + endAngle) / 2;
 
-  const idx = pickWeightedIndex();
-  const prizeLabel = segments[idx].label;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(mid);
 
-  const n = segments.length;
-  const step = (Math.PI*2)/n;
+    // Make text readable (flip when on left side)
+    // After rotate(mid), "up" is -y.
+    const shouldFlip = mid > Math.PI / 2 && mid < Math.PI * 1.5;
+    if (shouldFlip) ctx.rotate(Math.PI);
 
-  // ✅ FIX #2: compute target relative to current rotation (mod 2π)
-  const desired = computeDesiredRotationForIndex(idx);  // in [0, 2π)
-  const current = angleNorm(rotation);                  // in [0, 2π)
-  let deltaBase = desired - current;
-  // force forward spinning direction (clockwise) with enough turns
-  while(deltaBase < 0) deltaBase += Math.PI*2;
+    ctx.font = LABEL_FONT;
+    ctx.fillStyle = LABEL_COLOR;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
-  const jitter = (Math.random() - 0.5) * (step * 0.18); // small, stays inside sector
-  const spins = 5 + Math.floor(Math.random()*2);        // 5-6 full turns
-  const delta = spins * Math.PI*2 + deltaBase + jitter; // ALWAYS big & consistent
-  const startRot = rotation;
-  const duration = 1850;
-  const startTime = performance.now();
+    // max width allowed for this sector at label radius
+    const sectorArcLen = arc * LABEL_R;
+    const maxTextWidth = clamp(sectorArcLen * 0.85, 60, 260);
 
-  let lastTickSector = null;
-  function currentSectorAtPointer(rot){
-    const step = (Math.PI*2)/segments.length;
-    const a = angleNorm(pointerAngle - rot - pointerAngle);
-    return (Math.floor(a / step) % segments.length + segments.length) % segments.length;
+    const label = shortenTextToFit(text, maxTextWidth);
+
+    // draw the text on outer ring, slightly inside
+    ctx.fillText(label, 0, -LABEL_R);
+
+    ctx.restore();
   }
 
-  const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+  function clearCenterArea() {
+    // creates a clean center (Spin button area)
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, INNER_CLEAR_R, 0, Math.PI * 2);
+    ctx.closePath();
 
-  function frame(now){
-    const t = Math.min(1, (now - startTime) / duration);
-    const e = easeOutCubic(t);
-    rotation = startRot + delta * e;
+    const centerGrad = ctx.createRadialGradient(cx, cy, INNER_CLEAR_R * 0.15, cx, cy, INNER_CLEAR_R);
+    centerGrad.addColorStop(0, "rgba(255,255,255,0.15)");
+    centerGrad.addColorStop(1, "rgba(255,255,255,0.38)");
+    ctx.fillStyle = centerGrad;
+    ctx.fill();
 
-    drawWheel();
-
-    if(soundToggle.checked){
-      const si = currentSectorAtPointer(rotation);
-      if(lastTickSector === null) lastTickSector = si;
-      if(si !== lastTickSector){
-        tickSound();
-        lastTickSector = si;
-      }
-    }
-
-    if(t < 1){
-      requestAnimationFrame(frame);
-    }else{
-      // snap to exact end
-      rotation = startRot + delta;
-      drawWheel();
-
-      markPlayed();
-      setStatus("✅ Played — thanks!");
-      showResult(prizeLabel);
-
-      isSpinning = false;
-      spinBtn.classList.remove("disabled");
-    }
+    ctx.strokeStyle = "rgba(120,100,85,0.18)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
   }
 
-  tickSound();
-  requestAnimationFrame(frame);
+  // --- Draw sectors ---
+  for (let i = 0; i < n; i++) {
+    const start = startOffset + i * arc;
+    const end = start + arc;
+
+    const c = baseColors[i % baseColors.length];
+    fillSector(start, end, c.a, c.b);
+  }
+
+  // --- Outer rim ---
+  drawOuterBevel();
+
+  // --- Labels on outer ring ---
+  for (let i = 0; i < n; i++) {
+    const start = startOffset + i * arc;
+    const end = start + arc;
+    drawLabelOnOuterRing(start, end, sectors[i]?.label ?? "");
+  }
+
+  // --- Center clean area ---
+  clearCenterArea();
 }
-
-function onSpinPress(){ spin(); }
-spinBtn.addEventListener("click", onSpinPress);
-spinBtn.addEventListener("touchend", (e) => { e.preventDefault(); onSpinPress(); }, {passive:false});
-
-// init
-(async function init(){
-  drawWheel();
-
-  if(hasPlayed()){
-    setStatus("✅ Played — thanks!");
-  }
-
-  try{
-    await loadData();
-    drawWheel();
-  }catch(e){
-    drawWheel();
-  }
-})();
-</script>
-</body>
-</html>
