@@ -76,11 +76,17 @@
 
     .wheelBlock{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;}
     .pointer{
-      width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
+      width:0;height:0;
+      border-left:14px solid transparent;
+      border-right:14px solid transparent;
       border-bottom:18px solid #7b3a2f;
-      filter:drop-shadow(0 6px 10px rgba(20,20,20,.14));
       margin-top:6px;
-    }
+
+  /* 更精致的浮起感：两层阴影 */
+      filter:
+        drop-shadow(0 2px 1px rgba(255,255,255,.35))
+        drop-shadow(0 8px 14px rgba(20,20,20,.18));
+   }
 
     .wheelShell{
       position:relative;width:min(92vw,520px);aspect-ratio:1/1;border-radius:999px;
@@ -134,7 +140,7 @@
 
     .card .label{text-align:center;color:#8b8177;font-weight:900;letter-spacing:7px;margin:6px 0 8px;}
     .card h2{margin:0;text-align:center;font-size:44px;line-height:1.03;letter-spacing:-.6px;}
-    .card h2.prize{color:var(--brand);}
+    .card h2.prize{color:#8f2f25;}
     .card .sub{
       text-align:center;color:#7a726a;font-weight:700;
       font-size:14px;line-height:1.35;margin-top:10px;
