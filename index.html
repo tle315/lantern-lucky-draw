@@ -100,7 +100,7 @@
     .centerBtn{
       position:absolute;inset:50% auto auto 50%;
       transform:translate(-50%,-50%);
-      width:46%; /* was 54% */
+      width:40%; /* was 54% */
       aspect-ratio:1/1;border-radius:999px;border:10px solid #ffffffbb;
       background:radial-gradient(circle at 30% 20%, #c9826d 0%, var(--brand2) 30%, var(--brand) 100%);
       box-shadow:0 18px 44px rgba(154,59,47,.22);
@@ -173,7 +173,7 @@
     <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)">
       <div class="fu">福</div>
       <div>
-        <h1>PandaGoldenEar Dumplings<br/>Lucky Draw</h1>
+        <h1>PandaGoldenEar <br/>Lucky Draw</h1>
       </div>
     </div>
 
@@ -478,7 +478,10 @@
       // rotationTarget = -(i*slice + slice/2) + extraTurns
       const desired = -(idx*slice + slice/2);
 
-      const extra = (Math.PI*2) * (3 + Math.floor(Math.random()*2)); // 3-4 turns
+      // ✅ 5–7 turns (更“真”)
+      const extraTurns = 5 + Math.floor(Math.random()*3); // 5,6,7
+      const extra = (Math.PI * 2) * extraTurns;
+
       targetRotation = desired + extra;
 
       startRotation = rotation;
