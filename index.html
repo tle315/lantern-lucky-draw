@@ -399,17 +399,26 @@
       const W = el.wheel.width, H = el.wheel.height;
       ctx.clearRect(0,0,W,H);
       ctx.save();
-      ctx.translate(W/2,H/2);
+      ctx.translate(W/2, H/2);
 
-      const outerR = W*0.47;
+      const outerR = W * 0.47;
+
+      // base circle (white)
       ctx.beginPath();
       ctx.arc(0,0,outerR,0,Math.PI*2);
       ctx.fillStyle = "#ffffff";
       ctx.fill();
 
-      const n = segments.length;
-      const slice = (Math.PI*2)/n;
+      const n = (segments && segments.length) ? segments.length : 0;
+      if(n <= 0){
+        ctx.restore();
+        el.wheel.style.transform = `rotate(${rotation}rad)`;
+        return;
+      }
 
+      const slice = (Math.PI*2) / n;
+
+      // --- sectors ---
       for(let i=0;i<n;i++){
         const start = -Math.PI/2 + i*slice;
         const end = start + slice;
@@ -426,9 +435,59 @@
         ctx.fillStyle = grad;
         ctx.fill();
 
+      // separator
         ctx.strokeStyle = "rgba(120,90,70,.20)";
         ctx.lineWidth = 3;
         ctx.stroke();
+      }
+
+  // --- inner ring highlight ---
+  ctx.beginPath();
+  ctx.arc(0,0,outerR*0.62,0,Math.PI*2);
+  ctx.strokeStyle = "rgba(255,255,255,.65)";
+  ctx.lineWidth = 10;
+  ctx.stroke();
+
+  // --- labels: tangent/arc style on outer ring ---
+  for(let i=0;i<n;i++){
+    const start = -Math.PI/2 + i*slice;
+    const end = start + slice;
+    const mid = (start + end) / 2;
+
+    // place near outer ring so center button won't cover it
+    const rText = outerR * 0.86;
+
+    ctx.save();
+    ctx.rotate(mid);
+    ctx.translate(0, -rText);
+
+    // tangent direction
+    ctx.rotate(Math.PI / 2);
+
+    // flip on bottom half so text stays readable
+    const norm = ((mid % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    const onBottom = norm > Math.PI/2 && norm < Math.PI*1.5;
+    if(onBottom) ctx.rotate(Math.PI);
+
+    ctx.font = "800 24px ui-sans-serif, system-ui, -apple-system";
+    ctx.fillStyle = "rgba(40,30,25,.78)";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // arc length-based max width
+    const arcLen = slice * rText;
+    const maxW = Math.max(90, Math.min(260, arcLen * 0.90));
+    const label = wrapText(ctx, segments[i].label, maxW);
+
+    ctx.fillText(label, 0, 0);
+    ctx.restore();
+  }
+
+  ctx.restore();
+
+  // apply rotation via CSS transform
+  el.wheel.style.transform = `rotate(${rotation}rad)`;
+}
 
         // ✅ text: smaller + further out to avoid center button
 const mid = (start+end)/2;
