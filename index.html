@@ -18,7 +18,7 @@
       --shadow: 0 14px 36px rgba(20,20,20,.08);
       --radius: 22px;
 
-      /* ✅ Scheme A: magazine-ish typography (no external fonts) */
+      /* Scheme A (no external fonts) */
       --serif: ui-serif, "New York", "Iowan Old Style", "Palatino", "Georgia", serif;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
@@ -37,8 +37,9 @@
     a{color:inherit;text-decoration:none}
     a:active{opacity:.85}
 
-    .wrap{max-width:740px;margin:0 auto;padding:14px 14px 22px;} /* ✅ slightly tighter top/bottom */
+    .wrap{max-width:740px;margin:0 auto;padding:14px 14px 22px;}
 
+    /* top pill */
     .badge-top{display:flex;justify-content:center;margin-top:4px;margin-bottom:10px;}
     .badge-top .pill{
       display:inline-flex;align-items:center;gap:10px;
@@ -47,50 +48,72 @@
       box-shadow:0 6px 18px rgba(20,20,20,.06);
       color:#6b4e3b;
       font-weight:800;
-      letter-spacing:.12em;           /* ✅ seasoning */
-      text-transform:uppercase;       /* ✅ seasoning */
-      font-size:12px;                 /* ✅ seasoning */
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:12px;
     }
 
+    /* title row */
     .titleRow{
-      display:flex;align-items:center;justify-content:center;gap:16px;
+      display:flex;align-items:center;justify-content:center;gap:14px;
       margin:8px 0 8px;text-align:center;
       user-select:none;-webkit-user-select:none;touch-action:manipulation;
     }
+
+    /* ✅ seal stamp */
     .fu{
-      width:52px;height:52px;border-radius:16px;
-      background:linear-gradient(180deg,#b55a45 0%,#8f2f25 100%);
-      display:grid;place-items:center;color:#f7d48c;
-      font-weight:900;font-size:28px;
-      box-shadow:0 10px 24px rgba(154,59,47,.22);
+      width:52px;height:52px;border-radius:14px;
+      position:relative;
+      display:grid;place-items:center;
       flex:0 0 auto;
+
+      /* cinnabar + subtle variation */
+      background:
+        radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,.18) 0%, rgba(255,255,255,0) 45%),
+        radial-gradient(140% 140% at 70% 75%, rgba(0,0,0,.22) 0%, rgba(0,0,0,0) 55%),
+        linear-gradient(180deg, #b65a46 0%, #8f2f25 100%);
+
+      /* pressed into paper */
+      box-shadow:
+        0 10px 20px rgba(154,59,47,.20),
+        inset 0 2px 3px rgba(255,255,255,.20),
+        inset 0 -8px 14px rgba(0,0,0,.22);
+
+      border: 1px solid rgba(255,255,255,.26);
+    }
+    .fu::after{
+      content:"";
+      position:absolute;inset:6px;
+      border-radius:12px;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.10),
+        inset 0 10px 18px rgba(0,0,0,.08);
+      pointer-events:none;
+      opacity:.55;
+    }
+    .fu span{
+      font-family: var(--serif);
+      font-weight: 900;
+      font-size: 30px;
+      color:#f4d28c; /* “gold ink” */
+      text-shadow:
+        0 1px 0 rgba(0,0,0,.10),
+        0 6px 16px rgba(0,0,0,.12);
+      transform: translateY(-1px);
     }
 
-    /* ✅ magazine title */
+    /* ✅ one-line magazine title */
     h1{
       margin:0;
       font-family: var(--serif);
-      font-weight: 780;
+      font-weight: 820;
       letter-spacing: -0.9px;
-      line-height:1.0;
+      line-height:1.02;
+      font-size: 40px; /* desktop-ish baseline */
     }
-    h1 .brandTop{
+    h1 .brandInline{
       display:block;
-      font-family: var(--sans);
-      font-size: 13px;
-      letter-spacing: .26em;
-      text-transform: uppercase;
-      font-weight: 850;
-      color:#6b4e3b;
-      opacity:.92;
-      margin-bottom: 6px;
-    }
-    h1 .brandMain{
-      display:block;
-      font-size: 46px;
-      line-height: 1.02;
-      letter-spacing: -1.15px;
-      color:#1b1b1b;
+      white-space:nowrap; /* keep together */
     }
 
     .subtitle{
@@ -103,48 +126,53 @@
       opacity:.92;
     }
 
-    /* ✅ follow box: shrink ~30% (padding + text + buttons tighter) */
+    /* follow box */
     .follow{
       border:2px dashed var(--dash);
       border-radius:var(--radius);
-      padding:10px 12px 10px; /* was 14/14/12 */
+      padding:10px 12px 10px;
       background:#fff6ed88;
       box-shadow:0 10px 28px rgba(20,20,20,.05);
-      margin-bottom: 6px;     /* helps wheel appear earlier */
+      margin-bottom: 6px;
     }
     .follow h3{
       margin:0 0 8px;
       text-align:center;
-      font-family: var(--serif);   /* ✅ seasoning */
-      font-size:18px;              /* was 22 */
+      font-family: var(--serif);
+      font-size:18px;
       font-weight:780;
       letter-spacing:-.2px;
       color:#6b4e3b;
     }
-    .follow .btns{
-      display:flex;
-      gap:8px;                     /* was 10 */
-      justify-content:center;
-      flex-wrap:wrap;
-      margin-bottom:8px;           /* was 10 */
-    }
 
+    /* ✅ force one row on mobile: 3 columns */
+    .follow .btns{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:8px;
+      margin-bottom:8px;
+      align-items:stretch;
+    }
     .chipLink{
+      width:100%;
       display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      min-width:128px;             /* was 140 */
-      padding:8px 12px;            /* was 10 14 */
+      min-width:0;
+      padding:8px 10px;
       border-radius:999px;border:1px solid var(--line);
       background:#fff;
       box-shadow:0 8px 18px rgba(20,20,20,.05);
       font-weight:850;
       color:#4b3a2f;
-      font-size:14px;              /* was 15 */
+      font-size:13px;
+      line-height:1;
+      white-space:nowrap;
     }
     .chipLink .ico{width:18px;height:18px;display:inline-block;flex:0 0 auto;}
+
     .follow .hint{
       text-align:center;
       color:#7a726a;
-      font-size:15px;              /* was 18 */
+      font-size:14px;
       font-weight:650;
       margin:0;
       line-height:1.25;
@@ -202,12 +230,11 @@
     }
     .centerBtn .small{font-size:14px;opacity:.92;font-weight:700;letter-spacing:.2px;}
 
-    /* ✅ footnote-ish caption */
     .onePlay{
       text-align:center;
       color:#7a726a;
       font-weight:700;
-      font-size:18px;           /* was 22 */
+      font-size:18px;
       margin:6px 0 4px;
       letter-spacing:.04em;
       opacity:.88;
@@ -245,13 +272,90 @@
 
     canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40;}
 
+    /* ✅ Reset modal */
+    .modal{
+      position:fixed; inset:0;
+      background:rgba(20,20,20,.42);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:60;
+    }
+    .modal.show{display:flex;}
+    .modalCard{
+      width:min(92vw, 420px);
+      border:1px solid rgba(255,255,255,.45);
+      background:rgba(255,255,255,.92);
+      border-radius:20px;
+      box-shadow:0 24px 60px rgba(0,0,0,.18);
+      padding:14px 14px 12px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .modalTitle{
+      font-family: var(--serif);
+      font-weight: 850;
+      letter-spacing:-.4px;
+      font-size:20px;
+      margin:0 0 6px;
+      color:#2a2320;
+      text-align:center;
+    }
+    .modalDesc{
+      margin:0 0 10px;
+      color:#5c534d;
+      font-weight:650;
+      font-size:14px;
+      text-align:center;
+      line-height:1.35;
+    }
+    .modalInput{
+      width:100%;
+      border-radius:14px;
+      border:1px solid var(--line);
+      padding:12px 12px;
+      font-size:16px;
+      font-weight:700;
+      outline:none;
+      background:#fff;
+    }
+    .modalBtns{
+      display:flex;
+      gap:10px;
+      margin-top:10px;
+    }
+    .mBtn{
+      flex:1;
+      border-radius:14px;
+      padding:11px 12px;
+      font-weight:900;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+    }
+    .mBtn.primary{
+      background:linear-gradient(180deg, #b55a45 0%, #8f2f25 100%);
+      border-color:rgba(0,0,0,.06);
+      color:#fff;
+    }
+    .modalErr{
+      min-height:18px;
+      margin-top:8px;
+      color:#8f2f25;
+      font-weight:800;
+      font-size:13px;
+      text-align:center;
+    }
+
     @media (max-width:420px){
       .wrap{padding:12px 12px 20px;}
-      h1 .brandMain{font-size:40px;}
-      .fu{width:48px;height:48px;border-radius:14px}
+      h1{font-size:34px;}          /* ✅ smaller so Lucky Draw not huge */
+      .fu{width:48px;height:48px;border-radius:13px}
+      .fu span{font-size:28px}
       .follow h3{font-size:16px}
-      .follow .hint{font-size:14px}
-      .chipLink{min-width:120px;font-size:13px;padding:8px 10px}
+      .follow .hint{font-size:13px}
+      .chipLink{font-size:12.5px;padding:8px 8px}
       .centerBtn .big{font-size:38px}
       .card h2{font-size:38px}
       .onePlay{font-size:16px}
@@ -262,19 +366,30 @@
 <body>
   <canvas id="confetti"></canvas>
 
+  <!-- ✅ Reset Modal -->
+  <div class="modal" id="resetModal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+      <h3 class="modalTitle" id="resetTitle">Reset this device?</h3>
+      <p class="modalDesc">Type <b>reset</b> to enable one more play on this device.</p>
+      <input id="resetInput" class="modalInput" placeholder="Type reset" autocomplete="off" autocapitalize="none" />
+      <div class="modalBtns">
+        <button class="mBtn" id="resetCancel" type="button">Cancel</button>
+        <button class="mBtn primary" id="resetConfirm" type="button">Reset</button>
+      </div>
+      <div class="modalErr" id="resetErr"></div>
+    </div>
+  </div>
+
   <div class="wrap">
     <div class="badge-top">
       <div class="pill">🏮 Lantern Festival Special 🏮</div>
     </div>
 
-    <!-- long-press this titleRow 1.2s to reset device -->
+    <!-- long-press 1.5s on titleRow to open reset modal -->
     <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)">
-      <div class="fu">福</div>
+      <div class="fu" aria-hidden="true"><span>福</span></div>
       <div>
-        <h1>
-          <span class="brandTop">PANDA GOLDEN EAR</span>
-          <span class="brandMain">Lucky Draw</span>
-        </h1>
+        <h1><span class="brandInline">PandaGoldenEar Lucky Draw</span></h1>
       </div>
     </div>
 
@@ -285,7 +400,7 @@
       <div class="btns">
         <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener"><span class="ico">📷</span> Instagram</a>
         <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener"><span class="ico">📘</span> Facebook</a>
-        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenear" target="_blank" rel="noopener"><span class="ico">🎵</span> TikTok</a>
+        <a class="chipLink" href="https://www.tiktok.com/@pandagoldenearfa" target="_blank" rel="noopener"><span class="ico">🎵</span> TikTok</a>
       </div>
       <p class="hint">Follow any <b>ONE</b> platform to stay updated 🐼🥟😉</p>
     </div>
@@ -326,8 +441,6 @@
     const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
     const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
-    // ✅ 如果你想“用 remaining 自动推导权重”，打开这个开关（默认 false）
-    // 例如 remaining=25 就会更容易抽到（适合你按每天200配额的思路）
     const USE_REMAINING_AS_WEIGHT = false;
 
     /***********************
@@ -365,6 +478,13 @@
       pillLeft: document.getElementById("pillLeft"),
       titleRow: document.getElementById("titleRow"),
       confetti: document.getElementById("confetti"),
+
+      // reset modal
+      resetModal: document.getElementById("resetModal"),
+      resetInput: document.getElementById("resetInput"),
+      resetConfirm: document.getElementById("resetConfirm"),
+      resetCancel: document.getElementById("resetCancel"),
+      resetErr: document.getElementById("resetErr"),
     };
     const ctx = el.wheel.getContext("2d");
 
@@ -451,7 +571,6 @@
     function rebuildSegments(){
       let filtered = pool.filter(p => p.active && (p.remaining > 0));
 
-      // ensure Blessing exists
       const hasBlessing = filtered.some(p => p.prize.toLowerCase() === "blessing");
       if(!hasBlessing){
         const b = pool.find(p => p.prize.toLowerCase()==="blessing" && p.active);
@@ -485,7 +604,7 @@
     }
 
     /***********************
-     * Wheel drawing (bigger labels + symmetric)
+     * Wheel drawing
      ***********************/
     const palette = [
       {a:"#f7d7d1", b:"#f3bfb5"},
@@ -535,7 +654,7 @@
 
     function resizeCanvasToShell(){
       const rect = el.wheelShell.getBoundingClientRect();
-      const size = Math.floor(Math.min(rect.width, rect.height)); // integer px
+      const size = Math.floor(Math.min(rect.width, rect.height));
       const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
       const px = Math.floor(size * dpr);
 
@@ -598,7 +717,7 @@
         ctx.stroke();
       }
 
-      // labels: inside a bit + fixed upside-down boundary
+      // labels: inside + flip rule
       for(let i=0;i<n;i++){
         const start = -Math.PI/2 + i*slice;
         const end = start + slice;
@@ -614,7 +733,7 @@
         ctx.rotate(Math.PI / 2);
 
         const norm = ((mid % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-        const onBottom = norm > Math.PI/2 && norm <= Math.PI*1.5;
+        const onBottom = norm >= Math.PI/2 && norm <= Math.PI*1.5;
         if(onBottom) ctx.rotate(Math.PI);
 
         const fontPx = clamp(outerR * 0.060, 13, 22);
@@ -638,7 +757,6 @@
       }
 
       drawOuterRim(cx, cy, outerR);
-
       el.wheel.style.transform = `rotate(${rotation}rad)`;
     }
 
@@ -785,7 +903,7 @@
     }
 
     /***********************
-     * Audio (whoosh + tick + ding)
+     * Audio
      ***********************/
     function initAudio(){
       if(!audioEnabled || audioReady) return;
@@ -857,26 +975,50 @@
       updatePlayedUI();
     }
 
-    let lpTimer = null;
-    let lpArmed = false;
-    function armLongPress(){
-      lpArmed = true;
-      clearTimeout(lpTimer);
-      lpTimer = setTimeout(()=>{
-        if(!lpArmed) return;
-        setPlayed(false);
-        spinning = false;
-        rotation = 0;
-        targetRotation = 0;
-        el.wheel.style.transform = "rotate(0rad)";
-        el.centerSub.textContent = "tap to spin";
-        drawWheel();
-      }, 1200);
+    function hardResetUI(){
+      setPlayed(false);
+      spinning = false;
+      rotation = 0;
+      targetRotation = 0;
+      el.wheel.style.transform = "rotate(0rad)";
+      el.centerSub.textContent = "tap to spin";
+      el.resultCard.style.display = "none";
+      drawWheel();
     }
-    function cancelLongPress(){
-      lpArmed = false;
-      clearTimeout(lpTimer);
+
+    /***********************
+     * ✅ Reset modal logic
+     ***********************/
+    function openResetModal(){
+      el.resetErr.textContent = "";
+      el.resetInput.value = "";
+      el.resetModal.classList.add("show");
+      el.resetModal.setAttribute("aria-hidden", "false");
+      setTimeout(()=> el.resetInput.focus(), 60);
     }
+    function closeResetModal(){
+      el.resetModal.classList.remove("show");
+      el.resetModal.setAttribute("aria-hidden", "true");
+    }
+    function confirmReset(){
+      const v = String(el.resetInput.value || "").trim().toLowerCase();
+      if(v !== "reset"){
+        el.resetErr.textContent = "Please type “reset” to confirm.";
+        return;
+      }
+      closeResetModal();
+      hardResetUI();
+    }
+
+    el.resetCancel.addEventListener("click", closeResetModal);
+    el.resetConfirm.addEventListener("click", confirmReset);
+    el.resetInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter") confirmReset();
+      if(e.key === "Escape") closeResetModal();
+    });
+    el.resetModal.addEventListener("click", (e)=>{
+      if(e.target === el.resetModal) closeResetModal();
+    });
 
     /***********************
      * Spin interaction
@@ -919,7 +1061,25 @@
       }
     });
 
-    // long press reset
+    /***********************
+     * ✅ Long press 1.5s to open reset modal (NOT auto reset)
+     ***********************/
+    let lpTimer = null;
+    let lpArmed = false;
+
+    function armLongPress(){
+      lpArmed = true;
+      clearTimeout(lpTimer);
+      lpTimer = setTimeout(()=>{
+        if(!lpArmed) return;
+        openResetModal();
+      }, 1500); // ✅ 1.5s
+    }
+    function cancelLongPress(){
+      lpArmed = false;
+      clearTimeout(lpTimer);
+    }
+
     el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
     el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
     el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
