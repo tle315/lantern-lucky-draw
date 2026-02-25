@@ -12,13 +12,11 @@
       --ink:#1b1b1b;
       --muted:#7a726a;
       --line:#E8DDCF;
-      --dash:#D7C6B2;
       --brand:#9a3b2f;
       --brand2:#b06a57;
       --shadow: 0 14px 36px rgba(20,20,20,.08);
       --radius: 22px;
 
-      /* Scheme A (no external fonts) */
       --serif: ui-serif, "New York", "Iowan Old Style", "Palatino", "Georgia", serif;
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
@@ -37,7 +35,7 @@
     a{color:inherit;text-decoration:none}
     a:active{opacity:.85}
 
-    .wrap{max-width:740px;margin:0 auto;padding:14px 14px 22px;}
+    .wrap{max-width:740px;margin:0 auto;padding:12px 14px 22px;}
 
     /* top pill */
     .badge-top{display:flex;justify-content:center;margin-top:4px;margin-bottom:10px;}
@@ -47,8 +45,8 @@
       border-radius:999px;background:#fff8efaa;
       box-shadow:0 6px 18px rgba(20,20,20,.06);
       color:#6b4e3b;
-      font-weight:800;
-      letter-spacing:.12em;
+      font-weight:900;
+      letter-spacing:.18em;
       text-transform:uppercase;
       font-size:12px;
     }
@@ -56,29 +54,24 @@
     /* title row */
     .titleRow{
       display:flex;align-items:center;justify-content:center;gap:14px;
-      margin:8px 0 8px;text-align:center;
+      margin:8px 0 6px;text-align:center;
       user-select:none;-webkit-user-select:none;touch-action:manipulation;
     }
 
-    /* ✅ seal stamp */
+    /* seal stamp */
     .fu{
       width:52px;height:52px;border-radius:14px;
       position:relative;
       display:grid;place-items:center;
       flex:0 0 auto;
-
-      /* cinnabar + subtle variation */
       background:
         radial-gradient(120% 120% at 30% 25%, rgba(255,255,255,.18) 0%, rgba(255,255,255,0) 45%),
         radial-gradient(140% 140% at 70% 75%, rgba(0,0,0,.22) 0%, rgba(0,0,0,0) 55%),
         linear-gradient(180deg, #b65a46 0%, #8f2f25 100%);
-
-      /* pressed into paper */
       box-shadow:
         0 10px 20px rgba(154,59,47,.20),
         inset 0 2px 3px rgba(255,255,255,.20),
         inset 0 -8px 14px rgba(0,0,0,.22);
-
       border: 1px solid rgba(255,255,255,.26);
     }
     .fu::after{
@@ -95,52 +88,80 @@
       font-family: var(--serif);
       font-weight: 900;
       font-size: 30px;
-      color:#f4d28c; /* “gold ink” */
+      color:#f4d28c;
       text-shadow:
         0 1px 0 rgba(0,0,0,.10),
         0 6px 16px rgba(0,0,0,.12);
       transform: translateY(-1px);
     }
 
-    /* ✅ one-line magazine title */
-    h1{
-      margin:0;
-      font-family: var(--serif);
-      font-weight: 820;
-      letter-spacing: -0.9px;
-      line-height:1.02;
-      font-size: 40px; /* desktop-ish baseline */
+    /* ✅ magazine title (two lines) */
+    .titleText{display:flex;flex-direction:column;align-items:center;gap:4px;}
+    .kicker{
+      font-weight:950;
+      font-size:12px;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      color:#6b4e3b;
+      opacity:.90;
+      line-height:1;
+      white-space:nowrap;
     }
-    h1 .brandInline{
-      display:block;
-      white-space:nowrap; /* keep together */
+    .masthead{
+      font-family: var(--serif);
+      font-weight: 860;
+      font-size: 42px;
+      letter-spacing:-1.0px;
+      line-height:1.02;
+      margin:0;
     }
 
     .subtitle{
       text-align:center;
       margin:6px 0 10px;
       color:var(--muted);
-      font-size:16px;
+      font-size:15px;
       font-weight:650;
       letter-spacing:.02em;
       opacity:.92;
     }
 
-    /* follow box */
+    /* ✅ Follow box: magazine border + corner marks (smaller height) */
     .follow{
-      border:2px dashed var(--dash);
-      border-radius:var(--radius);
+      position:relative;
+      border:1px solid rgba(215,198,178,.75);
+      border-radius:18px;
       padding:10px 12px 10px;
-      background:#fff6ed88;
+      background:rgba(255, 250, 243, .62);
       box-shadow:0 10px 28px rgba(20,20,20,.05);
       margin-bottom: 6px;
+      overflow:hidden;
     }
+    .follow::before,
+    .follow::after{
+      content:"";
+      position:absolute; inset:10px;
+      border-radius:14px;
+      pointer-events:none;
+      opacity:.55;
+      box-shadow: inset 0 0 0 1px rgba(232,221,207,.9);
+    }
+    .corner{
+      position:absolute; width:14px; height:14px;
+      border:2px solid rgba(176,106,87,.45);
+      opacity:.55; pointer-events:none;
+    }
+    .corner.tl{left:10px;top:10px;border-right:0;border-bottom:0;border-top-left-radius:10px;}
+    .corner.tr{right:10px;top:10px;border-left:0;border-bottom:0;border-top-right-radius:10px;}
+    .corner.bl{left:10px;bottom:10px;border-right:0;border-top:0;border-bottom-left-radius:10px;}
+    .corner.br{right:10px;bottom:10px;border-left:0;border-top:0;border-bottom-right-radius:10px;}
+
     .follow h3{
       margin:0 0 8px;
       text-align:center;
       font-family: var(--serif);
-      font-size:18px;
-      font-weight:780;
+      font-size:16px;
+      font-weight:860;
       letter-spacing:-.2px;
       color:#6b4e3b;
     }
@@ -153,26 +174,30 @@
       margin-bottom:8px;
       align-items:stretch;
     }
+
+    /* ✅ label-strip look */
     .chipLink{
       width:100%;
       display:inline-flex;align-items:center;justify-content:center;gap:8px;
       min-width:0;
       padding:8px 10px;
-      border-radius:999px;border:1px solid var(--line);
-      background:#fff;
-      box-shadow:0 8px 18px rgba(20,20,20,.05);
-      font-weight:850;
-      color:#4b3a2f;
+      border-radius:999px;
+      border:1px solid rgba(232,221,207,.95);
+      background:rgba(255,255,255,.85);
+      box-shadow:0 10px 22px rgba(20,20,20,.05);
+      font-weight:900;
+      color:#3f322a;
       font-size:13px;
       line-height:1;
       white-space:nowrap;
     }
-    .chipLink .ico{width:18px;height:18px;display:inline-block;flex:0 0 auto;}
+    .chipLink:active{transform:translateY(1px)}
+    .chipLink .ico{width:18px;height:18px;display:inline-block;flex:0 0 auto; opacity:.95;}
 
     .follow .hint{
       text-align:center;
       color:#7a726a;
-      font-size:14px;
+      font-size:13px;
       font-weight:650;
       margin:0;
       line-height:1.25;
@@ -272,7 +297,7 @@
 
     canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:40;}
 
-    /* ✅ Reset modal */
+    /* Reset modal */
     .modal{
       position:fixed; inset:0;
       background:rgba(20,20,20,.42);
@@ -320,19 +345,10 @@
       outline:none;
       background:#fff;
     }
-    .modalBtns{
-      display:flex;
-      gap:10px;
-      margin-top:10px;
-    }
+    .modalBtns{display:flex;gap:10px;margin-top:10px;}
     .mBtn{
-      flex:1;
-      border-radius:14px;
-      padding:11px 12px;
-      font-weight:900;
-      border:1px solid var(--line);
-      background:#fff;
-      cursor:pointer;
+      flex:1;border-radius:14px;padding:11px 12px;
+      font-weight:900;border:1px solid var(--line);background:#fff;cursor:pointer;
     }
     .mBtn.primary{
       background:linear-gradient(180deg, #b55a45 0%, #8f2f25 100%);
@@ -340,20 +356,18 @@
       color:#fff;
     }
     .modalErr{
-      min-height:18px;
-      margin-top:8px;
-      color:#8f2f25;
-      font-weight:800;
-      font-size:13px;
-      text-align:center;
+      min-height:18px;margin-top:8px;color:#8f2f25;font-weight:800;font-size:13px;text-align:center;
     }
 
     @media (max-width:420px){
       .wrap{padding:12px 12px 20px;}
-      h1{font-size:34px;}          /* ✅ smaller so Lucky Draw not huge */
       .fu{width:48px;height:48px;border-radius:13px}
       .fu span{font-size:28px}
-      .follow h3{font-size:16px}
+
+      .masthead{font-size:38px;}  /* Lucky Draw a bit smaller on mobile */
+      .kicker{font-size:11px;}
+
+      .follow h3{font-size:15px}
       .follow .hint{font-size:13px}
       .chipLink{font-size:12.5px;padding:8px 8px}
       .centerBtn .big{font-size:38px}
@@ -366,7 +380,7 @@
 <body>
   <canvas id="confetti"></canvas>
 
-  <!-- ✅ Reset Modal -->
+  <!-- Reset Modal -->
   <div class="modal" id="resetModal" aria-hidden="true">
     <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
       <h3 class="modalTitle" id="resetTitle">Reset this device?</h3>
@@ -385,18 +399,24 @@
       <div class="pill">🏮 Lantern Festival Special 🏮</div>
     </div>
 
-    <!-- long-press 1.5s on titleRow to open reset modal -->
+    <!-- long-press 1.5s to open reset modal -->
     <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)">
       <div class="fu" aria-hidden="true"><span>福</span></div>
-      <div>
-        <h1><span class="brandInline">PandaGoldenEar Lucky Draw</span></h1>
+
+      <!-- ✅ Title now two lines -->
+      <div class="titleText">
+        <div class="kicker">PANDA GOLDEN EAR</div>
+        <h1 class="masthead">Lucky Draw</h1>
       </div>
     </div>
 
     <div class="subtitle">Tap <b>Spin</b> to reveal your surprise.</div>
 
     <div class="follow">
-      <h3>💥 Don’t forget to follow us —</h3>
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+
+      <h3>Don’t forget to follow us</h3>
       <div class="btns">
         <a class="chipLink" href="https://www.instagram.com/pandagoldenear/" target="_blank" rel="noopener"><span class="ico">📷</span> Instagram</a>
         <a class="chipLink" href="https://www.facebook.com/pandagoldenear" target="_blank" rel="noopener"><span class="ico">📘</span> Facebook</a>
@@ -435,17 +455,11 @@
   </div>
 
   <script>
-    /***********************
-     * CONFIG (your CSV URLs)
-     ***********************/
     const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
     const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
     const USE_REMAINING_AS_WEIGHT = false;
 
-    /***********************
-     * STATE
-     ***********************/
     const LS_KEY = "pge_lucky_played_v1";
     let played = localStorage.getItem(LS_KEY) === "1";
 
@@ -461,7 +475,6 @@
     let spinDuration = 3200;
     let selectedIndex = -1;
 
-    // audio
     let audioEnabled = true;
     let audioReady = false;
     let audioCtx = null;
@@ -479,7 +492,6 @@
       titleRow: document.getElementById("titleRow"),
       confetti: document.getElementById("confetti"),
 
-      // reset modal
       resetModal: document.getElementById("resetModal"),
       resetInput: document.getElementById("resetInput"),
       resetConfirm: document.getElementById("resetConfirm"),
@@ -488,9 +500,6 @@
     };
     const ctx = el.wheel.getContext("2d");
 
-    /***********************
-     * CSV parsing
-     ***********************/
     function parseCSV(text){
       const rows = [];
       let row = [], cur = "", inQ = false;
@@ -523,9 +532,6 @@
       return await res.text();
     }
 
-    /***********************
-     * Load data
-     ***********************/
     async function loadData(){
       const [poolText, blessText] = await Promise.all([
         fetchCSV(POOL_CSV_URL),
@@ -570,31 +576,24 @@
 
     function rebuildSegments(){
       let filtered = pool.filter(p => p.active && (p.remaining > 0));
-
       const hasBlessing = filtered.some(p => p.prize.toLowerCase() === "blessing");
       if(!hasBlessing){
         const b = pool.find(p => p.prize.toLowerCase()==="blessing" && p.active);
         if(b) filtered.push({...b, remaining:999999});
       }
-
       segments = filtered.map(p => {
         const isBlessing = p.prize.toLowerCase() === "blessing";
         const w = USE_REMAINING_AS_WEIGHT ? Math.max(0, p.remaining) : Math.max(0, p.weight);
         return { label: p.prize, weight: w, isBlessing };
       });
-
       if(segments.length === 0){
         segments = [{label:"Blessing", weight:1, isBlessing:true}];
       }
     }
 
-    /***********************
-     * Probability
-     ***********************/
     function pickWeightedIndex(){
       const total = segments.reduce((s,x)=> s + (x.weight||0), 0);
       if(total <= 0) return Math.floor(Math.random()*segments.length);
-
       let r = Math.random() * total;
       for(let i=0;i<segments.length;i++){
         r -= (segments[i].weight||0);
@@ -603,9 +602,6 @@
       return segments.length - 1;
     }
 
-    /***********************
-     * Wheel drawing
-     ***********************/
     const palette = [
       {a:"#f7d7d1", b:"#f3bfb5"},
       {a:"#d9f0e6", b:"#bfe6d4"},
@@ -613,13 +609,11 @@
       {a:"#fff0c9", b:"#f7e1a1"},
       {a:"#e9f1ff", b:"#cfe0ff"},
     ];
-
     function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
 
     function splitToTwoLines(ctx, text, maxW){
       const t = String(text || "").trim();
       if(!t) return [""];
-
       if(ctx.measureText(t).width <= maxW) return [t];
 
       const parts = t.split(/\s+/).filter(Boolean);
@@ -663,7 +657,6 @@
         el.wheel.height = px;
       }
       ctx.setTransform(1,0,0,1,0,0);
-      return { sizePx:px, dpr };
     }
 
     function drawOuterRim(cx, cy, r){
@@ -717,7 +710,6 @@
         ctx.stroke();
       }
 
-      // labels: inside + flip rule
       for(let i=0;i<n;i++){
         const start = -Math.PI/2 + i*slice;
         const end = start + slice;
@@ -762,9 +754,6 @@
 
     window.addEventListener("resize", drawWheel);
 
-    /***********************
-     * Spin animation
-     ***********************/
     function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
 
     function spinToIndex(idx){
@@ -808,9 +797,6 @@
       }
     }
 
-    /***********************
-     * Result rendering
-     ***********************/
     function showResult(seg){
       const isBlessing = seg.isBlessing;
 
@@ -839,9 +825,6 @@
         .replaceAll("'","&#039;");
     }
 
-    /***********************
-     * Confetti
-     ***********************/
     let confettiRAF = null;
     function burstConfetti(){
       const c = el.confetti;
@@ -902,9 +885,6 @@
       loop();
     }
 
-    /***********************
-     * Audio
-     ***********************/
     function initAudio(){
       if(!audioEnabled || audioReady) return;
       try{
@@ -929,7 +909,6 @@
       o.connect(g); g.connect(audioCtx.destination);
       o.start(now); o.stop(now + t + 0.02);
     }
-
     function playWhoosh(){
       playTone({type:"sawtooth", f:220, t:0.18, gain:0.028, sweep:{to:1200, dur:0.18}});
     }
@@ -958,9 +937,6 @@
       }
     }
 
-    /***********************
-     * Played / reset
-     ***********************/
     function updatePlayedUI(){
       if(played){
         el.statusLine.textContent = "";
@@ -986,9 +962,6 @@
       drawWheel();
     }
 
-    /***********************
-     * ✅ Reset modal logic
-     ***********************/
     function openResetModal(){
       el.resetErr.textContent = "";
       el.resetInput.value = "";
@@ -1020,9 +993,6 @@
       if(e.target === el.resetModal) closeResetModal();
     });
 
-    /***********************
-     * Spin interaction
-     ***********************/
     function canSpin(){ return !spinning && !played; }
 
     async function doSpin(){
@@ -1045,7 +1015,6 @@
 
       const isPrize = !seg.isBlessing;
       playDing(isPrize);
-
       if(isPrize) burstConfetti();
     }
 
@@ -1061,33 +1030,26 @@
       }
     });
 
-    /***********************
-     * ✅ Long press 1.5s to open reset modal (NOT auto reset)
-     ***********************/
+    // Long press 1.5s => open modal
     let lpTimer = null;
     let lpArmed = false;
-
     function armLongPress(){
       lpArmed = true;
       clearTimeout(lpTimer);
       lpTimer = setTimeout(()=>{
         if(!lpArmed) return;
         openResetModal();
-      }, 1500); // ✅ 1.5s
+      }, 1500);
     }
     function cancelLongPress(){
       lpArmed = false;
       clearTimeout(lpTimer);
     }
-
     el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
     el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
     el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
     el.titleRow.addEventListener("pointerleave", cancelLongPress, {passive:true});
 
-    /***********************
-     * Boot
-     ***********************/
     (async function init(){
       segments = [
         {label:"Blessing", weight:1, isBlessing:true},
