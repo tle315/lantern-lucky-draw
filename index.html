@@ -95,12 +95,12 @@
       transform: translateY(-1px);
     }
 
-    /* ✅ Title calibration (same magnitude) */
+    /* title calibration */
     .titleText{display:flex;flex-direction:column;align-items:center;gap:6px;}
     .kicker{
       font-weight:950;
-      font-size:18px;            /* ✅ bigger than before */
-      letter-spacing:.18em;      /* ✅ slightly tighter */
+      font-size:18px;
+      letter-spacing:.18em;
       text-transform:uppercase;
       color:#6b4e3b;
       opacity:.92;
@@ -110,7 +110,7 @@
     .masthead{
       font-family: var(--serif);
       font-weight: 880;
-      font-size:44px;            /* ✅ not over-dominant */
+      font-size:44px;
       letter-spacing:-0.6px;
       line-height:1.02;
       margin:0;
@@ -126,7 +126,7 @@
       opacity:.92;
     }
 
-    /* ✅ Follow box: magazine divider title */
+    /* follow box */
     .follow{
       border:1px solid rgba(215,198,178,.75);
       border-radius:18px;
@@ -135,7 +135,6 @@
       box-shadow:0 10px 28px rgba(20,20,20,.05);
       margin-bottom: 6px;
     }
-
     .followHeader{
       display:flex;align-items:center;gap:10px;
       margin: 0 4px 10px;
@@ -153,7 +152,7 @@
       white-space:nowrap;
     }
 
-    /* ✅ force one row on mobile: 3 columns */
+    /* force one row on mobile: 3 columns */
     .follow .btns{
       display:grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -162,7 +161,6 @@
       align-items:stretch;
     }
 
-    /* ✅ unified monochrome SVG icon */
     .chipLink{
       width:100%;
       display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -346,14 +344,13 @@
       min-height:18px;margin-top:8px;color:#8f2f25;font-weight:800;font-size:13px;text-align:center;
     }
 
-    /* ✅ mobile calibration */
     @media (max-width:420px){
       .wrap{padding:12px 12px 20px;}
       .fu{width:48px;height:48px;border-radius:13px}
       .fu span{font-size:28px}
 
-      .kicker{font-size:17px; letter-spacing:.16em;} /* ✅ close to masthead */
-      .masthead{font-size:40px; letter-spacing:-0.4px;} /* ✅ slightly down */
+      .kicker{font-size:17px; letter-spacing:.16em;}
+      .masthead{font-size:40px; letter-spacing:-0.4px;}
       .followHeader .label{font-size:17px;}
 
       .chipLink{font-size:12.5px;padding:10px 8px}
@@ -389,7 +386,6 @@
     <!-- long-press 1.5s to open reset modal -->
     <div id="titleRow" class="titleRow" aria-label="Lucky draw title (long press to reset)">
       <div class="fu" aria-hidden="true"><span>福</span></div>
-
       <div class="titleText">
         <div class="kicker">PANDA GOLDEN EAR</div>
         <h1 class="masthead">Lucky Draw</h1>
@@ -462,14 +458,44 @@
   </div>
 
   <script>
+    /***********************
+     * CONFIG (your CSV URLs)
+     ***********************/
     const POOL_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=0&single=true&output=csv";
     const BLESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR1Of71IvsS43kx9oDtQjWMeQDCNFHBw9FQ83YX6VFA2-iS7hOKYRyvrGkGYfsnCirFyzoO8oWe6vZk/pub?gid=931297523&single=true&output=csv";
 
+    // If true, use remaining as weight; else use weight column
     const USE_REMAINING_AS_WEIGHT = false;
 
+    /***********************
+     * DAILY RESET (A)
+     ***********************/
     const LS_KEY = "pge_lucky_played_v1";
+    const LS_DATE_KEY = "pge_lucky_play_date_v1";
+
+    function todayStr(){
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // ✅ auto reset once per new day (device timezone)
+    (function dailyReset(){
+      const t = todayStr();
+      const last = localStorage.getItem(LS_DATE_KEY);
+      if(last !== t){
+        localStorage.setItem(LS_DATE_KEY, t);
+        localStorage.setItem(LS_KEY, "0");
+      }
+    })();
+
     let played = localStorage.getItem(LS_KEY) === "1";
 
+    /***********************
+     * STATE
+     ***********************/
     let pool = [];
     let blessings = [];
     let segments = [];
@@ -482,6 +508,7 @@
     let spinDuration = 3200;
     let selectedIndex = -1;
 
+    // audio
     let audioEnabled = true;
     let audioReady = false;
     let audioCtx = null;
@@ -507,6 +534,9 @@
     };
     const ctx = el.wheel.getContext("2d");
 
+    /***********************
+     * CSV parsing
+     ***********************/
     function parseCSV(text){
       const rows = [];
       let row = [], cur = "", inQ = false;
@@ -534,11 +564,16 @@
       return Number.isFinite(n) ? n : 0;
     }
     async function fetchCSV(url){
-      const res = await fetch(url, { cache:"no-store" });
+      // cache bust to avoid stale published CSV
+      const bust = (url.includes("?") ? "&" : "?") + "cb=" + Date.now();
+      const res = await fetch(url + bust, { cache:"no-store" });
       if(!res.ok) throw new Error("Failed to fetch CSV");
       return await res.text();
     }
 
+    /***********************
+     * Load data
+     ***********************/
     async function loadData(){
       const [poolText, blessText] = await Promise.all([
         fetchCSV(POOL_CSV_URL),
@@ -583,24 +618,32 @@
 
     function rebuildSegments(){
       let filtered = pool.filter(p => p.active && (p.remaining > 0));
+
+      // ensure Blessing exists
       const hasBlessing = filtered.some(p => p.prize.toLowerCase() === "blessing");
       if(!hasBlessing){
         const b = pool.find(p => p.prize.toLowerCase()==="blessing" && p.active);
         if(b) filtered.push({...b, remaining:999999});
       }
+
       segments = filtered.map(p => {
         const isBlessing = p.prize.toLowerCase() === "blessing";
         const w = USE_REMAINING_AS_WEIGHT ? Math.max(0, p.remaining) : Math.max(0, p.weight);
         return { label: p.prize, weight: w, isBlessing };
       });
+
       if(segments.length === 0){
         segments = [{label:"Blessing", weight:1, isBlessing:true}];
       }
     }
 
+    /***********************
+     * Probability
+     ***********************/
     function pickWeightedIndex(){
       const total = segments.reduce((s,x)=> s + (x.weight||0), 0);
       if(total <= 0) return Math.floor(Math.random()*segments.length);
+
       let r = Math.random() * total;
       for(let i=0;i<segments.length;i++){
         r -= (segments[i].weight||0);
@@ -609,6 +652,9 @@
       return segments.length - 1;
     }
 
+    /***********************
+     * Wheel drawing
+     ***********************/
     const palette = [
       {a:"#f7d7d1", b:"#f3bfb5"},
       {a:"#d9f0e6", b:"#bfe6d4"},
@@ -616,11 +662,13 @@
       {a:"#fff0c9", b:"#f7e1a1"},
       {a:"#e9f1ff", b:"#cfe0ff"},
     ];
+
     function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
 
     function splitToTwoLines(ctx, text, maxW){
       const t = String(text || "").trim();
       if(!t) return [""];
+
       if(ctx.measureText(t).width <= maxW) return [t];
 
       const parts = t.split(/\s+/).filter(Boolean);
@@ -717,11 +765,13 @@
         ctx.stroke();
       }
 
+      // labels
       for(let i=0;i<n;i++){
         const start = -Math.PI/2 + i*slice;
         const end = start + slice;
         const mid = (start + end) / 2;
 
+        // slightly inward for readability
         const rText = outerR * 0.84;
 
         ctx.save();
@@ -729,8 +779,10 @@
         ctx.rotate(mid);
         ctx.translate(rText, 0);
 
+        // tangent direction
         ctx.rotate(Math.PI / 2);
 
+        // flip on bottom half so text is readable
         const norm = ((mid % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
         const onBottom = norm >= Math.PI/2 && norm <= Math.PI*1.5;
         if(onBottom) ctx.rotate(Math.PI);
@@ -761,13 +813,19 @@
 
     window.addEventListener("resize", drawWheel);
 
+    /***********************
+     * Spin animation
+     ***********************/
     function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
 
     function spinToIndex(idx){
       const n = segments.length;
       const slice = (Math.PI*2)/n;
 
+      // land center of slice at pointer (top)
       const desired = -(idx*slice + slice/2);
+
+      // 5–7 turns
       const turns = 5 + Math.floor(Math.random()*3);
       const extra = (Math.PI*2) * turns;
 
@@ -804,6 +862,9 @@
       }
     }
 
+    /***********************
+     * Result rendering
+     ***********************/
     function showResult(seg){
       const isBlessing = seg.isBlessing;
 
@@ -832,6 +893,9 @@
         .replaceAll("'","&#039;");
     }
 
+    /***********************
+     * Confetti (only for prize)
+     ***********************/
     let confettiRAF = null;
     function burstConfetti(){
       const c = el.confetti;
@@ -892,6 +956,9 @@
       loop();
     }
 
+    /***********************
+     * Audio (whoosh + tick + ding)
+     ***********************/
     function initAudio(){
       if(!audioEnabled || audioReady) return;
       try{
@@ -916,6 +983,7 @@
       o.connect(g); g.connect(audioCtx.destination);
       o.start(now); o.stop(now + t + 0.02);
     }
+
     function playWhoosh(){
       playTone({type:"sawtooth", f:220, t:0.18, gain:0.028, sweep:{to:1200, dur:0.18}});
     }
@@ -944,6 +1012,9 @@
       }
     }
 
+    /***********************
+     * Played / reset
+     ***********************/
     function updatePlayedUI(){
       if(played){
         el.statusLine.textContent = "";
@@ -952,9 +1023,11 @@
         el.resultCard.style.display = "none";
       }
     }
+
     function setPlayed(v){
       played = v;
       localStorage.setItem(LS_KEY, v ? "1" : "0");
+      if(v) localStorage.setItem(LS_DATE_KEY, todayStr());
       updatePlayedUI();
     }
 
@@ -1000,6 +1073,29 @@
       if(e.target === el.resetModal) closeResetModal();
     });
 
+    // Long press 1.5s => open reset modal
+    let lpTimer = null;
+    let lpArmed = false;
+    function armLongPress(){
+      lpArmed = true;
+      clearTimeout(lpTimer);
+      lpTimer = setTimeout(()=>{
+        if(!lpArmed) return;
+        openResetModal();
+      }, 1500);
+    }
+    function cancelLongPress(){
+      lpArmed = false;
+      clearTimeout(lpTimer);
+    }
+    el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
+    el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
+    el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
+    el.titleRow.addEventListener("pointerleave", cancelLongPress, {passive:true});
+
+    /***********************
+     * Spin interaction
+     ***********************/
     function canSpin(){ return !spinning && !played; }
 
     async function doSpin(){
@@ -1037,30 +1133,14 @@
       }
     });
 
-    // Long press 1.5s => open modal
-    let lpTimer = null;
-    let lpArmed = false;
-    function armLongPress(){
-      lpArmed = true;
-      clearTimeout(lpTimer);
-      lpTimer = setTimeout(()=>{
-        if(!lpArmed) return;
-        openResetModal();
-      }, 1500);
-    }
-    function cancelLongPress(){
-      lpArmed = false;
-      clearTimeout(lpTimer);
-    }
-    el.titleRow.addEventListener("pointerdown", ()=>armLongPress(), {passive:true});
-    el.titleRow.addEventListener("pointerup", cancelLongPress, {passive:true});
-    el.titleRow.addEventListener("pointercancel", cancelLongPress, {passive:true});
-    el.titleRow.addEventListener("pointerleave", cancelLongPress, {passive:true});
-
+    /***********************
+     * Boot
+     ***********************/
     (async function init(){
+      // placeholder wheel immediately
       segments = [
         {label:"Blessing", weight:1, isBlessing:true},
-        {label:"This is on us", weight:1, isBlessing:false},
+        {label:"FREE Combo A", weight:1, isBlessing:false},
         {label:"50% off for your next order", weight:1, isBlessing:false},
         {label:"2 more Dumplings", weight:1, isBlessing:false},
         {label:"One More Drink", weight:1, isBlessing:false},
